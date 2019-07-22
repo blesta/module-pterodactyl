@@ -1,0 +1,6 @@
+# Ignore external vendor code
+/vendor/
+
+# Ignore composer lock
+public_html/composer.lock
+/nbproject/

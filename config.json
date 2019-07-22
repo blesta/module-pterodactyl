@@ -1,0 +1,22 @@
+{
+    "version": "0.1.0",
+    "name": "Pterodactyl.name",
+    "description": "",
+    "authors": [
+        {
+            "name": "Phillips Data, Inc.",
+            "url": "http://www.blesta.com"
+        }
+    ],
+    "service": {
+        "name_key": ""
+    },
+    "module": {
+        "row": "Pterodactyl.module_row.name",
+        "rows": "Pterodactyl.module_row_plural.name",
+        "row_key": "hostname"
+    },
+    "package": {
+        "name_key": ""
+    }
+}

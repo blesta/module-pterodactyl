@@ -1,0 +1,48 @@
+        <?php
+        $this->Widget->clear();
+        $this->Widget->setLinkButtons([]);
+        $this->Widget->create($this->_('Pterodactyl.edit_row.box_title', true));
+        ?>
+        <div class="inner">
+            <?php
+            $this->Form->create();
+            ?>
+            <div class="title_row first">
+                <h3><?php $this->_('Pterodactyl.edit_row.basic_title');?></h3>
+            </div>
+            <div class="pad">
+                <ul>
+                    <li>
+                        <?php
+                        $this->Form->label($this->_('Pterodactyl.row_meta.server_name', true), 'server_name');
+                        $this->Form->fieldText('server_name', $this->Html->ifSet($vars->server_name), ['id' => 'server_name']);
+                        ?>
+                    </li>
+                    <li>
+                        <?php
+                        $this->Form->label($this->_('Pterodactyl.row_meta.hostname', true), 'hostname');
+                        $this->Form->fieldText('hostname', $this->Html->ifSet($vars->hostname), ['id' => 'hostname']);
+                        ?>
+                    </li>
+                    <li>
+                        <?php
+                        $this->Form->label($this->_('Pterodactyl.row_meta.api_key', true), 'api_key');
+                        $this->Form->fieldText('api_key', $this->Html->ifSet($vars->port), ['id' => 'api_key']);
+                        ?>
+                    </li>
+                </ul>
+            </div>
+
+
+            <div class="button_row">
+                <?php
+                $this->Form->fieldSubmit('save', $this->_('Pterodactyl.edit_row.add_btn', true), ['class' => 'btn btn-primary pull-right']);
+                ?>
+            </div>
+            <?php
+            $this->Form->end();
+            ?>
+        </div>
+        <?php
+        $this->Widget->end();
+        ?>
