@@ -4,17 +4,12 @@
  *
  * @package blesta
  * @subpackage blesta.components.modules.pterodactyl
- * @copyright Copyright (c) 2013, Phillips Data, Inc.
+ * @copyright Copyright (c) 2019, Phillips Data, Inc.
  * @license http://www.blesta.com/license/ The Blesta License Agreement
  * @link http://www.blesta.com/ Blesta
  */
 class Pterodactyl extends Module
 {
-    /**
-     * @var string The authors of this module
-     */
-    private static $authors = [['name' => 'Phillips Data, Inc.', 'url' => 'http://www.blesta.com']];
-
     /**
      * Initializes the module
      */
@@ -28,10 +23,22 @@ class Pterodactyl extends Module
 
         // Load the language required by this module
         Language::loadLang('pterodactyl', null, dirname(__FILE__) . DS . 'language' . DS);
+        Language::loadLang('pterodactyl_package', null, dirname(__FILE__) . DS . 'language' . DS);
+
 
         // Load configuration required by this module
         $this->loadConfig(dirname(__FILE__) . DS . 'config.json');
     }
+
+    /**
+     * Loads a library class
+     *
+     * @param string $command The filename of the class to load
+     */
+    private function loadLib($command) {
+        Loader::load(dirname(__FILE__) . DS . 'lib' . DS . $command . '.php');
+    }
+
 
     /**
      * Returns a noun used to refer to a module row (e.g. "Server", "VPS", "Reseller Account", etc.)
@@ -162,7 +169,12 @@ class Pterodactyl extends Module
         $status = 'pending'
     ) {
         // Get module row and API
-        $module_row = $this->getModuleRow();
+        if (!($module_row = $this->getModuleRow())) {
+            $this->Input->setErrors(
+                ['module_row' => ['missing' => Language::_('Pterodactyl.!error.module_row.missing', true)]]
+            );
+            return;
+        }
         $api = $this->getApi(
             $module_row->meta->hostname,
             $module_row->meta->api_key
@@ -282,8 +294,28 @@ class Pterodactyl extends Module
      */
     public function addPackage(array $vars = null)
     {
+        // Fetch the package fields
+        $this->loadLib('pterodactyl_package');
+        $package = new PterodactylPackage();
+
+        // Set missing checkboxes
+        $checkboxes = [
+            'user_jar',
+            'user_name',
+            'user_schedule',
+            'user_ftp',
+            'user_visibility',
+            'autostart',
+            'create_ftp'
+        ];
+        foreach ($checkboxes as $checkbox) {
+            if (empty($vars['meta'][$checkbox])) {
+                $vars['meta'][$checkbox] = '0';
+            }
+        }
+
         // Set rules to validate input data
-        $this->Input->setRules($this->getPackageRules($vars));
+        $this->Input->setRules($package->getRules($vars));
 
         // Build meta data to return
         $meta = [];
@@ -463,10 +495,11 @@ class Pterodactyl extends Module
      */
     public function getPackageFields($vars = null)
     {
-        Loader::loadHelpers($this, ['Html']);
+        // Fetch the package fields
+        $this->loadLib('pterodactyl_package');
+        $package = new PterodactylPackage();
 
-        $fields = new ModuleFields();
-        return $fields;
+        return $package->getFields($vars);
     }
 
     /**
@@ -651,27 +684,14 @@ class Pterodactyl extends Module
                     'message' => Language::_('Pterodactyl.!error.hostname.valid', true)
                 ]
             ],
-            'port' => [
-                'format' => [
-                    'rule' => ['matches', '/^[0-9]+$/'],
-                    'message' => Language::_('Pterodactyl.!error.port.format', true)
+            'api_key' => [
+                'empty' => [
+                    'rule' => 'isEmpty',
+                    'negate' => true,
+                    'message' => Language::_('Pterodactyl.!error.api_key.empty', true)
                 ]
             ]
         ];
-    }
-
-    /**
-     * Builds and returns rules required to be validated when adding/editing a package
-     *
-     * @param array $vars An array of key/value data pairs
-     * @return array An array of Input rules suitable for Input::setRules()
-     */
-    private function getPackageRules($vars)
-    {
-        $rules = [
-        ];
-
-        return $rules;
     }
 
     /**

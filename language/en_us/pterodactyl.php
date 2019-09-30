@@ -1,7 +1,15 @@
 <?php
 $lang['Pterodactyl.name'] = 'Pterodactyl';
-$lang['Pterodactyl.module_row.name'] = 'Server';
-$lang['Pterodactyl.module_row_plural.name'] = 'Servers';
+$lang['Pterodactyl.module_row'] = 'Server';
+$lang['Pterodactyl.module_row_plural'] = 'Servers';
+
+// Errors
+$lang['Pterodactyl.!error.server_name.empty'] = 'You must enter a server name.';
+$lang['Pterodactyl.!error.hostname.valid'] = 'The Hostname appears to be invalid.';
+$lang['Pterodactyl.!error.api_key.empty'] = 'You must enter an API key.';
+
+$lang['Pterodactyl.!error.module_row.missing'] = 'An internal error occurred. The module row is unavailable.';
+
 
 // Add module row
 $lang['Pterodactyl.add_row.box_title'] = 'Add Pterodactyl Server';

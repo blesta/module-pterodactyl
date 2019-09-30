@@ -27,7 +27,7 @@
                     <li>
                         <?php
                         $this->Form->label($this->_('Pterodactyl.row_meta.api_key', true), 'api_key');
-                        $this->Form->fieldText('api_key', $this->Html->ifSet($vars->port), ['id' => 'api_key']);
+                        $this->Form->fieldText('api_key', $this->Html->ifSet($vars->api_key), ['id' => 'api_key']);
                         ?>
                     </li>
                 </ul>
