@@ -1,5 +1,7 @@
 # Pterodactyl Module
 
+## THIS MODULE IS CURRENTLY UNDER DEVELOPMENT.  See the user contributed module on which it is based (reported to work with limited functionality) here:  https://gitlab.com/dimitar.d.yanakiev/pterodactyl-blesta-module
+
 [![Build Status](https://travis-ci.org/blesta/module-pterodactyl.svg?branch=master)](https://travis-ci.org/blesta/module-pterodactyl) [![Coverage Status](https://coveralls.io/repos/github/blesta/module-pterodactyl/badge.svg?branch=master)](https://coveralls.io/github/blesta/module-pterodactyl?branch=master)
 
 This is a module for Blesta that integrates with [Pterodactyl](https://pterodactyl.com/).
