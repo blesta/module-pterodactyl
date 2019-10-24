@@ -657,7 +657,9 @@ class Pterodactyl extends Module
      */
     private function getApi($host, $api_key)
     {
-        Loader::load(dirname(__FILE__) . DS . 'apis' . DS . 'pterodactyl_api.php');
+        Loader::load(
+            dirname(__FILE__) . DS . 'components' . DS . 'modules' . DS . 'pterodactyl-sdk' . DS . 'PterodactylApi.php'
+        );
 
         return new PterodactylApi($api_key, $host);
     }

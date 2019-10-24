@@ -19,16 +19,14 @@
                         ?>
                     </li>
                     <li>
-                        <?php
-                        $this->Form->label($this->_('Pterodactyl.row_meta.hostname', true), 'hostname');
-                        $this->Form->fieldText('hostname', $this->Html->ifSet($vars->hostname), ['id' => 'hostname']);
-                        ?>
+                        <?php $this->Form->label($this->_('Pterodactyl.row_meta.panel_url', true), 'panel_url', ['class' => 'inline']);?>
+                        <span class="tooltip block"><?php $this->_('AppController.tooltip.text');?><div><?php $this->_('Pterodactyl.!tooltip.panel_url');?></div></span>
+                        <?php $this->Form->fieldText('panel_url', $this->Html->ifSet($vars->panel_url), ['id' => 'panel_url', 'class' => 'block']);?>
                     </li>
                     <li>
-                        <?php
-                        $this->Form->label($this->_('Pterodactyl.row_meta.api_key', true), 'api_key');
-                        $this->Form->fieldText('api_key', $this->Html->ifSet($vars->api_key), ['id' => 'api_key']);
-                        ?>
+                        <?php $this->Form->label($this->_('Pterodactyl.row_meta.api_key', true), 'api_key', ['class' => 'inline']);?>
+                        <span class="tooltip block"><?php $this->_('AppController.tooltip.text');?><div><?php $this->_('Pterodactyl.!tooltip.panel_url');?></div></span>
+                        <?php $this->Form->fieldText('api_key', $this->Html->ifSet($vars->api_key), ['id' => 'api_key', 'class' => 'block']);?>
                     </li>
                 </ul>
             </div>
