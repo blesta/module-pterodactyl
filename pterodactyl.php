@@ -1,4 +1,5 @@
 <?php
+use Blesta\PterodactylSDK\PterodactylApi;
 /**
  * Pterodactyl Module
  *
@@ -15,7 +16,7 @@ class Pterodactyl extends Module
      */
     public function __construct()
     {
-        // Load the cWatch API
+        // Load the Pterodactyl API
         Loader::load(dirname(__FILE__) . DS . 'api' . DS . 'pterodactyl_api.php');
 
         // Load components required by this module
@@ -649,7 +650,7 @@ class Pterodactyl extends Module
     }
 
     /**
-     * Initializes the CpanelApi and returns an instance of that object with the given $host, $user, and $pass set
+     * Initializes the PterodactylApi and returns an instance of that object with the given $host and $api_key set
      *
      * @param string $host The host to the Pterodactyl server
      * @param string $api_key The user to connect as
@@ -691,6 +692,19 @@ class Pterodactyl extends Module
                     'rule' => 'isEmpty',
                     'negate' => true,
                     'message' => Language::_('Pterodactyl.!error.api_key.empty', true)
+                ],
+                'valid' => [
+                    'rule' => function ($api_key) use ($vars) {
+                        try {
+                            $api = $this->getApi(isset($vars['hostname']) ? $vars['hostname'] : '', $api_key);
+                            $serversRespoonse = $api->Client->getServers();
+
+                            return empty($serversRespoonse->errors);
+                        } catch (Exception $e) {
+                            return false;
+                        }
+                    },
+                    'message' => Language::_('Pterodactyl.!error.api_key.valid', true)
                 ]
             ]
         ];

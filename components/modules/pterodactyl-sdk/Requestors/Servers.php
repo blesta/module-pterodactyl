@@ -1,7 +1,9 @@
 <?php
 namespace Blesta\PterodactylSDK\Requestors;
 
-class Servers extends Requestor
+include_once dirname(__DIR__) . '/Requestor.php';
+
+class Servers extends \Blesta\PterodactylSDK\Requestor
 {
     /**
      * Fetches a list of servers from Pterodactyl

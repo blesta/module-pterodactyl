@@ -1,7 +1,9 @@
 <?php
-namespace Blesta\PterodactylSDK\Requestors;
+namespace Blesta\PterodactylSDK;
 
-class Locations extends Requestor
+include_once dirname(__DIR__) . '/Requestor.php';
+
+class Locations extends \Blesta\PterodactylSDK\Requestor
 {
     /**
      * Fetches a list of locations from Pterodactyl

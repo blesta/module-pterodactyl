@@ -1,6 +1,14 @@
 <?php
 namespace Blesta\PterodactylSDK;
 
+include 'PterodactylResponse.php';
+include 'Requestors/Client.php';
+include 'Requestors/Users.php';
+include 'Requestors/Nodes.php';
+include 'Requestors/Locations.php';
+include 'Requestors/Servers.php';
+include 'Requestors/Nests.php';
+
 /**
  * Pterodactyl API
  *
@@ -10,13 +18,6 @@ namespace Blesta\PterodactylSDK;
  */
 class PterodactylApi
 {
-    use PterodactyleResponse,
-        Objects\Client,
-        Objects\Users,
-        Objects\Nodes,
-        Objects\Locations,
-        Objects\Servers,
-        Objects\Nests;
     /**
      * @var string The API URL
      */
@@ -37,13 +38,10 @@ class PterodactylApi
         $this->apiUrl = trim($baseUrl, '/') . '/api/';
     }
 
-    function __get($class_name)
+    function __get($className)
     {
-        if (class_exists($class_name)) {
-            $this->{$class_name} = new $class_name($this->apiKey, $this->apiUrl);
-            return $this->{$class_name};
-        } else {
-            // Throw exception of unfound class name
-        }
+        $r = new \ReflectionClass('\\Blesta\\PterodactylSDK\\Requestors\\' . $className);
+        $this->{$className} = $r->newInstanceArgs([$this->apiKey, $this->apiUrl]);
+        return $this->{$className};
     }
 }

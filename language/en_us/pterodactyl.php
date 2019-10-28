@@ -7,6 +7,7 @@ $lang['Pterodactyl.module_row_plural'] = 'Servers';
 $lang['Pterodactyl.!error.server_name.empty'] = 'You must enter a server name.';
 $lang['Pterodactyl.!error.panel_url.valid'] = 'The Panel URL appears to be invalid.';
 $lang['Pterodactyl.!error.api_key.empty'] = 'You must enter an API key.';
+$lang['Pterodactyl.!error.api_key.valid'] = 'Unable to connect with the given URL and API key.';
 
 $lang['Pterodactyl.!error.module_row.missing'] = 'An internal error occurred. The module row is unavailable.';
 
