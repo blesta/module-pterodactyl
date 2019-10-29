@@ -14,7 +14,7 @@
     "module": {
         "row": "Pterodactyl.module_row.name",
         "rows": "Pterodactyl.module_row_plural.name",
-        "row_key": "hostname"
+        "row_key": "panel_url"
     },
     "package": {
         "name_key": ""

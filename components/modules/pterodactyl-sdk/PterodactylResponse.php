@@ -46,6 +46,7 @@ class PterodactylResponse
         $this->response = json_decode($apiResponse['content']);
         $this->headers = $apiResponse['headers'];
 
+        // Get the http status code from the header
         $this->status = '400';
         if (isset($this->headers[0])) {
             $status_parts = explode(' ', $this->headers[0]);
@@ -54,13 +55,12 @@ class PterodactylResponse
             }
         }
 
+        // Set any errors
         $this->errors =  [];
         if (isset($this->response->errors)) {
             foreach ($this->response->errors as $error) {
-                $this->errors[] = $error->msg;
+                $this->errors[] = $error->detail;
             }
-        } elseif (isset($this->response->error)) {
-            $this->errors = [$this->response->error];
         }
     }
 

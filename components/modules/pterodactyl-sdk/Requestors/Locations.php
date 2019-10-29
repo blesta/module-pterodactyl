@@ -1,5 +1,5 @@
 <?php
-namespace Blesta\PterodactylSDK;
+namespace Blesta\PterodactylSDK\Requestors;
 
 include_once dirname(__DIR__) . '/Requestor.php';
 

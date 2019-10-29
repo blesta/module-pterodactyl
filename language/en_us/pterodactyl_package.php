@@ -1,11 +1,14 @@
 <?php
 // Errors
 $lang['PterodactylPackage.!error.meta[server_name].format'] = 'Please set a name for the server.';
-$lang['PterodactylPackage.!error.meta[location_id].format'] = '';
+$lang['PterodactylPackage.!error.meta[location_id].format'] = 'The location ID must be numeric.';
+$lang['PterodactylPackage.!error.meta[location_id].valid'] = 'The location does not match any in Pterodactyl.';
 $lang['PterodactylPackage.!error.meta[dedicated_ip].format'] = '';
 $lang['PterodactylPackage.!error.meta[port_range].format'] = '';
-$lang['PterodactylPackage.!error.meta[nest_id].format'] = '';
-$lang['PterodactylPackage.!error.meta[egg_id].format'] = '';
+$lang['PterodactylPackage.!error.meta[nest_id].format'] = 'The nest ID must be numeric.';
+$lang['PterodactylPackage.!error.meta[nest_id].valid'] = 'The nest does not match any in Pterodactyl.';
+$lang['PterodactylPackage.!error.meta[egg_id].format'] = 'The egg ID must be numeric.';
+$lang['PterodactylPackage.!error.meta[egg_id].valid'] = 'The egg does not match any in Pterodactyl.';
 $lang['PterodactylPackage.!error.meta[pack_id].format'] = '';
 $lang['PterodactylPackage.!error.meta[memory].format'] = '';
 $lang['PterodactylPackage.!error.meta[swap].format'] = '';
@@ -18,8 +21,8 @@ $lang['PterodactylPackage.!error.meta[databases].format'] = '';
 
 
 // Package fields
-$lang['PterodactylPackage.package_fields.location_id'] = 'Location ID';
-$lang['PterodactylPackage.package_fields.tooltip.location_id'] = 'ID of the Location to automatically deploy to.';
+$lang['PterodactylPackage.package_fields.location_id'] = 'Location';
+$lang['PterodactylPackage.package_fields.tooltip.location_id'] = 'The Location to automatically deploy to.';
 
 $lang['PterodactylPackage.package_fields.io'] = 'Block IO Weight';
 $lang['PterodactylPackage.package_fields.tooltip.io'] = 'Block IO Adjustment number (10-1000)';
@@ -30,8 +33,8 @@ $lang['PterodactylPackage.package_fields.tooltip.port_range'] = 'Port ranges sep
 $lang['PterodactylPackage.package_fields.dedicated_ip'] = 'Dedicated IP (optional)';
 $lang['PterodactylPackage.package_fields.tooltip.dedicated_ip'] = 'Assign dedicated ip to the server';
 
-$lang['PterodactylPackage.package_fields.nest_id'] = 'Nest ID';
-$lang['PterodactylPackage.package_fields.tooltip.nest_id'] = 'ID of the Nest for the server to use';
+$lang['PterodactylPackage.package_fields.nest_id'] = 'Nest';
+$lang['PterodactylPackage.package_fields.tooltip.nest_id'] = 'The Nest for the server to use';
 
 $lang['PterodactylPackage.package_fields.startup'] = 'Startup (optional)';
 $lang['PterodactylPackage.package_fields.tooltip.startup'] = 'Custom startup command to assign to the created server.';

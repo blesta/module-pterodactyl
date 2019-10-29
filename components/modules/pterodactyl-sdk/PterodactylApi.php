@@ -35,7 +35,7 @@ class PterodactylApi
     public function __construct($apiKey, $baseUrl)
     {
         $this->apiKey = $apiKey;
-        $this->apiUrl = trim($baseUrl, '/') . '/api/';
+        $this->apiUrl = trim($baseUrl, '/') . '/api';
     }
 
     function __get($className)

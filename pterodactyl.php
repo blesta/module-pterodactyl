@@ -177,8 +177,8 @@ class Pterodactyl extends Module
             return;
         }
         $api = $this->getApi(
-            $module_row->meta->hostname,
-            $module_row->meta->api_key
+            $module_row->meta->panel_url,
+            $module_row->meta->account_api_key
         );
 
         $params = $this->getFieldsFromInput((array)$vars, $package);
@@ -227,8 +227,8 @@ class Pterodactyl extends Module
         // Get module row and API
         $module_row = $this->getModuleRow();
         $api = $this->getApi(
-            $module_row->meta->hostname,
-            $module_row->meta->api_key
+            $module_row->meta->panel_url,
+            $module_row->meta->account_api_key
         );
 
         $params = $this->getFieldsFromInput((array)$vars, $package);
@@ -271,8 +271,8 @@ class Pterodactyl extends Module
     {
         if (($module_row = $this->getModuleRow())) {
             $api = $this->getApi(
-                $module_row->meta->hostname,
-                $module_row->meta->api_key
+                $module_row->meta->panel_url,
+                $module_row->meta->account_api_key
             );
         }
 
@@ -315,8 +315,11 @@ class Pterodactyl extends Module
             }
         }
 
+        // Get package field lists from API
+        $package_lists = $this->getPackageLists((object)$vars);
+
         // Set rules to validate input data
-        $this->Input->setRules($package->getRules($vars));
+        $this->Input->setRules($package->getRules($package_lists, $vars));
 
         // Build meta data to return
         $meta = [];
@@ -429,6 +432,9 @@ class Pterodactyl extends Module
 
         // Load the helpers required for this view
         Loader::loadHelpers($this, ['Form', 'Html', 'Widget']);
+        if (empty($vars)) {
+            $vars = $module_row->meta;
+        }
 
         $this->view->set('vars', (object)$vars);
         return $this->view->fetch();
@@ -446,8 +452,8 @@ class Pterodactyl extends Module
      */
     public function addModuleRow(array &$vars)
     {
-        $meta_fields = ['server_name', 'hostname', 'api_key'];
-        $encrypted_fields = ['api_key'];
+        $meta_fields = ['server_name', 'panel_url', 'account_api_key', 'application_api_key'];
+        $encrypted_fields = ['account_api_key', 'application_api_key'];
 
         $this->Input->setRules($this->getRowRules($vars));
 
@@ -500,7 +506,88 @@ class Pterodactyl extends Module
         $this->loadLib('pterodactyl_package');
         $package = new PterodactylPackage();
 
-        return $package->getFields($vars);
+        $package_lists = $this->getPackageLists($vars);
+
+        return $package->getFields($package_lists, $vars);
+    }
+
+    /**
+     * Get package field lists from API
+     *
+     * @param $vars stdClass A stdClass object representing a set of post fields
+     */
+    public function getPackageLists($vars)
+    {
+        // Fetch all packages available for the given server or server group
+        $module_row = null;
+        if (!isset($vars->module_group) || $vars->module_group == '') {
+            if (isset($vars->module_row) && $vars->module_row > 0) {
+                $module_row = $this->getModuleRow($vars->module_row);
+            } else {
+                $rows = $this->getModuleRows();
+                if (isset($rows[0])) {
+                    $module_row = $rows[0];
+                }
+                unset($rows);
+            }
+        } elseif (isset($vars->module_group)) {
+            // Fetch the 1st server from the list of servers in the selected group
+            $rows = $this->getModuleRows($vars->module_group);
+
+            if (isset($rows[0])) {
+                $module_row = $rows[0];
+            }
+            unset($rows);
+        }
+
+        $api = null;
+        $package_lists = [];
+        if ($module_row) {
+            $api = $this->getApi($module_row->meta->panel_url, 'nClrY6tL4o72Kmc0qFFoaxHBZxtRVymUCsd0Z4tgwZFjtnZW');
+
+            // API request for locations
+            $locations_response = $api->Locations->getAll();
+            $this->log('getlocations', json_encode([]), 'input', true);
+            $this->log('getlocations', $locations_response->raw(), 'output', $locations_response->status() == 200);
+
+            // API request for nests
+            $nests_response = $api->Nests->getAll();
+            $this->log('getnests', json_encode([]), 'input', true);
+            $this->log('getnests', $nests_response->raw(), 'output', $nests_response->status() == 200);
+
+            // Get locations
+            if (!$locations_response->errors()) {
+                $package_lists['locations'] = ['' => Language::_('AppController.select.please', true)];
+                foreach ($locations_response->response()->data as $location) {
+                    $package_lists['locations'][$location->attributes->id] = $location->attributes->long;
+                }
+            }
+
+            // Get nests
+            if (!$nests_response->errors()) {
+                $package_lists['nests'] = ['' => Language::_('AppController.select.please', true)];
+                foreach ($nests_response->response()->data as $nest) {
+                    $package_lists['nests'][$nest->attributes->id] = $nest->attributes->name;
+                }
+            }
+
+            // Get eggs
+            if (!empty($vars->meta['nest_id'])) {
+                $eggs_response = $api->Nests->eggsGetAll($vars->meta['nest_id']);
+                if (!$eggs_response->errors()) {
+                    $package_lists['eggs'] = ['' => Language::_('AppController.select.please', true)];
+                    foreach ($eggs_response->response()->data as $egg) {
+                        $package_lists['eggs'][$egg->attributes->id] = $egg->attributes->id;
+                    }
+                }
+
+                // Log request data
+                $this->log('geteggs', json_encode(['nest_id' => $vars->meta['nest_id']]), 'input', true);
+                $this->log('geteggs', $eggs_response->raw(), 'output', $eggs_response->status() == 200);
+            }
+        }
+
+        return $package_lists;
     }
 
     /**
@@ -521,7 +608,7 @@ class Pterodactyl extends Module
     public function getEmailTags()
     {
         return [
-            'module' => ['hostname'],
+            'module' => ['panel_url'],
             'package' => [],
             'service' => []
         ];
@@ -681,30 +768,50 @@ class Pterodactyl extends Module
                     'message' => Language::_('Pterodactyl.!error.server_name.empty', true)
                 ]
             ],
-            'hostname' => [
+            'panel_url' => [
                 'valid' => [
                     'rule' => [[$this, 'validateHostName']],
-                    'message' => Language::_('Pterodactyl.!error.hostname.valid', true)
+                    'message' => Language::_('Pterodactyl.!error.panel_url.valid', true)
                 ]
             ],
-            'api_key' => [
+            'account_api_key' => [
                 'empty' => [
                     'rule' => 'isEmpty',
                     'negate' => true,
-                    'message' => Language::_('Pterodactyl.!error.api_key.empty', true)
+                    'message' => Language::_('Pterodactyl.!error.account_api_key.empty', true)
                 ],
                 'valid' => [
                     'rule' => function ($api_key) use ($vars) {
                         try {
-                            $api = $this->getApi(isset($vars['hostname']) ? $vars['hostname'] : '', $api_key);
-                            $serversRespoonse = $api->Client->getServers();
+                            $api = $this->getApi(isset($vars['panel_url']) ? $vars['panel_url'] : '', $api_key);
+                            $serversResponse = $api->Client->getServers();
 
-                            return empty($serversRespoonse->errors);
+                            return empty($serversResponse->errors());
                         } catch (Exception $e) {
                             return false;
                         }
                     },
-                    'message' => Language::_('Pterodactyl.!error.api_key.valid', true)
+                    'message' => Language::_('Pterodactyl.!error.account_api_key.valid', true)
+                ]
+            ],
+            'application_api_key' => [
+                'empty' => [
+                    'rule' => 'isEmpty',
+                    'negate' => true,
+                    'message' => Language::_('Pterodactyl.!error.application_api_key.empty', true)
+                ],
+                'valid' => [
+                    'rule' => function ($api_key) use ($vars) {
+                        try {
+                            $api = $this->getApi(isset($vars['panel_url']) ? $vars['panel_url'] : '', $api_key);
+                            $serversResponse = $api->Locations->getAll();
+
+                            return empty($serversResponse->errors());
+                        } catch (Exception $e) {
+                            return false;
+                        }
+                    },
+                    'message' => Language::_('Pterodactyl.!error.application_api_key.valid', true)
                 ]
             ]
         ];

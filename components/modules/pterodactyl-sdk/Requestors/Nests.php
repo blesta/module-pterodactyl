@@ -34,7 +34,7 @@ class Nests extends \Blesta\PterodactylSDK\Requestor
      */
     public function eggsGetAll($nest_id)
     {
-        return $this->apiRequest('application/nests' . $nest_id . '/eggs');
+        return $this->apiRequest('application/nests/' . $nest_id . '/eggs');
     }
 
     /**
