@@ -38,24 +38,6 @@ class PterodactylPackage
     }
 
     /**
-     * Validates input data when attempting to add a package, returns the meta
-     * data to save when adding a package. Performs any action required to add
-     * the package on the remote server. Sets Input errors on failure,
-     * preventing the package from being added.
-     *
-     * @param array An array of key/value pairs used to add the package
-     * @return array A numerically indexed array of meta fields to be stored for this package containing:
-     *  - key The key for this meta field
-     *  - value The value for this key
-     *  - encrypted Whether or not this field should be encrypted (default 0, not encrypted)
-     * @see Module::getModule()
-     * @see Module::getModuleRow()
-     */
-    public function add(array $vars = null)
-    {
-    }
-
-    /**
      * Retrieves a list of JAR directories
      *
      * @param array A key/value array of JAR directories and their names
@@ -102,12 +84,12 @@ class PterodactylPackage
      * Returns all fields used when adding/editing a package, including any
      * javascript to execute when the page is rendered with these fields.
      *
-     * @param array $package_lists A stdClass object representing a set of post fields
+     * @param array $packageLists A stdClass object representing a set of post fields
      * @param stdClass $vars A stdClass object representing a set of post fields
      * @return ModuleFields A ModuleFields object, containing the fields
      *  to render as well as any additional HTML markup to include
      */
-    public function getFields($package_lists, $vars = null)
+    public function getFields($packageLists, $vars = null)
     {
         Loader::loadHelpers($this, ['Html']);
 
@@ -125,11 +107,11 @@ class PterodactylPackage
 		");
 
         // Set the server name
-        $server_name = $fields->label(
+        $serverName = $fields->label(
             Language::_('PterodactylPackage.package_fields.server_name', true),
             'Pterodactyl_server_name'
         );
-        $server_name->attach(
+        $serverName->attach(
             $fields->fieldText(
                 'meta[server_name]',
                 $this->Html->ifSet($vars->meta['server_name'], 'Minecraft Server'),
@@ -137,48 +119,50 @@ class PterodactylPackage
             )
         );
         $tooltip = $fields->tooltip(Language::_('PterodactylPackage.package_fields.tooltip.server_name', true));
-        $server_name->attach($tooltip);
-        $fields->setField($server_name);
+        $serverName->attach($tooltip);
+        $fields->setField($serverName);
 
         // Set the Location ID
-        $location_id = $fields->label(
+        $locationId = $fields->label(
             Language::_('PterodactylPackage.package_fields.location_id', true),
             'Pterodactyl_location_id'
         );
-        $location_id->attach(
+        $locationId->attach(
             $fields->fieldSelect(
                 'meta[location_id]',
-                isset($package_lists['locations']) ? $package_lists['locations'] : [],
+                isset($packageLists['locations']) ? $packageLists['locations'] : [],
                 $this->Html->ifSet($vars->meta['location_id']),
                 ['id' => 'Pterodactyl_location_id']
             )
         );
         $tooltip = $fields->tooltip(Language::_('PterodactylPackage.package_fields.tooltip.location_id', true));
-        $location_id->attach($tooltip);
-        $fields->setField($location_id);
+        $locationId->attach($tooltip);
+        $fields->setField($locationId);
 
         // Set the Dedicated IP
-        $dedicated_ip = $fields->label(
+        $dedicatedIp = $fields->label(
             Language::_('PterodactylPackage.package_fields.dedicated_ip', true),
-            'Pterodactyl_dedicated_ip'
+            'Pterodactyl_dedicated_ip',
+            ['class' => 'inline']
         );
-        $dedicated_ip->attach(
-            $fields->fieldText(
+        $dedicatedIp->attach(
+            $fields->fieldCheckbox(
                 'meta[dedicated_ip]',
-                $this->Html->ifSet($vars->meta['dedicated_ip']),
-                ['id' => 'Pterodactyl_dedicated_ip']
+                '1',
+                $this->Html->ifSet($vars->meta['dedicated_ip']) == 1,
+                ['id' => 'Pterodactyl_dedicated_ip', 'class' => 'inline']
             )
         );
         $tooltip = $fields->tooltip(Language::_('PterodactylPackage.package_fields.tooltip.dedicated_ip', true));
-        $dedicated_ip->attach($tooltip);
-        $fields->setField($dedicated_ip);
+        $dedicatedIp->attach($tooltip);
+        $fields->setField($dedicatedIp);
 
         // Set the Port Range
-        $port_range = $fields->label(
+        $portRange = $fields->label(
             Language::_('PterodactylPackage.package_fields.port_range', true),
             'Pterodactyl_port_range'
         );
-        $port_range->attach(
+        $portRange->attach(
             $fields->fieldText(
                 'meta[port_range]',
                 $this->Html->ifSet($vars->meta['port_range']),
@@ -186,46 +170,46 @@ class PterodactylPackage
             )
         );
         $tooltip = $fields->tooltip(Language::_('PterodactylPackage.package_fields.tooltip.port_range', true));
-        $port_range->attach($tooltip);
-        $fields->setField($port_range);
+        $portRange->attach($tooltip);
+        $fields->setField($portRange);
 
         // Set the Nest ID
-        $nest_id = $fields->label(
+        $nestId = $fields->label(
             Language::_('PterodactylPackage.package_fields.nest_id', true),
             'Pterodactyl_nest_id'
         );
-        $nest_id->attach(
+        $nestId->attach(
             $fields->fieldSelect(
                 'meta[nest_id]',
-                isset($package_lists['nests']) ? $package_lists['nests'] : [],
+                isset($packageLists['nests']) ? $packageLists['nests'] : [],
                 $this->Html->ifSet($vars->meta['nest_id']),
                 ['id' => 'Pterodactyl_nest_id']
             )
         );
         $tooltip = $fields->tooltip(Language::_('PterodactylPackage.package_fields.tooltip.nest_id', true));
-        $nest_id->attach($tooltip);
-        $fields->setField($nest_id);
+        $nestId->attach($tooltip);
+        $fields->setField($nestId);
 
         // Set the Egg ID
-        $egg_id = $fields->label(Language::_('PterodactylPackage.package_fields.egg_id', true), 'Pterodactyl_egg_id');
-        $egg_id->attach(
+        $eggId = $fields->label(Language::_('PterodactylPackage.package_fields.egg_id', true), 'Pterodactyl_egg_id');
+        $eggId->attach(
             $fields->fieldSelect(
                 'meta[egg_id]',
-                isset($package_lists['eggs']) ? $package_lists['eggs'] : [],
+                isset($packageLists['eggs']) ? $packageLists['eggs'] : [],
                 $this->Html->ifSet($vars->meta['egg_id']),
                 ['id' => 'Pterodactyl_egg_id']
             )
         );
         $tooltip = $fields->tooltip(Language::_('PterodactylPackage.package_fields.tooltip.egg_id', true));
-        $egg_id->attach($tooltip);
-        $fields->setField($egg_id);
+        $eggId->attach($tooltip);
+        $fields->setField($eggId);
 
         // Set the Pack ID
-        $pack_id = $fields->label(
+        $packId = $fields->label(
             Language::_('PterodactylPackage.package_fields.pack_id', true),
             'Pterodactyl_pack_id'
         );
-        $pack_id->attach(
+        $packId->attach(
             $fields->fieldText(
                 'meta[pack_id]',
                 $this->Html->ifSet($vars->meta['pack_id']),
@@ -233,8 +217,8 @@ class PterodactylPackage
             )
         );
         $tooltip = $fields->tooltip(Language::_('PterodactylPackage.package_fields.tooltip.pack_id', true));
-        $pack_id->attach($tooltip);
-        $fields->setField($pack_id);
+        $packId->attach($tooltip);
+        $fields->setField($packId);
 
 
         // Set the memory (in MB)
@@ -314,7 +298,7 @@ class PterodactylPackage
                 ['id' => 'Pterodactyl_startup']
             )
         );
-        $tooltip = $fields->tooltip(Language::_('PterodactylPackage.package_fields.tooltip.io', true));
+        $tooltip = $fields->tooltip(Language::_('PterodactylPackage.package_fields.tooltip.startup', true));
         $startup->attach($tooltip);
         $fields->setField($startup);
 
@@ -353,15 +337,12 @@ class PterodactylPackage
     /**
      * Builds and returns the rules required to add/edit a package
      *
-     * @param array $package_lists An array of package fields lists from the API
+     * @param array $packageLists An array of package fields lists from the API
      * @param array $vars An array of key/value data pairs
      * @return array An array of Input rules suitable for Input::setRules()
      */
-    public function getRules(array $package_lists, array $vars)
+    public function getRules(array $packageLists, array $vars)
     {
-        ##
-        # TODO Finish Validation Rules
-        ##
         $rules = [
             'meta[server_name]' => [
                 'format' => [
@@ -378,23 +359,33 @@ class PterodactylPackage
                 'valid' => [
                     'rule' => [
                         'array_key_exists',
-                        isset($package_lists['locations']) ? $package_lists['locations'] : []
+                        isset($packageLists['locations']) ? $packageLists['locations'] : []
                     ],
                     'message' => Language::_('PterodactylPackage.!error.meta[location_id].valid', true)
                 ]
             ],
-//            'meta[dedicated_ip]' => [
-//                'format' => [
-//                    'rule' => [/* Validate hostname */],
-//                    'message' => Language::_('PterodactylPackage.!error.meta[dedicated_ip].format', true)
-//                ]
-//            ],
-//            'meta[port_range]' => [
-//                'format' => [
-//                    'rule' => [/* Validate range */],
-//                    'message' => Language::_('PterodactylPackage.!error.meta[port_range].format', true)
-//                ]
-//            ],
+            'meta[dedicated_ip]' => [
+                'format' => [
+                    'rule' => ['in_array', [0, 1]],
+                    'message' => Language::_('PterodactylPackage.!error.meta[dedicated_ip].format', true)
+                ]
+            ],
+            'meta[port_range]' => [
+                'format' => [
+                    'rule' => function ($portRanges) {
+                        if (!empty($portRanges)) {
+                            $ranges = explode(',', $portRanges);
+                            foreach ($ranges as $range) {
+                                if (!preg_match('/^[0-9]+\-[0-9]+$/', $range)) {
+                                    return false;
+                                }
+                            }
+                        }
+                        return true;
+                    },
+                    'message' => Language::_('PterodactylPackage.!error.meta[port_range].format', true)
+                ]
+            ],
             'meta[nest_id]' => [
                 'format' => [
                     'rule' => ['matches', '/^[0-9]+$/'],
@@ -403,7 +394,7 @@ class PterodactylPackage
                 'valid' => [
                     'rule' => [
                         'array_key_exists',
-                        isset($package_lists['nests']) ? $package_lists['nests'] : []
+                        isset($packageLists['nests']) ? $packageLists['nests'] : []
                     ],
                     'message' => Language::_('PterodactylPackage.!error.meta[nest_id].valid', true)
                 ]
@@ -416,53 +407,70 @@ class PterodactylPackage
                 'valid' => [
                     'rule' => [
                         'array_key_exists',
-                        isset($package_lists['eggs']) ? $package_lists['eggs'] : []
+                        isset($packageLists['eggs']) ? $packageLists['eggs'] : []
                     ],
                     'message' => Language::_('PterodactylPackage.!error.meta[egg_id].valid', true)
                 ]
             ],
             'meta[pack_id]' => [
                 'format' => [
-                    'rule' => ['matches', '/^[0-9]+$/'],
+                    'rule' => function ($packId) {
+                        return empty($packId) || preg_match('/^[0-9]+$/', $packId);
+                    },
                     'message' => Language::_('PterodactylPackage.!error.meta[pack_id].format', true)
                 ]
             ],
-//            'meta[memory]' => [
-//                'format' => [
-//                    'rule' => ['matches', '/^[0-9]+$/'],
-//                    'message' => Language::_('PterodactylPackage.!error.meta[memory].format', true)
-//                ]
-//            ],
-//            'meta[swap]' => [
-//                'format' => [
-//                    'rule' => [/* Validate swap */],
-//                    'message' => Language::_('PterodactylPackage.!error.meta[swap].format', true)
-//                ]
-//            ],
-//            'meta[cpu]' => [
-//                'format' => [
-//                    'rule' => [/* Validate cpu */],
-//                    'message' => Language::_('PterodactylPackage.!error.meta[cpu].format', true)
-//                ]
-//            ],
-//            'meta[disk]' => [
-//                'format' => [
-//                    'rule' => [/* Validate disk */],
-//                    'message' => Language::_('PterodactylPackage.!error.meta[disk].format', true)
-//                ]
-//            ],
-//            'meta[io]' => [
-//                'format' => [
-//                    'rule' => [/* Validate io */],
-//                    'message' => Language::_('PterodactylPackage.!error.meta[io].format', true)
-//                ]
-//            ],
-//            'meta[startup]' => [
-//                'format' => [
-//                    'rule' => [/* Validate startup */],
-//                    'message' => Language::_('PterodactylPackage.!error.meta[startup].format', true)
-//                ]
-//            ]
+            'meta[memory]' => [
+                'format' => [
+                    'rule' => ['matches', '/^[0-9]+$/'],
+                    'message' => Language::_('PterodactylPackage.!error.meta[memory].format', true)
+                ]
+            ],
+            'meta[swap]' => [
+                'format' => [
+                    'rule' => ['matches', '/^[0-9]+$/'],
+                    'message' => Language::_('PterodactylPackage.!error.meta[swap].format', true)
+                ]
+            ],
+            'meta[cpu]' => [
+                'format' => [
+                    'rule' => ['matches', '/^[0-9]+$/'],
+                    'message' => Language::_('PterodactylPackage.!error.meta[cpu].format', true)
+                ]
+            ],
+            'meta[disk]' => [
+                'format' => [
+                    'rule' => ['matches', '/^[0-9]+$/'],
+                    'message' => Language::_('PterodactylPackage.!error.meta[disk].format', true)
+                ]
+            ],
+            'meta[io]' => [
+                'format' => [
+                    'rule' => ['matches', '/^[0-9]+$/'],
+                    'message' => Language::_('PterodactylPackage.!error.meta[io].format', true)
+                ]
+            ],
+            'meta[startup]' => [
+                'empty' => [
+                    'rule' => 'isEmpty',
+                    'negate' => true,
+                    'message' => Language::_('PterodactylPackage.!error.meta[startup].empty', true)
+                ]
+            ],
+            'meta[image]' => [
+                'length' => [
+                    'rule' => ['maxLength', 255],
+                    'message' => Language::_('PterodactylPackage.!error.meta[image].length', true)
+                ]
+            ],
+            'meta[databases]' => [
+                'format' => [
+                    'rule' => function ($databaseLimit) {
+                        return empty($databaseLimit) || preg_match('/^[0-9]+$/', $databaseLimit);
+                    },
+                    'message' => Language::_('PterodactylPackage.!error.meta[databases].format', true)
+                ]
+            ],
         ];
 
         return $rules;

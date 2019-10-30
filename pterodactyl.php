@@ -297,17 +297,11 @@ class Pterodactyl extends Module
     {
         // Fetch the package fields
         $this->loadLib('pterodactyl_package');
-        $package = new PterodactylPackage();
+        $packageHelper = new PterodactylPackage();
 
         // Set missing checkboxes
         $checkboxes = [
-            'user_jar',
-            'user_name',
-            'user_schedule',
-            'user_ftp',
-            'user_visibility',
-            'autostart',
-            'create_ftp'
+            'dedicated_ip',
         ];
         foreach ($checkboxes as $checkbox) {
             if (empty($vars['meta'][$checkbox])) {
@@ -316,10 +310,10 @@ class Pterodactyl extends Module
         }
 
         // Get package field lists from API
-        $package_lists = $this->getPackageLists((object)$vars);
+        $packageLists = $this->getPackageLists((object)$vars);
 
         // Set rules to validate input data
-        $this->Input->setRules($package->getRules($package_lists, $vars));
+        $this->Input->setRules($packageHelper->getRules($packageLists, $vars));
 
         // Build meta data to return
         $meta = [];
@@ -353,8 +347,25 @@ class Pterodactyl extends Module
      */
     public function editPackage($package, array $vars = null)
     {
+        // Fetch the package fields
+        $this->loadLib('pterodactyl_package');
+        $packageHelper = new PterodactylPackage();
+
+        // Set missing checkboxes
+        $checkboxes = [
+            'dedicated_ip',
+        ];
+        foreach ($checkboxes as $checkbox) {
+            if (empty($vars['meta'][$checkbox])) {
+                $vars['meta'][$checkbox] = '0';
+            }
+        }
+
+        // Get package field lists from API
+        $packageLists = $this->getPackageLists((object)$vars);
+
         // Set rules to validate input data
-        $this->Input->setRules($this->getPackageRules($vars));
+        $this->Input->setRules($packageHelper->getRules($packageLists, $vars));
 
         // Build meta data to return
         $meta = [];
@@ -519,14 +530,14 @@ class Pterodactyl extends Module
     public function getPackageLists($vars)
     {
         // Fetch all packages available for the given server or server group
-        $module_row = null;
+        $moduleRow = null;
         if (!isset($vars->module_group) || $vars->module_group == '') {
             if (isset($vars->module_row) && $vars->module_row > 0) {
-                $module_row = $this->getModuleRow($vars->module_row);
+                $moduleRow = $this->getModuleRow($vars->module_row);
             } else {
                 $rows = $this->getModuleRows();
                 if (isset($rows[0])) {
-                    $module_row = $rows[0];
+                    $moduleRow = $rows[0];
                 }
                 unset($rows);
             }
@@ -535,15 +546,15 @@ class Pterodactyl extends Module
             $rows = $this->getModuleRows($vars->module_group);
 
             if (isset($rows[0])) {
-                $module_row = $rows[0];
+                $moduleRow = $rows[0];
             }
             unset($rows);
         }
 
         $api = null;
         $package_lists = [];
-        if ($module_row) {
-            $api = $this->getApi($module_row->meta->panel_url, 'nClrY6tL4o72Kmc0qFFoaxHBZxtRVymUCsd0Z4tgwZFjtnZW');
+        if ($moduleRow) {
+            $api = $this->getApi($moduleRow->meta->panel_url, 'nClrY6tL4o72Kmc0qFFoaxHBZxtRVymUCsd0Z4tgwZFjtnZW');
 
             // API request for locations
             $locations_response = $api->Locations->getAll();
