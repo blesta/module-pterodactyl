@@ -54,7 +54,7 @@ class Requestor
                 curl_setopt($curl, CURLOPT_POST, 1);
                 // Use the default behavior to set data fields
             default:
-                curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($body));
+                curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($body));
                 break;
         }
 
@@ -77,8 +77,9 @@ class Requestor
         $result = curl_exec($curl);
         if (curl_errno($curl)) {
             $error = [
-                'error' => 'Curl Error',
-                'message' => 'An internal error occurred, or the server did not respond to the request.',
+                'errors' => [
+                    (object)['detail' => 'An internal error occurred, or the server did not respond to the request.']
+                ],
                 'status' => 500
             ];
 

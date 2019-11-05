@@ -169,34 +169,133 @@ class Pterodactyl extends Module
         $parent_service = null,
         $status = 'pending'
     ) {
-        // Get module row and API
-        if (!($module_row = $this->getModuleRow())) {
+        Loader::loadModels($this, ['Clients']);
+        $meta = ['server_id' => ''];
+        if ($vars['use_module'] == 'true') {
+            // Create/load user account
+            $client = $this->Clients->get($vars['client_id']);
+            $user_data = [[
+                'username' => $this->generateUsername(),
+                'email' => $client->email,
+                'first_name' => $client->first_name,
+                'last_name' => $client->last_name,
+                'external_id' => $client->id,
+            ]];
+            $pterodactyl_user = $this->proccessApiRequest('Users', 'add', $user_data);
+
+            // Check for user errors
+            if ($this->Input->errors()) {
+                return;
+            }
+
+            // Load egg account
+            $pterodactyl_egg = $this->proccessApiRequest(
+                'Nests',
+                'eggsGet',
+                ['nest_id' => $package->meta->nest_id, 'egg_id' => $package->meta->egg_id]
+            );
+
+            // Check for egg errors
+            if ($this->Input->errors()) {
+                $this->proccessApiRequest('Users', 'delete', ['user_id' => $pterodactyl_user->attributes->id]);
+                return;
+            }
+
+
+            // Gather server data
+            $environment = [];
+            $server_data = [[
+                'description' => '', // TODO create service description
+                'name' => $package->meta->server_name, // TODO create a unique server name
+                'user' => $pterodactyl_user->attributes->id,
+                'nest' => $package->meta->nest_id,
+                'egg' => $package->meta->egg_id,
+                'docker_image' => !empty($package->meta->image)
+                    ? $package->meta->image
+                    : $pterodactyl_egg->attributes->docker_image,
+                'startup' => !empty($package->meta->startup)
+                    ? $package->meta->startup
+                    : $pterodactyl_egg->attributes->startup,
+                'limits' => [
+                    'memory' => $package->meta->memory,
+                    'swap' => $package->meta->swap,
+                    'io' => $package->meta->io,
+                    'cpu' => $package->meta->cpu,
+                    'disk' => $package->meta->disk,
+                ],
+                'feature_limits' => [
+                    'databases' => $package->meta->databases ? $package->meta->databases : null,
+//                    'allocations' => (int)$allocations,
+                ],
+                'deploy' => [
+                    'locations' => [$package->meta->location_id],
+                    'dedicated_ip' => $package->meta->dedicated_ip,
+                    'port_range' => explode(',', $package->meta->port_range),
+                ],
+                'environment' => $environment,
+                'start_on_completion' => true,
+                'external_id' => ''// TODO create a unique server ID,
+            ]];
+
+            // Create server
+            $pterodactyl_server = $this->proccessApiRequest('Servers', 'add', $server_data);
+
+            // Check for server errors
+            if ($this->Input->errors()) {
+                $this->proccessApiRequest('Users', 'delete', ['user_id' => $pterodactyl_user->attributes->id]);
+                return;
+            }
+
+            $meta['server_id'] = $pterodactyl_server->attributes->id;
+        }
+
+        return [
+            [
+                'key' => 'server_id',
+                'value' => $meta['server_id'],
+                'encrypted' => 0
+            ],
+        ];
+    }
+
+    /**
+     * Runs a particaluar API requestor method, logs, and reports errors
+     *
+     * @param string $requestor The name of the requestor class to use
+     * @param string $action The name of the requestor method to use
+     * @param array $data The parameters to submit to the method
+     * @return mixed The response from Pterodactyl
+     */
+    private function proccessApiRequest($requestor, $action, array $data = [])
+    {
+        // Fetch the module row
+        $row = $this->getModuleRow();
+        if (!$row) {
             $this->Input->setErrors(
                 ['module_row' => ['missing' => Language::_('Pterodactyl.!error.module_row.missing', true)]]
             );
             return;
         }
+
+        // Fetch the API
         $api = $this->getApi(
-            $module_row->meta->panel_url,
-            $module_row->meta->account_api_key
+            $row->meta->panel_url,
+            $row->meta->application_api_key
         );
 
-        $params = $this->getFieldsFromInput((array)$vars, $package);
+        // Perform the request
+        $response = call_user_func_array([$api->{$requestor}, $action], $data);
+        $errors = $response->errors();
+        $this->log($requestor . '.' . $action, json_encode($data), 'input', true);
+        $this->log($requestor . '.' . $action, $response->raw(), 'output', empty($errors));
 
-        $this->validateService($package, $vars);
-
-        if ($this->Input->errors()) {
+        // Check for request errors
+        if (!empty($errors)) {
+            $this->Input->setErrors([$requestor => $errors]);
             return;
         }
 
-        // Only provision the service if 'use_module' is true
-        if ($vars['use_module'] == 'true') {
-            $response = $api->User->add($params);
-        }
-
-        // Return service fields
-        return [
-        ];
+        return $response->response();
     }
 
     /**
@@ -247,6 +346,16 @@ class Pterodactyl extends Module
         $fields = [];
 
         return $fields;
+    }
+
+    /**
+     *
+     * @param type $length
+     * @return type
+     */
+    function generateUsername($length = 8)
+    {
+        return 'wonderfulnames';
     }
 
     /**
@@ -327,6 +436,7 @@ class Pterodactyl extends Module
                 ];
             }
         }
+
         return $meta;
     }
 
@@ -347,39 +457,8 @@ class Pterodactyl extends Module
      */
     public function editPackage($package, array $vars = null)
     {
-        // Fetch the package fields
-        $this->loadLib('pterodactyl_package');
-        $packageHelper = new PterodactylPackage();
-
-        // Set missing checkboxes
-        $checkboxes = [
-            'dedicated_ip',
-        ];
-        foreach ($checkboxes as $checkbox) {
-            if (empty($vars['meta'][$checkbox])) {
-                $vars['meta'][$checkbox] = '0';
-            }
-        }
-
-        // Get package field lists from API
-        $packageLists = $this->getPackageLists((object)$vars);
-
-        // Set rules to validate input data
-        $this->Input->setRules($packageHelper->getRules($packageLists, $vars));
-
-        // Build meta data to return
-        $meta = [];
-        if ($this->Input->validates($vars)) {
-            // Return all package meta fields
-            foreach ($vars['meta'] as $key => $value) {
-                $meta[] = [
-                    'key' => $key,
-                    'value' => $value,
-                    'encrypted' => 0
-                ];
-            }
-        }
-        return $meta;
+        // Adding and editing is the same
+        return $this->addPackage($vars);
     }
 
     /**
