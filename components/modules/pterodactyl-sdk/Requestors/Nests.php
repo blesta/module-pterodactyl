@@ -34,7 +34,7 @@ class Nests extends \Blesta\PterodactylSDK\Requestor
      */
     public function eggsGetAll($nest_id)
     {
-        return $this->apiRequest('application/nests/' . $nest_id . '/eggs');
+        return $this->apiRequest('application/nests/' . $nest_id . '/eggs' . '?include=variables');
     }
 
     /**
@@ -46,6 +46,6 @@ class Nests extends \Blesta\PterodactylSDK\Requestor
      */
     public function eggsGet($nest_id, $egg_id)
     {
-        return $this->apiRequest('application/nests/' . $nest_id . '/eggs/' . $egg_id);
+        return $this->apiRequest('application/nests/' . $nest_id . '/eggs/' . $egg_id . '?include=variables');
     }
 }

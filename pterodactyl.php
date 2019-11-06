@@ -120,6 +120,9 @@ class Pterodactyl extends Module
      */
     private function getServiceRules(array $vars = null, $package = null, $edit = false)
     {
+        ##
+        # TODO Add service rules base on the egg variables?? Maybe just let the module handle it
+        ##
         // Set rules
         $rules = [
         ];
@@ -174,6 +177,9 @@ class Pterodactyl extends Module
         if ($vars['use_module'] == 'true') {
             // Create/load user account
             $client = $this->Clients->get($vars['client_id']);
+            ##
+            # TODO Check if the user already exists and either use it or create a new username
+            ##
             $user_data = [[
                 'username' => $this->generateUsername(),
                 'email' => $client->email,
@@ -201,9 +207,28 @@ class Pterodactyl extends Module
                 return;
             }
 
+            // Get environment data from the egg
+            $environment = [];
+            foreach ($pterodactyl_egg->attributes->relationships->variables->data as $env_variable) {
+                ##
+                # TODO Automatically pull in variables and display them as service module fields and get rid of
+                # this config option stuff
+                ##
+
+                // Check config options for the given variable
+                $variable_name = $env_variable->attributes->env_variable;
+                if (isset($vars['configoptions'])
+                    && is_array($vars['configoptions'])
+                    && isset($vars['configoptions'][$variable_name])
+                ) {
+                    $environment[$variable_name] = $vars['configoptions'][$variable_name];
+                } else {
+                    // Default to the default value
+                    $environment[$variable_name] = $env_variable->attributes->default_value;
+                }
+            }
 
             // Gather server data
-            $environment = [];
             $server_data = [[
                 'description' => '', // TODO create service description
                 'name' => $package->meta->server_name, // TODO create a unique server name
@@ -225,6 +250,7 @@ class Pterodactyl extends Module
                 ],
                 'feature_limits' => [
                     'databases' => $package->meta->databases ? $package->meta->databases : null,
+//                    TODO determine what these are used for and if they should be a package option
 //                    'allocations' => (int)$allocations,
                 ],
                 'deploy' => [
@@ -340,6 +366,9 @@ class Pterodactyl extends Module
 
         // Only use the module to update the service if 'use_module' is true
         if ($vars['use_module'] == 'true') {
+            ##
+            # TODO Implement server edit
+            ##
         }
 
         // Set fields to update locally
@@ -349,12 +378,16 @@ class Pterodactyl extends Module
     }
 
     /**
+     * Automatically generates a username for the Pterodactyl user
      *
-     * @param type $length
-     * @return type
+     * @param int $length The length of the username to generate
+     * @return string The generated username
      */
     function generateUsername($length = 8)
     {
+        ##
+        # TODO Actually generate a good username
+        ##
         return 'wonderfulnames';
     }
 
@@ -378,12 +411,13 @@ class Pterodactyl extends Module
      */
     public function cancelService($package, $service, $parent_package = null, $parent_service = null)
     {
-        if (($module_row = $this->getModuleRow())) {
-            $api = $this->getApi(
-                $module_row->meta->panel_url,
-                $module_row->meta->account_api_key
-            );
-        }
+        // Delete the server
+        $service_fields = $this->serviceFieldsToObject($service->fields);
+        $this->proccessApiRequest('Servers', 'delete', ['server_id' => $service_fields->server_id]);
+
+        ##
+        # TODO Delete the user if no services exist for this client
+        ##
 
         return null;
     }
@@ -697,6 +731,10 @@ class Pterodactyl extends Module
      */
     public function getEmailTags()
     {
+        ##
+        # TODO Determine what tags to include
+        ##
+
         return [
             'module' => ['panel_url'],
             'package' => [],
@@ -718,6 +756,10 @@ class Pterodactyl extends Module
 
         $fields = new ModuleFields();
 
+        ##
+        # TODO Automatically pull in service fields based on egg variable
+        ##
+
         return $fields;
     }
 
@@ -734,6 +776,10 @@ class Pterodactyl extends Module
         Loader::loadHelpers($this, ['Html']);
 
         $fields = new ModuleFields();
+
+        ##
+        # TODO Automatically pull in service fields based on egg variable
+        ##
 
         return $fields;
     }
@@ -752,64 +798,37 @@ class Pterodactyl extends Module
 
         $fields = new ModuleFields();
 
+        ##
+        # TODO Automatically pull in service fields based on egg variable
+        ##
+
         return $fields;
     }
 
     /**
-     * Fetches the HTML content to display when viewing the service info in the
-     * admin interface.
+     * Returns all fields to display to a client attempting to edit a service with the module
      *
-     * @param stdClass $service A stdClass object representing the service
-     * @param stdClass $package A stdClass object representing the service's package
-     * @return string HTML content containing information to display when viewing the service info
+     * @param stdClass $package A stdClass object representing the selected package
+     * @param $vars stdClass A stdClass object representing a set of post fields
+     * @return ModuleFields A ModuleFields object, containg the fields to render
+     *  as well as any additional HTML markup to include
      */
-    public function getAdminServiceInfo($service, $package)
+    public function getClientEditFields($package, $vars = null)
     {
-        $row = $this->getModuleRow();
+        Loader::loadHelpers($this, ['Html']);
 
-        // Load the view into this object, so helpers can be automatically added to the view
-        $this->view = new View('admin_service_info', 'default');
-        $this->view->base_uri = $this->base_uri;
-        $this->view->setDefaultView('components' . DS . 'modules' . DS . 'pterodactyl' . DS);
+        $fields = new ModuleFields();
 
-        // Load the helpers required for this view
-        Loader::loadHelpers($this, ['Form', 'Html']);
+        ##
+        # TODO Automatically pull in service fields based on egg variable
+        ##
 
-        $this->view->set('module_row', $row);
-        $this->view->set('package', $package);
-        $this->view->set('service', $service);
-        $this->view->set('service_fields', $this->serviceFieldsToObject($service->fields));
-
-        return $this->view->fetch();
+        return $fields;
     }
 
-    /**
-     * Fetches the HTML content to display when viewing the service info in the
-     * client interface.
-     *
-     * @param stdClass $service A stdClass object representing the service
-     * @param stdClass $package A stdClass object representing the service's package
-     * @return string HTML content containing information to display when viewing the service info
-     */
-    public function getClientServiceInfo($service, $package)
-    {
-        $row = $this->getModuleRow();
-
-        // Load the view into this object, so helpers can be automatically added to the view
-        $this->view = new View('client_service_info', 'default');
-        $this->view->base_uri = $this->base_uri;
-        $this->view->setDefaultView('components' . DS . 'modules' . DS . 'pterodactyl' . DS);
-
-        // Load the helpers required for this view
-        Loader::loadHelpers($this, ['Form', 'Html']);
-
-        $this->view->set('module_row', $row);
-        $this->view->set('package', $package);
-        $this->view->set('service', $service);
-        $this->view->set('service_fields', $this->serviceFieldsToObject($service->fields));
-
-        return $this->view->fetch();
-    }
+    ##
+    # TODO Implement service info methods
+    ##
 
     /**
      * Returns an array of service fields to set for the service using the given input
@@ -820,6 +839,9 @@ class Pterodactyl extends Module
      */
     private function getFieldsFromInput(array $vars, $package)
     {
+        ##
+        # TODO Determine if this method is useful and if so use it
+        ##
         $fields = [
         ];
 
@@ -915,6 +937,9 @@ class Pterodactyl extends Module
      */
     public function validateHostName($host_name)
     {
+        ##
+        # TODO Update to use the validator utility
+        ##
         if (strlen($host_name) > 255) {
             return false;
         }
