@@ -25,6 +25,7 @@ class Pterodactyl extends Module
         // Load the language required by this module
         Language::loadLang('pterodactyl', null, dirname(__FILE__) . DS . 'language' . DS);
         Language::loadLang('pterodactyl_package', null, dirname(__FILE__) . DS . 'language' . DS);
+        Language::loadLang('pterodactyl_service', null, dirname(__FILE__) . DS . 'language' . DS);
 
 
         // Load configuration required by this module
@@ -120,26 +121,11 @@ class Pterodactyl extends Module
      */
     private function getServiceRules(array $vars = null, $package = null, $edit = false)
     {
-        ##
-        # TODO Add service rules base on the egg variables?? Maybe just let the module handle it
-        ##
-        // Set rules
-        $rules = [
-        ];
+        // Get the service helper
+        $this->loadLib('pterodactyl_service');
+        $service_helper = new PterodactylService();
 
-        // Set the values that may be empty
-        $empty_values = [];
-        if ($edit) {
-        }
-
-        // Remove rules on empty fields
-        foreach ($empty_values as $value) {
-            if (empty($vars[$value])) {
-                unset($rules[$value]);
-            }
-        }
-
-        return $rules;
+        return $service_helper->getServiceRules($vars, $package, $edit);
     }
 
     /**
@@ -172,103 +158,39 @@ class Pterodactyl extends Module
         $parent_service = null,
         $status = 'pending'
     ) {
-        Loader::loadModels($this, ['Clients']);
         $meta = ['server_id' => ''];
         if ($vars['use_module'] == 'true') {
-            // Create/load user account
-            $client = $this->Clients->get($vars['client_id']);
-            ##
-            # TODO Check if the user already exists and either use it or create a new username
-            ##
-            $user_data = [[
-                'username' => $this->generateUsername(),
-                'email' => $client->email,
-                'first_name' => $client->first_name,
-                'last_name' => $client->last_name,
-                'external_id' => $client->id,
-            ]];
-            $pterodactyl_user = $this->proccessApiRequest('Users', 'add', $user_data);
+            // Get the service helper
+            $this->loadLib('pterodactyl_service');
+            $service_helper = new PterodactylService();
 
-            // Check for user errors
+            // Load/create user account
+            $pterodactyl_user = $this->apiRequest('Users', 'getByExternalId', [$vars['client_id']]);
             if ($this->Input->errors()) {
-                return;
+                $this->Input->setErrors([]);
+                $pterodactyl_user = $this->apiRequest('Users', 'add', [$service_helper->addUserParameters($vars)]);
+                if ($this->Input->errors()) {
+                    return;
+                }
             }
 
             // Load egg account
-            $pterodactyl_egg = $this->proccessApiRequest(
+            $pterodactyl_egg = $this->apiRequest(
                 'Nests',
                 'eggsGet',
                 ['nest_id' => $package->meta->nest_id, 'egg_id' => $package->meta->egg_id]
             );
-
-            // Check for egg errors
             if ($this->Input->errors()) {
-                $this->proccessApiRequest('Users', 'delete', ['user_id' => $pterodactyl_user->attributes->id]);
                 return;
             }
 
-            // Get environment data from the egg
-            $environment = [];
-            foreach ($pterodactyl_egg->attributes->relationships->variables->data as $env_variable) {
-                ##
-                # TODO Automatically pull in variables and display them as service module fields and get rid of
-                # this config option stuff
-                ##
-
-                // Check config options for the given variable
-                $variable_name = $env_variable->attributes->env_variable;
-                if (isset($vars['configoptions'])
-                    && is_array($vars['configoptions'])
-                    && isset($vars['configoptions'][$variable_name])
-                ) {
-                    $environment[$variable_name] = $vars['configoptions'][$variable_name];
-                } else {
-                    // Default to the default value
-                    $environment[$variable_name] = $env_variable->attributes->default_value;
-                }
-            }
-
-            // Gather server data
-            $server_data = [[
-                'description' => '', // TODO create service description
-                'name' => $package->meta->server_name, // TODO create a unique server name
-                'user' => $pterodactyl_user->attributes->id,
-                'nest' => $package->meta->nest_id,
-                'egg' => $package->meta->egg_id,
-                'docker_image' => !empty($package->meta->image)
-                    ? $package->meta->image
-                    : $pterodactyl_egg->attributes->docker_image,
-                'startup' => !empty($package->meta->startup)
-                    ? $package->meta->startup
-                    : $pterodactyl_egg->attributes->startup,
-                'limits' => [
-                    'memory' => $package->meta->memory,
-                    'swap' => $package->meta->swap,
-                    'io' => $package->meta->io,
-                    'cpu' => $package->meta->cpu,
-                    'disk' => $package->meta->disk,
-                ],
-                'feature_limits' => [
-                    'databases' => $package->meta->databases ? $package->meta->databases : null,
-//                    TODO determine what these are used for and if they should be a package option
-//                    'allocations' => (int)$allocations,
-                ],
-                'deploy' => [
-                    'locations' => [$package->meta->location_id],
-                    'dedicated_ip' => $package->meta->dedicated_ip,
-                    'port_range' => explode(',', $package->meta->port_range),
-                ],
-                'environment' => $environment,
-                'start_on_completion' => true,
-                'external_id' => ''// TODO create a unique server ID,
-            ]];
-
             // Create server
-            $pterodactyl_server = $this->proccessApiRequest('Servers', 'add', $server_data);
-
-            // Check for server errors
+            $pterodactyl_server = $this->apiRequest(
+                'Servers',
+                'add',
+                [$service_helper->addServerParameters($vars, $package, $pterodactyl_user, $pterodactyl_egg)]
+            );
             if ($this->Input->errors()) {
-                $this->proccessApiRequest('Users', 'delete', ['user_id' => $pterodactyl_user->attributes->id]);
                 return;
             }
 
@@ -281,7 +203,127 @@ class Pterodactyl extends Module
                 'value' => $meta['server_id'],
                 'encrypted' => 0
             ],
+            [
+                'key' => 'server_name',
+                'value' => isset($vars['server_name']) ? $vars['server_name'] : '',
+                'encrypted' => 0
+            ],
         ];
+    }
+
+    /**
+     * Edits the service on the remote server. Sets Input errors on failure,
+     * preventing the service from being edited.
+     *
+     * @param stdClass $package A stdClass object representing the current package
+     * @param stdClass $service A stdClass object representing the current service
+     * @param array $vars An array of user supplied info to satisfy the request
+     * @param stdClass $parent_package A stdClass object representing the parent
+     *  service's selected package (if the current service is an addon service)
+     * @param stdClass $parent_service A stdClass object representing the parent
+     *  service of the service being edited (if the current service is an addon service)
+     * @return array A numerically indexed array of meta fields to be stored for this service containing:
+     *  - key The key for this meta field
+     *  - value The value for this key
+     *  - encrypted Whether or not this field should be encrypted (default 0, not encrypted)
+     * @see Module::getModule()
+     * @see Module::getModuleRow()
+     */
+    public function editService(
+        $package,
+        $service,
+        array $vars = null,
+        $parent_package = null,
+        $parent_service = null
+    ) {
+        $service_fields = $this->serviceFieldsToObject($service->fields);
+        if ($vars['use_module'] == 'true') {
+            // Get the service helper
+            $this->loadLib('pterodactyl_service');
+            $service_helper = new PterodactylService();
+
+            // Load/create user account
+            $pterodactyl_user = $this->apiRequest('Users', 'getByExternalId', [$service->client_id]);
+            if ($this->Input->errors()) {
+                return;
+            }
+
+            // Load egg account
+            $pterodactyl_egg = $this->apiRequest(
+                'Nests',
+                'eggsGet',
+                ['nest_id' => $package->meta->nest_id, 'egg_id' => $package->meta->egg_id]
+            );
+            if ($this->Input->errors()) {
+                return;
+            }
+
+            // Edit server details
+            $this->apiRequest(
+                'Servers',
+                'editDetails',
+                [$service_fields->server_id, $service_helper->editServerParameters($vars, $pterodactyl_user)]
+            );
+            if ($this->Input->errors()) {
+                return;
+            }
+
+            // Edit startup parameters
+            $this->apiRequest(
+                'Servers',
+                'editStartup',
+                [
+                    $service_fields->server_id,
+                    $service_helper->editServerStartupParameters($vars, $package, $pterodactyl_egg)
+                ]
+            );
+            if ($this->Input->errors()) {
+                return;
+            }
+
+        }
+
+        return [
+            [
+                'key' => 'server_id',
+                'value' => $service_fields->server_id,
+                'encrypted' => 0
+            ],
+            [
+                'key' => 'server_name',
+                'value' => isset($vars['server_name']) ? $vars['server_name'] : $service_fields->server_name,
+                'encrypted' => 0
+            ],
+        ];
+    }
+
+    /**
+     * Cancels the service on the remote server. Sets Input errors on failure,
+     * preventing the service from being canceled.
+     *
+     * @param stdClass $package A stdClass object representing the current package
+     * @param stdClass $service A stdClass object representing the current service
+     * @param stdClass $parent_package A stdClass object representing the parent
+     *  service's selected package (if the current service is an addon service)
+     * @param stdClass $parent_service A stdClass object representing the parent
+     *  service of the service being canceled (if the current service is an addon service)
+     * @return mixed null to maintain the existing meta fields or a numerically
+     *  indexed array of meta fields to be stored for this service containing:
+     *  - key The key for this meta field
+     *  - value The value for this key
+     *  - encrypted Whether or not this field should be encrypted (default 0, not encrypted)
+     * @see Module::getModule()
+     * @see Module::getModuleRow()
+     */
+    public function cancelService($package, $service, $parent_package = null, $parent_service = null)
+    {
+        // Delete the server
+        $service_fields = $this->serviceFieldsToObject($service->fields);
+        $this->apiRequest('Servers', 'delete', ['server_id' => $service_fields->server_id]);
+
+        // We do not delete the user, but rather leave it arround to be used for any current or future services
+
+        return null;
     }
 
     /**
@@ -292,7 +334,7 @@ class Pterodactyl extends Module
      * @param array $data The parameters to submit to the method
      * @return mixed The response from Pterodactyl
      */
-    private function proccessApiRequest($requestor, $action, array $data = [])
+    private function apiRequest($requestor, $action, array $data = [])
     {
         // Fetch the module row
         $row = $this->getModuleRow();
@@ -325,110 +367,12 @@ class Pterodactyl extends Module
     }
 
     /**
-     * Edits the service on the remote server. Sets Input errors on failure,
-     * preventing the service from being edited.
-     *
-     * @param stdClass $package A stdClass object representing the current package
-     * @param stdClass $service A stdClass object representing the current service
-     * @param array $vars An array of user supplied info to satisfy the request
-     * @param stdClass $parent_package A stdClass object representing the parent
-     *  service's selected package (if the current service is an addon service)
-     * @param stdClass $parent_service A stdClass object representing the parent
-     *  service of the service being edited (if the current service is an addon service)
-     * @return array A numerically indexed array of meta fields to be stored for this service containing:
-     *  - key The key for this meta field
-     *  - value The value for this key
-     *  - encrypted Whether or not this field should be encrypted (default 0, not encrypted)
-     * @see Module::getModule()
-     * @see Module::getModuleRow()
-     */
-    public function editService(
-        $package,
-        $service,
-        array $vars = null,
-        $parent_package = null,
-        $parent_service = null
-    ) {
-        // Get module row and API
-        $module_row = $this->getModuleRow();
-        $api = $this->getApi(
-            $module_row->meta->panel_url,
-            $module_row->meta->account_api_key
-        );
-
-        $params = $this->getFieldsFromInput((array)$vars, $package);
-
-        $this->validateServiceEdit($service, $vars);
-
-        if ($this->Input->errors()) {
-            return;
-        }
-
-        // Only use the module to update the service if 'use_module' is true
-        if ($vars['use_module'] == 'true') {
-            ##
-            # TODO Implement server edit
-            ##
-        }
-
-        // Set fields to update locally
-        $fields = [];
-
-        return $fields;
-    }
-
-    /**
-     * Automatically generates a username for the Pterodactyl user
-     *
-     * @param int $length The length of the username to generate
-     * @return string The generated username
-     */
-    function generateUsername($length = 8)
-    {
-        ##
-        # TODO Actually generate a good username
-        ##
-        return 'wonderfulnames';
-    }
-
-    /**
-     * Cancels the service on the remote server. Sets Input errors on failure,
-     * preventing the service from being canceled.
-     *
-     * @param stdClass $package A stdClass object representing the current package
-     * @param stdClass $service A stdClass object representing the current service
-     * @param stdClass $parent_package A stdClass object representing the parent
-     *  service's selected package (if the current service is an addon service)
-     * @param stdClass $parent_service A stdClass object representing the parent
-     *  service of the service being canceled (if the current service is an addon service)
-     * @return mixed null to maintain the existing meta fields or a numerically
-     *  indexed array of meta fields to be stored for this service containing:
-     *  - key The key for this meta field
-     *  - value The value for this key
-     *  - encrypted Whether or not this field should be encrypted (default 0, not encrypted)
-     * @see Module::getModule()
-     * @see Module::getModuleRow()
-     */
-    public function cancelService($package, $service, $parent_package = null, $parent_service = null)
-    {
-        // Delete the server
-        $service_fields = $this->serviceFieldsToObject($service->fields);
-        $this->proccessApiRequest('Servers', 'delete', ['server_id' => $service_fields->server_id]);
-
-        ##
-        # TODO Delete the user if no services exist for this client
-        ##
-
-        return null;
-    }
-
-    /**
      * Validates input data when attempting to add a package, returns the meta
      * data to save when adding a package. Performs any action required to add
      * the package on the remote server. Sets Input errors on failure,
      * preventing the package from being added.
      *
-     * @param array An array of key/value pairs used to add the package
+     * @param array $vars An array of key/value pairs used to add the package
      * @return array A numerically indexed array of meta fields to be stored for this package containing:
      *  - key The key for this meta field
      *  - value The value for this key
@@ -438,40 +382,14 @@ class Pterodactyl extends Module
      */
     public function addPackage(array $vars = null)
     {
-        // Fetch the package fields
+        // Load the package helper
         $this->loadLib('pterodactyl_package');
-        $packageHelper = new PterodactylPackage();
-
-        // Set missing checkboxes
-        $checkboxes = [
-            'dedicated_ip',
-        ];
-        foreach ($checkboxes as $checkbox) {
-            if (empty($vars['meta'][$checkbox])) {
-                $vars['meta'][$checkbox] = '0';
-            }
-        }
+        $package_helper = new PterodactylPackage();
 
         // Get package field lists from API
-        $packageLists = $this->getPackageLists((object)$vars);
+        $package_lists = $this->getPackageLists((object)$vars);
 
-        // Set rules to validate input data
-        $this->Input->setRules($packageHelper->getRules($packageLists, $vars));
-
-        // Build meta data to return
-        $meta = [];
-        if ($this->Input->validates($vars)) {
-            // Return all package meta fields
-            foreach ($vars['meta'] as $key => $value) {
-                $meta[] = [
-                    'key' => $key,
-                    'value' => $value,
-                    'encrypted' => 0
-                ];
-            }
-        }
-
-        return $meta;
+        return $package_helper->add($package_lists, $vars);
     }
 
     /**
@@ -481,7 +399,7 @@ class Pterodactyl extends Module
      * preventing the package from being edited.
      *
      * @param stdClass $package A stdClass object representing the selected package
-     * @param array An array of key/value pairs used to edit the package
+     * @param array $vars An array of key/value pairs used to edit the package
      * @return array A numerically indexed array of meta fields to be stored for this package containing:
      *  - key The key for this meta field
      *  - value The value for this key
@@ -491,7 +409,7 @@ class Pterodactyl extends Module
      */
     public function editPackage($package, array $vars = null)
     {
-        // Adding and editing is the same
+        // Adding and editing are the same
         return $this->addPackage($vars);
     }
 
@@ -643,14 +561,14 @@ class Pterodactyl extends Module
     public function getPackageLists($vars)
     {
         // Fetch all packages available for the given server or server group
-        $moduleRow = null;
+        $module_row = null;
         if (!isset($vars->module_group) || $vars->module_group == '') {
             if (isset($vars->module_row) && $vars->module_row > 0) {
-                $moduleRow = $this->getModuleRow($vars->module_row);
+                $module_row = $this->getModuleRow($vars->module_row);
             } else {
                 $rows = $this->getModuleRows();
                 if (isset($rows[0])) {
-                    $moduleRow = $rows[0];
+                    $module_row = $rows[0];
                 }
                 unset($rows);
             }
@@ -659,15 +577,15 @@ class Pterodactyl extends Module
             $rows = $this->getModuleRows($vars->module_group);
 
             if (isset($rows[0])) {
-                $moduleRow = $rows[0];
+                $module_row = $rows[0];
             }
             unset($rows);
         }
 
         $api = null;
         $package_lists = [];
-        if ($moduleRow) {
-            $api = $this->getApi($moduleRow->meta->panel_url, 'nClrY6tL4o72Kmc0qFFoaxHBZxtRVymUCsd0Z4tgwZFjtnZW');
+        if ($module_row) {
+            $api = $this->getApi($module_row->meta->panel_url, $module_row->meta->application_api_key);
 
             // API request for locations
             $locations_response = $api->Locations->getAll();
@@ -701,6 +619,8 @@ class Pterodactyl extends Module
                 if (!$eggs_response->errors()) {
                     $package_lists['eggs'] = ['' => Language::_('AppController.select.please', true)];
                     foreach ($eggs_response->response()->data as $egg) {
+                        // This lists egg IDs, but eggs have name, for some reason they are just not fetched by the API.
+                        // We should probably look into that.
                         $package_lists['eggs'][$egg->attributes->id] = $egg->attributes->id;
                     }
                 }
@@ -731,14 +651,10 @@ class Pterodactyl extends Module
      */
     public function getEmailTags()
     {
-        ##
-        # TODO Determine what tags to include
-        ##
-
         return [
-            'module' => ['panel_url'],
-            'package' => [],
-            'service' => []
+            'module' => ['server_name', 'panel_url'],
+            'package' => ['location_id', 'nest_id', 'egg_id', 'image'],
+            'service' => ['server_name']
         ];
     }
 
@@ -747,20 +663,32 @@ class Pterodactyl extends Module
      *
      * @param stdClass $package A stdClass object representing the selected package
      * @param $vars stdClass A stdClass object representing a set of post fields
-     * @return ModuleFields A ModuleFields object, containg the fields to render
+     * @return ModuleFields A ModuleFields object, containing the fields to render
      *  as well as any additional HTML markup to include
      */
     public function getAdminAddFields($package, $vars = null)
     {
-        Loader::loadHelpers($this, ['Html']);
+        if ($package->module_group) {
+            $this->setModuleRow($this->getModuleRow($this->selectModuleRow($package->module_group)));
+        } else {
+            $this->setModuleRow($this->getModuleRow($package->module_row));
+        }
 
-        $fields = new ModuleFields();
+        // Fetch the service fields
+        $this->loadLib('pterodactyl_service');
+        $service_helper = new PterodactylService();
 
-        ##
-        # TODO Automatically pull in service fields based on egg variable
-        ##
+        // Load egg account
+        $pterodactyl_egg = $this->apiRequest(
+            'Nests',
+            'eggsGet',
+            ['nest_id' => $package->meta->nest_id, 'egg_id' => $package->meta->egg_id]
+        );
+        if ($this->Input->errors()) {
+            return new ModuleFields();
+        }
 
-        return $fields;
+        return $service_helper->getFields($pterodactyl_egg, $vars);
     }
 
     /**
@@ -768,20 +696,12 @@ class Pterodactyl extends Module
      *
      * @param stdClass $package A stdClass object representing the selected package
      * @param $vars stdClass A stdClass object representing a set of post fields
-     * @return ModuleFields A ModuleFields object, containg the fields to render
+     * @return ModuleFields A ModuleFields object, containing the fields to render
      *  as well as any additional HTML markup to include
      */
     public function getClientAddFields($package, $vars = null)
     {
-        Loader::loadHelpers($this, ['Html']);
-
-        $fields = new ModuleFields();
-
-        ##
-        # TODO Automatically pull in service fields based on egg variable
-        ##
-
-        return $fields;
+        return $this->getAdminAddFields($package, $vars);
     }
 
     /**
@@ -789,20 +709,12 @@ class Pterodactyl extends Module
      *
      * @param stdClass $package A stdClass object representing the selected package
      * @param $vars stdClass A stdClass object representing a set of post fields
-     * @return ModuleFields A ModuleFields object, containg the fields to render
+     * @return ModuleFields A ModuleFields object, containing the fields to render
      *  as well as any additional HTML markup to include
      */
     public function getAdminEditFields($package, $vars = null)
     {
-        Loader::loadHelpers($this, ['Html']);
-
-        $fields = new ModuleFields();
-
-        ##
-        # TODO Automatically pull in service fields based on egg variable
-        ##
-
-        return $fields;
+        return $this->getAdminAddFields($package, $vars);
     }
 
     /**
@@ -810,43 +722,17 @@ class Pterodactyl extends Module
      *
      * @param stdClass $package A stdClass object representing the selected package
      * @param $vars stdClass A stdClass object representing a set of post fields
-     * @return ModuleFields A ModuleFields object, containg the fields to render
+     * @return ModuleFields A ModuleFields object, containing the fields to render
      *  as well as any additional HTML markup to include
      */
     public function getClientEditFields($package, $vars = null)
     {
-        Loader::loadHelpers($this, ['Html']);
-
-        $fields = new ModuleFields();
-
-        ##
-        # TODO Automatically pull in service fields based on egg variable
-        ##
-
-        return $fields;
+        return $this->getAdminAddFields($package, $vars);
     }
 
     ##
     # TODO Implement service info methods
     ##
-
-    /**
-     * Returns an array of service fields to set for the service using the given input
-     *
-     * @param array $vars An array of key/value input pairs
-     * @param stdClass $package A stdClass object representing the package for the service
-     * @return array An array of key/value pairs representing service fields
-     */
-    private function getFieldsFromInput(array $vars, $package)
-    {
-        ##
-        # TODO Determine if this method is useful and if so use it
-        ##
-        $fields = [
-        ];
-
-        return $fields;
-    }
 
     /**
      * Initializes the PterodactylApi and returns an instance of that object with the given $host and $api_key set
@@ -896,9 +782,9 @@ class Pterodactyl extends Module
                     'rule' => function ($api_key) use ($vars) {
                         try {
                             $api = $this->getApi(isset($vars['panel_url']) ? $vars['panel_url'] : '', $api_key);
-                            $serversResponse = $api->Client->getServers();
+                            $servers_response = $api->Client->getServers();
 
-                            return empty($serversResponse->errors());
+                            return empty($servers_response->errors());
                         } catch (Exception $e) {
                             return false;
                         }
@@ -916,9 +802,9 @@ class Pterodactyl extends Module
                     'rule' => function ($api_key) use ($vars) {
                         try {
                             $api = $this->getApi(isset($vars['panel_url']) ? $vars['panel_url'] : '', $api_key);
-                            $serversResponse = $api->Locations->getAll();
+                            $servers_response = $api->Locations->getAll();
 
-                            return empty($serversResponse->errors());
+                            return empty($servers_response->errors());
                         } catch (Exception $e) {
                             return false;
                         }

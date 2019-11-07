@@ -4,7 +4,7 @@
  *
  * @package blesta
  * @subpackage blesta.components.modules.Pterodactyl.lib
- * @copyright Copyright (c) 2014, Phillips Data, Inc.
+ * @copyright Copyright (c) 2019, Phillips Data, Inc.
  * @license http://www.blesta.com/license/ The Blesta License Agreement
  * @link http://www.blesta.com/ Blesta
  */
@@ -38,46 +38,48 @@ class PterodactylPackage
     }
 
     /**
-     * Retrieves a list of JAR directories
+     * Validates input data when attempting to add a package, returns the meta
+     * data to save when adding a package. Performs any action required to add
+     * the package on the remote server. Sets Input errors on failure,
+     * preventing the package from being added.
      *
-     * @param array A key/value array of JAR directories and their names
+     * @param array An array of key/value pairs used to add the package
+     * @return array A numerically indexed array of meta fields to be stored for this package containing:
+     *  - key The key for this meta field
+     *  - value The value for this key
+     *  - encrypted Whether or not this field should be encrypted (default 0, not encrypted)
+     * @see Module::getModule()
+     * @see Module::getModuleRow()
      */
-    public function getJarDirectories()
+    public function add(array $packageLists, array $vars = null)
     {
-        return [
-            'daemon' => Language::_('PterodactylPackage.package_fields.jardir_daemon', true),
-            'server' => Language::_('PterodactylPackage.package_fields.jardir_server', true),
-            'server_base' => Language::_('PterodactylPackage.package_fields.jardir_server_base', true)
+        // Set missing checkboxes
+        $checkboxes = [
+            'dedicated_ip',
         ];
-    }
+        foreach ($checkboxes as $checkbox) {
+            if (empty($vars['meta'][$checkbox])) {
+                $vars['meta'][$checkbox] = '0';
+            }
+        }
 
-    /**
-     * Retrieves a list of default roles
-     *
-     * @param array A key/value array of default roles and their names
-     */
-    public function getDefaultRoles()
-    {
-        return [
-            '0' => Language::_('PterodactylPackage.package_fields.default_level_0', true),
-            '10' => Language::_('PterodactylPackage.package_fields.default_level_10', true),
-            '20' => Language::_('PterodactylPackage.package_fields.default_level_20', true),
-            '30' => Language::_('PterodactylPackage.package_fields.default_level_30', true)
-        ];
-    }
+        // Set rules to validate input data
+        $this->Input->setRules($this->getRules($packageLists, $vars));
 
-    /**
-     * Retrieves a list of server visibility options
-     *
-     * @param array A key/value array of visibility options and their names
-     */
-    public function getServerVisibilityOptions()
-    {
-        return [
-            '0' => Language::_('PterodactylPackage.package_fields.server_visibility_0', true),
-            '1' => Language::_('PterodactylPackage.package_fields.server_visibility_1', true),
-            '2' => Language::_('PterodactylPackage.package_fields.server_visibility_2', true)
-        ];
+        // Build meta data to return
+        $meta = [];
+        if ($this->Input->validates($vars)) {
+            // Return all package meta fields
+            foreach ($vars['meta'] as $key => $value) {
+                $meta[] = [
+                    'key' => $key,
+                    'value' => $value,
+                    'encrypted' => 0
+                ];
+            }
+        }
+
+        return $meta;
     }
 
     /**
@@ -105,22 +107,6 @@ class PterodactylPackage
 				});
 			</script>
 		");
-
-        // Set the server name
-        $serverName = $fields->label(
-            Language::_('PterodactylPackage.package_fields.server_name', true),
-            'Pterodactyl_server_name'
-        );
-        $serverName->attach(
-            $fields->fieldText(
-                'meta[server_name]',
-                $this->Html->ifSet($vars->meta['server_name'], 'Minecraft Server'),
-                ['id' => 'Pterodactyl_server_name']
-            )
-        );
-        $tooltip = $fields->tooltip(Language::_('PterodactylPackage.package_fields.tooltip.server_name', true));
-        $serverName->attach($tooltip);
-        $fields->setField($serverName);
 
         // Set the Location ID
         $locationId = $fields->label(
@@ -344,13 +330,6 @@ class PterodactylPackage
     public function getRules(array $packageLists, array $vars)
     {
         $rules = [
-            'meta[server_name]' => [
-                'format' => [
-                    'rule' => 'isEmpty',
-                    'negate' => true,
-                    'message' => Language::_('PterodactylPackage.!error.meta[server_name].format', true)
-                ]
-            ],
             'meta[location_id]' => [
                 'format' => [
                     'rule' => ['matches', '/^[0-9]+$/'],

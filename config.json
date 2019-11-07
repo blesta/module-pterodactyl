@@ -9,7 +9,7 @@
         }
     ],
     "service": {
-        "name_key": ""
+        "name_key": "server_name"
     },
     "module": {
         "row": "Pterodactyl.module_row.name",

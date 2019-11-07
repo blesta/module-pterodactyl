@@ -71,7 +71,7 @@ class Servers extends \Blesta\PterodactylSDK\Requestor
      */
     public function editBuild($server_id, array $params)
     {
-        return $this->apiRequest('application/servers/' . $server_id . '/details', $params, 'PATCH');
+        return $this->apiRequest('application/servers/' . $server_id . '/build', $params, 'PATCH');
     }
 
     /**
@@ -83,7 +83,7 @@ class Servers extends \Blesta\PterodactylSDK\Requestor
      */
     public function editStartup($server_id, array $params)
     {
-        return $this->apiRequest('application/servers/' . $server_id . '/details', $params, 'PATCH');
+        return $this->apiRequest('application/servers/' . $server_id . '/startup', $params, 'PATCH');
     }
 
     /**
