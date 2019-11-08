@@ -77,6 +77,7 @@ class PterodactylService
             'user' => $pterodactyl_user->attributes->id,
             'nest' => $package->meta->nest_id,
             'egg' => $package->meta->egg_id,
+            'pack' => $package->meta->pack_id,
             'docker_image' => !empty($package->meta->image)
                 ? $package->meta->image
                 : $pterodactyl_egg->attributes->docker_image,
@@ -169,6 +170,7 @@ class PterodactylService
         // Gather server data
         return [
             'egg' => $package->meta->egg_id,
+            'pack' => $package->meta->pack_id,
             'image' => !empty($package->meta->image)
                 ? $package->meta->image
                 : $pterodactyl_egg->attributes->docker_image,
@@ -203,7 +205,7 @@ class PterodactylService
         $serverName->attach(
             $fields->fieldText(
                 'server_name',
-                $this->Html->ifSet($vars->meta['server_name'], 'Minecraft Server'),
+                $this->Html->ifSet($vars->server_name),
                 ['id' => 'server_name']
             )
         );
@@ -216,7 +218,7 @@ class PterodactylService
             // Create domain label
             $label = strpos($env_variable->attributes->rules, 'required') === 0
                 ? $env_variable->attributes->name
-                : Language::_('PterodactylService.service_fields.optional', true,$env_variable->attributes->name);
+                : Language::_('PterodactylService.service_fields.optional', true, $env_variable->attributes->name);
             $field = $fields->label($label, $env_variable->attributes->env_variable);
             // Create domain field and attach to domain label
             $field->attach(

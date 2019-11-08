@@ -20,7 +20,7 @@ class Requestor
     private $apiUrl;
 
     /**
-     * Initializes the request parameter
+     * Initializes the requestor with connection parameters
      *
      * @param string $apiKey The API key
      * @param string $apiUrl The API URL
@@ -41,6 +41,10 @@ class Requestor
      */
     protected function apiRequest($route, array $body = [], $method = 'GET')
     {
+        // This uses only https but the probably should be a module row setting
+        ##
+        # TODO Update
+        ##
         $url = 'https://' . $this->apiUrl . '/' . $route;
         $curl = curl_init();
 

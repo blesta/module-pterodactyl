@@ -27,9 +27,9 @@ class Client extends \Blesta\PterodactylSDK\Requestor
     }
 
     /**
-     * Fetches utinilzation stats for a server from Pterodactyl
+     * Fetches utilization stats for a server from Pterodactyl
      *
-     * @param int $server_id The ID of the server to fetch
+     * @param int $server_id The ID of the server for which to fetch stats
      * @return PterodactylResponse
      */
     public function getServerUtilization($server_id)

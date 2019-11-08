@@ -7,9 +7,9 @@ $lang['Pterodactyl.module_row_plural'] = 'Servers';
 $lang['Pterodactyl.!error.server_name.empty'] = 'You must enter a server name.';
 $lang['Pterodactyl.!error.panel_url.valid'] = 'The Panel URL appears to be invalid.';
 $lang['Pterodactyl.!error.account_api_key.empty'] = 'You must enter an API key.';
-$lang['Pterodactyl.!error.account_api_key.valid'] = 'Unable to connect with the given URL and API key.';
+$lang['Pterodactyl.!error.account_api_key.valid'] = 'Unable to connect with the given URL and Account API key.';
 $lang['Pterodactyl.!error.application_api_key.empty'] = 'You must enter an API key.';
-$lang['Pterodactyl.!error.application_api_key.valid'] = 'Unable to connect with the given URL and API key.';
+$lang['Pterodactyl.!error.application_api_key.valid'] = 'Unable to connect with the given URL and Application API key.';
 
 $lang['Pterodactyl.!error.module_row.missing'] = 'An internal error occurred. The module row is unavailable.';
 
@@ -32,8 +32,8 @@ $lang['Pterodactyl.row_meta.application_api_key'] = 'Application API Key';
 
 // Module row tooltips
 $lang['Pterodactyl.!tooltip.panel_url'] = 'Enter the URL or IP of your Pterodactyl panel. e.g. http://panel.domain.com/';
-$lang['Pterodactyl.!tooltip.account_api_key'] = 'Enter the Account API key generated for your panel from Pterodactyl.';
-$lang['Pterodactyl.!tooltip.application_api_key'] = 'Enter the Application API key generated for your panel from Pterodactyl.';
+$lang['Pterodactyl.!tooltip.account_api_key'] = 'Enter the Account API key generated for your Pterodactyl panel.';
+$lang['Pterodactyl.!tooltip.application_api_key'] = 'Enter the Application API key generated for your Pterodactyl panel.';
 
 
 // Module management

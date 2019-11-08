@@ -389,7 +389,12 @@ class Pterodactyl extends Module
         // Get package field lists from API
         $package_lists = $this->getPackageLists((object)$vars);
 
-        return $package_helper->add($package_lists, $vars);
+        $meta = $package_helper->add($package_lists, $vars);
+        if ($package_helper->errors()) {
+            $this->Input->setErrors($package_helper->errors());
+        }
+
+        return $meta;
     }
 
     /**

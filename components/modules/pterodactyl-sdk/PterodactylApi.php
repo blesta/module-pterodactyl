@@ -31,6 +31,7 @@ class PterodactylApi
      * Initializes the request parameter
      *
      * @param string $apiKey The API key
+     * @param string $baseUrl The base URL of the pterodactyl panel
      */
     public function __construct($apiKey, $baseUrl)
     {
@@ -38,7 +39,13 @@ class PterodactylApi
         $this->apiUrl = trim($baseUrl, '/') . '/api';
     }
 
-    function __get($className)
+    /**
+     * Gets a requestor object
+     *
+     * @param string $className The name of the Requestor class to get
+     * @return type
+     */
+    public function __get($className)
     {
         $r = new \ReflectionClass('\\Blesta\\PterodactylSDK\\Requestors\\' . $className);
         $this->{$className} = $r->newInstanceArgs([$this->apiKey, $this->apiUrl]);

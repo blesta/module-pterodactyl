@@ -28,16 +28,6 @@ class PterodactylPackage
     }
 
     /**
-     * Fetches the module keys usable in email tags
-     *
-     * @return array A list of module email tags
-     */
-    public function getEmailTags()
-    {
-        return [];
-    }
-
-    /**
      * Validates input data when attempting to add a package, returns the meta
      * data to save when adding a package. Performs any action required to add
      * the package on the remote server. Sets Input errors on failure,
@@ -317,6 +307,10 @@ class PterodactylPackage
         $databases->attach($tooltip);
         $fields->setField($databases);
 
+        ##
+        # TODO It is possible we should add a field for allocations
+        ##
+
         return $fields;
     }
 
@@ -427,13 +421,6 @@ class PterodactylPackage
                 'format' => [
                     'rule' => ['matches', '/^[0-9]+$/'],
                     'message' => Language::_('PterodactylPackage.!error.meta[io].format', true)
-                ]
-            ],
-            'meta[startup]' => [
-                'empty' => [
-                    'rule' => 'isEmpty',
-                    'negate' => true,
-                    'message' => Language::_('PterodactylPackage.!error.meta[startup].empty', true)
                 ]
             ],
             'meta[image]' => [
