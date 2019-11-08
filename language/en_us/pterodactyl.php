@@ -57,3 +57,5 @@ $lang['Pterodactyl.manage.module_rows.confirm_delete'] = 'Are you sure you want 
 $lang['Pterodactyl.manage.module_groups.confirm_delete'] = 'Are you sure you want to delete this server group?';
 $lang['Pterodactyl.manage.module_rows_no_results'] = 'There are no servers.';
 $lang['Pterodactyl.manage.module_groups_no_results'] = 'There are no server groups.';
+
+$lang['Pterodactyl.order_options.first'] = 'First Non-full Server';

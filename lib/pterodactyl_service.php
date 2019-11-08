@@ -57,6 +57,9 @@ class PterodactylService
      */
     public function addServerParameters(array $vars, $package, $pterodactyl_user, $pterodactyl_egg)
     {
+        ##
+        # TODO allow the service fields to be hidden and overriden by package fields or config options
+        ##
         // Get environment data from the egg
         $environment = [];
         foreach ($pterodactyl_egg->attributes->relationships->variables->data as $env_variable) {
@@ -105,7 +108,7 @@ class PterodactylService
     }
 
     /**
-     * Gets a list of parameters to submit to Pterodactyl for server detail edit
+     * Gets a list of parameters to submit to Pterodactyl for editing server details
      *
      * @param array $vars An array of post fields
      * @param stdClass $pterodactyl_user An object representing the Pterodacytl user
@@ -122,7 +125,7 @@ class PterodactylService
     }
 
     /**
-     * Gets a list of parameters to submit to Pterodactyl for server build edit
+     * Gets a list of parameters to submit to Pterodactyl for editing the server build parameters
      *
      * @param stdClass $package The package to pull server info from
      * @return array The list of parameters
@@ -145,7 +148,7 @@ class PterodactylService
     }
 
     /**
-     * Gets a list of parameters to submit to Pterodactyl for server startup edit
+     * Gets a list of parameters to submit to Pterodactyl for editing server startup parameters
      *
      * @param array $vars An array of post fields
      * @param stdClass $package The package to pull server info from
@@ -187,7 +190,7 @@ class PterodactylService
      * javascript to execute when the page is rendered with these fields.
      *
      * @param stdClass $pterodactyl_egg An object representing the Pterodacytl egg
-     * @param stdClass $vars A stdClass object representing a set of post fields
+     * @param stdClass $vars A stdClass object representing a set of post fields (optional)
      * @return ModuleFields A ModuleFields object, containing the fields
      *  to render as well as any additional HTML markup to include
      */
@@ -215,12 +218,12 @@ class PterodactylService
 
         // Get service fields
         foreach ($pterodactyl_egg->attributes->relationships->variables->data as $env_variable) {
-            // Create domain label
+            // Create a label for the environment variable
             $label = strpos($env_variable->attributes->rules, 'required') === 0
                 ? $env_variable->attributes->name
                 : Language::_('PterodactylService.service_fields.optional', true, $env_variable->attributes->name);
             $field = $fields->label($label, $env_variable->attributes->env_variable);
-            // Create domain field and attach to domain label
+            // Create the environment variable field and attach to the label
             $field->attach(
                 $fields->fieldText(
                     $env_variable->attributes->env_variable,
@@ -231,7 +234,7 @@ class PterodactylService
                     ['id' => $env_variable->attributes->env_variable]
                 )
             );
-            // Add tooltip
+            // Add tooltip based on the description from Pterodactyl
             $tooltip = $fields->tooltip($env_variable->attributes->description);
             $field->attach($tooltip);
             // Set the label as a field
@@ -244,16 +247,17 @@ class PterodactylService
     /**
      * Returns the rule set for adding/editing a service
      *
-     * @param array $vars A list of input vars
-     * @param stdClass $package A stdClass object representing the selected package
-     * @param bool $edit True to get the edit rules, false for the add rules
+     * @param array $vars A list of input vars (optional)
+     * @param stdClass $package A stdClass object representing the selected package (optional)
+     * @param bool $edit True to get the edit rules, false for the add rules (optional)
      * @return array Service rules
      */
     public function getServiceRules(array $vars = null, $package = null, $edit = false)
     {
         ##
-        # TODO Add service rules base on the egg variable rules. The fact that no rules exist will cause the service to
-        # pass steps of approval that it should not (e.g. an admin can create a pending service with invalid credential)
+        # TODO Add service rules base on the egg variable rules. The fact that no rules exist will
+        # cause the service to pass steps of approval that it should not (e.g. an admin can create
+        # a pending service with invalid credentials)
         ##
         // Set rules
         $rules = [];

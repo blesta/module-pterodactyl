@@ -25,12 +25,12 @@
                     </li>
                     <li>
                         <?php $this->Form->label($this->_('Pterodactyl.row_meta.account_api_key', true), 'account_api_key', ['class' => 'inline']);?>
-                        <span class="tooltip block"><?php $this->_('AppController.tooltip.text');?><div><?php $this->_('Pterodactyl.!tooltip.panel_url');?></div></span>
+                        <span class="tooltip block"><?php $this->_('AppController.tooltip.text');?><div><?php $this->_('Pterodactyl.!tooltip.account_api_key');?></div></span>
                         <?php $this->Form->fieldText('account_api_key', $this->Html->ifSet($vars->account_api_key), ['id' => 'account_api_key', 'class' => 'block']);?>
                     </li>
                     <li>
                         <?php $this->Form->label($this->_('Pterodactyl.row_meta.application_api_key', true), 'application_api_key', ['class' => 'inline']);?>
-                        <span class="tooltip block"><?php $this->_('AppController.tooltip.text');?><div><?php $this->_('Pterodactyl.!tooltip.panel_url');?></div></span>
+                        <span class="tooltip block"><?php $this->_('AppController.tooltip.text');?><div><?php $this->_('Pterodactyl.!tooltip.application_api_key');?></div></span>
                         <?php $this->Form->fieldText('application_api_key', $this->Html->ifSet($vars->application_api_key), ['id' => 'application_api_key', 'class' => 'block']);?>
                     </li>
                 </ul>

@@ -24,9 +24,9 @@
                 <td class="last"><span><?php $this->_('Pterodactyl.manage.module_rows_heading.options');?></span></td>
             </tr>
             <?php
-            for ($i=0; $i<$num_rows; $i++) {
+            for ($i = 0; $i < $num_rows; $i++) {
             ?>
-            <tr<?php echo ($i%2 == 1) ? ' class="odd_row"' : '';?>>
+            <tr<?php echo ($i % 2 == 1) ? ' class="odd_row"' : '';?>>
                 <td><?php $this->Html->_($module->rows[$i]->meta->server_name);?></td>
                 <td><?php $this->Html->_($module->rows[$i]->meta->panel_url);?></td>
                 <td>
@@ -72,9 +72,9 @@
                 <td class="last"><span><?php $this->_('Pterodactyl.manage.module_groups_heading.options');?></span></td>
             </tr>
             <?php
-            for ($i=0; $i<$num_rows; $i++) {
+            for ($i = 0; $i < $num_rows; $i++) {
             ?>
-            <tr<?php echo ($i%2 == 1) ? ' class="odd_row"' : '';?>>
+            <tr<?php echo ($i % 2 == 1) ? ' class="odd_row"' : '';?>>
                 <td><?php $this->Html->_($module->groups[$i]->name);?></td>
                 <td><?php echo count($this->Html->ifSet($module->groups[$i]->rows, []));?></td>
                 <td>

@@ -33,8 +33,10 @@ class PterodactylPackage
      * the package on the remote server. Sets Input errors on failure,
      * preventing the package from being added.
      *
-     * @param array An array of key/value pairs used to add the package
-     * @return array A numerically indexed array of meta fields to be stored for this package containing:
+     * @param array $packageLists An array of package fields lists from the API
+     * @param array $vars An array of key/value pairs used to add the package
+     * @return array A numerically indexed array of meta fields to be stored for this package containing: (optional)
+     *
      *  - key The key for this meta field
      *  - value The value for this key
      *  - encrypted Whether or not this field should be encrypted (default 0, not encrypted)
@@ -76,8 +78,8 @@ class PterodactylPackage
      * Returns all fields used when adding/editing a package, including any
      * javascript to execute when the page is rendered with these fields.
      *
-     * @param array $packageLists A stdClass object representing a set of post fields
-     * @param stdClass $vars A stdClass object representing a set of post fields
+     * @param array $packageLists An array of package fields lists from the API
+     * @param stdClass $vars A stdClass object representing a set of post fields (optional)
      * @return ModuleFields A ModuleFields object, containing the fields
      *  to render as well as any additional HTML markup to include
      */
@@ -90,7 +92,7 @@ class PterodactylPackage
         $fields->setHtml("
 			<script type=\"text/javascript\">
 				$(document).ready(function() {
-					// Re-fetch module options to pull in eggs
+					// Re-fetch module options to pull in eggs when a nest is selected
 					$('#Pterodactyl_nest_id').change(function() {
 						fetchModuleOptions();
 					});
