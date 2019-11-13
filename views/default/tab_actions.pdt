@@ -5,11 +5,11 @@
     <div class="pad">
         <div class="options" id="pterodactyl_actions">
             <p>
-                <?php $this->_('Pterodactyl.tab_actions.server_status');?> <span class="buff <?php echo $this->Html->ifSet($server->suspended) ? 'offline' : 'online';?>"><?php $this->Html->ifSet($server->suspended) ? $this->_('Pterodactyl.tab_actions.status_offline') : $this->_('Pterodactyl.tab_actions.status_online');?></span>
+                <?php $this->_('Pterodactyl.tab_actions.server_status');?> <span class="buff <?php echo $this->Html->ifSet($server->attributes->suspended) ? 'offline' : 'online';?>"><?php $this->Html->ifSet($server->attributes->suspended) ? $this->_('Pterodactyl.tab_actions.status_offline') : $this->_('Pterodactyl.tab_actions.status_online');?></span>
             </p>
 
             <?php
-            if ($this->Html->ifSet($server->suspended)) {
+            if ($this->Html->ifSet($server->attributes->suspended)) {
             ?>
             <a href="<?php echo $this->Html->safe($this->base_uri . 'clients/servicetab/' . $this->Html->ifSet($client_id) . '/' . $this->Html->ifSet($service_id) . '/tabActions/boot/');?>" class="boot btn btn-default"><i class="fa fa-power-off"></i> <?php $this->_('Pterodactyl.!actions.boot');?></a>
             <?php
