@@ -30,6 +30,9 @@ class Pterodactyl extends Module
 
         // Load configuration required by this module
         $this->loadConfig(dirname(__FILE__) . DS . 'config.json');
+
+        // Load additional config values
+        Configure::load('pterodactyl', dirname(__FILE__) . DS . 'config' . DS);
     }
 
     /**
@@ -308,6 +311,156 @@ class Pterodactyl extends Module
         // We do not delete the user, but rather leave it around to be used for any current or future services
 
         return null;
+    }
+
+    /**
+     * Returns all tabs to display to an admin when managing a service whose
+     * package uses this module
+     *
+     * @param stdClass $package A stdClass object representing the selected package
+     * @return array An array of tabs in the format of method => title.
+     *  Example: array('methodName' => "Title", 'methodName2' => "Title2")
+     */
+    public function getAdminTabs($package)
+    {
+        return [
+            'tabActions' => Language::_('Pterodactyl.tab_actions', true)
+        ];
+    }
+
+    /**
+     * Returns all tabs to display to a client when managing a service whose
+     * package uses this module
+     *
+     * @param stdClass $package A stdClass object representing the selected package
+     * @return array An array of tabs in the format of method => title.
+     *  Example: array('methodName' => "Title", 'methodName2' => "Title2")
+     */
+    public function getClientTabs($package)
+    {
+        return [
+            'tabClientActions' => Language::_('Pterodactyl.tab_client_actions', true)
+        ];
+    }
+
+    /**
+     * Actions tab (boot, rebuild, shutdown, etc.)
+     *
+     * @param stdClass $package A stdClass object representing the current package
+     * @param stdClass $service A stdClass object representing the current service
+     * @param array $get Any GET parameters
+     * @param array $post Any POST parameters
+     * @param array $files Any FILES parameters
+     * @return string The string representing the contents of this tab
+     */
+    public function tabActions($package, $service, array $get = null, array $post = null, array $files = null)
+    {
+        $this->view = new View('tab_actions', 'default');
+        $this->view->base_uri = $this->base_uri;
+        // Load the helpers required for this view
+        Loader::loadHelpers($this, ['Form', 'Html']);
+
+        // Get the service fields
+        $service_fields = $this->serviceFieldsToObject($service->fields);
+
+        // Perform the actions
+        $this->actionsTab($package, $service, false, $get, $post);
+
+        // Fetch the server status
+        $this->view->set('server', $this->apiRequest('Servers', 'get', [$service_fields->server_id]));
+
+        $this->view->set('client_id', $service->client_id);
+        $this->view->set('service_id', $service->id);
+
+        $this->view->set('view', $this->view->view);
+        $this->view->setDefaultView('components' . DS . 'modules' . DS . 'pterodactyl' . DS);
+        return $this->view->fetch();
+    }
+
+    /**
+     * Client Actions tab (boot, rebuild, shutdown, etc.)
+     *
+     * @param stdClass $package A stdClass object representing the current package
+     * @param stdClass $service A stdClass object representing the current service
+     * @param array $get Any GET parameters
+     * @param array $post Any POST parameters
+     * @param array $files Any FILES parameters
+     * @return string The string representing the contents of this tab
+     */
+    public function tabClientActions($package, $service, array $get = null, array $post = null, array $files = null)
+    {
+        $this->view = new View('tab_client_actions', 'default');
+        $this->view->base_uri = $this->base_uri;
+        // Load the helpers required for this view
+        Loader::loadHelpers($this, ['Form', 'Html']);
+
+        // Get the service fields
+        $service_fields = $this->serviceFieldsToObject($service->fields);
+
+        // Perform the actions
+        $this->actionsTab($package, $service, true, $get, $post);
+
+        // Fetch the server status and templates
+        $this->view->set('server', $this->apiRequest('Servers', 'get', [$service_fields->server_id]));
+
+        $this->view->set('client_id', $service->client_id);
+        $this->view->set('service_id', $service->id);
+
+        $this->view->set('view', $this->view->view);
+        $this->view->setDefaultView('components' . DS . 'modules' . DS . 'pterodactyl' . DS);
+        return $this->view->fetch();
+    }
+    /**
+     * Handles data for the actions tab in the client and admin interfaces
+     * @see Solusvm::tabActions() and Solusvm::tabClientActions()
+     *
+     * @param stdClass $package A stdClass object representing the current package
+     * @param stdClass $service A stdClass object representing the current service
+     * @param bool $client True if the action is being performed by the client, false otherwise
+     * @param array $get Any GET parameters
+     * @param array $post Any POST parameters
+     * @param array $files Any FILES parameters
+     */
+    private function actionsTab($package, $service, $client = false, array $get = null, array $post = null)
+    {
+        // Get the service fields
+        $get_key = '3';
+        if ($client) {
+            $get_key = '2';
+        }
+
+        // Get the service fields
+        $service_fields = $this->serviceFieldsToObject($service->fields);
+
+        // Perform actions
+        if (!array_key_exists($get_key, (array)$get)) {
+            return;
+        }
+
+        switch ($get[$get_key]) {
+            case 'boot':
+                if ($this->apiRequest('Servers', 'unsuspend', [$service_fields->server_id])) {
+                    $this->setMessage('success', Language::_('Pterodactyl.!success.boot', true));
+                }
+                break;
+            case 'shutdown':
+                if ($this->apiRequest('Servers', 'suspend', [$service_fields->server_id])) {
+                    $this->setMessage('success', Language::_('Pterodactyl.!success.shutdown', true));
+                }
+                break;
+            case 'rebuild':
+                if ($this->apiRequest('Servers', 'rebuild', [$service_fields->server_id])) {
+                    $this->setMessage('success', Language::_('Pterodactyl.!success.rebuild', true));
+                }
+                break;
+            case 'reinstall':
+                if ($this->apiRequest('Servers', 'reinstall', [$service_fields->server_id])) {
+                    $this->setMessage('success', Language::_('Pterodactyl.!success.reinstall', true));
+                }
+                break;
+            default:
+                break;
+        }
     }
 
     /**

@@ -13,6 +13,12 @@ $lang['Pterodactyl.!error.application_api_key.valid'] = 'Unable to connect with 
 
 $lang['Pterodactyl.!error.module_row.missing'] = 'An internal error occurred. The module row is unavailable.';
 
+// Success
+$lang['Pterodactyl.!success.boot'] = 'The server is now booting.';
+$lang['Pterodactyl.!success.shutdown'] = 'The server is now shutting down.';
+$lang['Pterodactyl.!success.rebuild'] = 'The server is now rebooting.';
+$lang['Pterodactyl.!success.reinstall'] = 'The server is now reinstalling.';
+
 
 // Add module row
 $lang['Pterodactyl.add_row.box_title'] = 'Add Pterodactyl Server';
@@ -59,3 +65,31 @@ $lang['Pterodactyl.manage.module_rows_no_results'] = 'There are no servers.';
 $lang['Pterodactyl.manage.module_groups_no_results'] = 'There are no server groups.';
 
 $lang['Pterodactyl.order_options.first'] = 'First Non-full Server';
+
+
+// Tabs
+$lang['Pterodactyl.tab_actions'] = 'Server Actions';
+$lang['Pterodactyl.tab_client_actions'] = 'Server Actions';
+
+
+// Actions Tab
+$lang['Pterodactyl.tab_actions.heading_actions'] = 'Actions';
+$lang['Pterodactyl.tab_actions.server_status'] = 'Server Status';
+
+$lang['Pterodactyl.tab_actions.status_online'] = 'Online';
+$lang['Pterodactyl.tab_actions.status_offline'] = 'Offline';
+
+
+
+// Client Actions Tab
+$lang['Pterodactyl.tab_client_actions.heading_actions'] = 'Actions';
+$lang['Pterodactyl.tab_client_actions.heading_server_status'] = 'Server Status';
+
+$lang['Pterodactyl.tab_client_actions.status_online'] = 'Online';
+$lang['Pterodactyl.tab_client_actions.status_offline'] = 'Offline';
+
+
+$lang['Pterodactyl.!actions.boot'] = 'Boot';
+$lang['Pterodactyl.!actions.rebuild'] = 'Rebuild';
+$lang['Pterodactyl.!actions.shutdown'] = 'Shutdown';
+$lang['Pterodactyl.!actions.reinstall'] = 'Reinstall';
