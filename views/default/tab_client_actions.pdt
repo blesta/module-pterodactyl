@@ -9,20 +9,19 @@
 
     <h4><?php $this->_('Pterodactyl.tab_client_actions.heading_actions');?></h4>
     <div class="row options" id="pterodactyl_actions">
-        <div class="col-md-6">
-            <a<?php echo !$this->Html->ifSet($server->attributes->suspended) ? ' disabled="disabled"' : '';?> class="btn btn-default btn-block" href="<?php echo $this->Html->safe($this->base_uri . 'services/manage/' . $this->Html->ifSet($service_id) . '/tabClientActions/boot/');?>">
-                <i class="fa fa-power-off"></i> <?php $this->_('Pterodactyl.!actions.boot');?>
-            </a>
-            <a<?php echo $this->Html->ifSet($server->attributes->suspended) ? ' disabled="disabled"' : '';?> class="btn btn-default btn-block btn-danger" href="<?php echo $this->Html->safe($this->base_uri . 'services/manage/' . $this->Html->ifSet($service_id) . '/tabClientActions/shutdown/');?>">
-                <i class="fa fa-power-off"></i> <?php $this->_('Pterodactyl.!actions.shutdown');?>
+        <div class="col-md-4">
+            <a<?php echo !$this->Html->ifSet($server->attributes->suspended) ? ' disabled="disabled"' : '';?> class="btn btn-default btn-block" href="<?php echo $this->Html->safe($this->base_uri . 'services/manage/' . $this->Html->ifSet($service_id) . '/tabClientActions/start/');?>">
+                <i class="fa fa-power-off"></i> <?php $this->_('Pterodactyl.!actions.start');?>
             </a>
         </div>
-        <div class="col-md-6">
-            <a<?php echo $this->Html->ifSet($server->attributes->suspended) ? ' disabled="disabled"' : '';?> class="btn btn-default btn-block btn-success" href="<?php echo $this->Html->safe($this->base_uri . 'services/manage/' . $this->Html->ifSet($service_id) . '/tabClientActions/rebuild/');?>">
-                <i class="fa fa-refresh"></i> <?php $this->_('Pterodactyl.!actions.rebuild');?>
+        <div class="col-md-4">
+            <a<?php echo $this->Html->ifSet($server->attributes->suspended) ? ' disabled="disabled"' : '';?> class="btn btn-default btn-block btn-danger" href="<?php echo $this->Html->safe($this->base_uri . 'services/manage/' . $this->Html->ifSet($service_id) . '/tabClientActions/stop/');?>">
+                <i class="fa fa-power-off"></i> <?php $this->_('Pterodactyl.!actions.stop');?>
             </a>
-            <a class="reinstall btn btn-default btn-block" href="<?php echo $this->Html->safe($this->base_uri . 'services/manage/' . $this->Html->ifSet($service_id) . '/tabClientActions/reinstall/');?>">
-                <i class="fa fa-download"></i> <?php $this->_('Pterodactyl.!actions.reinstall');?>
+        </div>
+        <div class="col-md-4">
+            <a class="restart btn btn-default btn-block" href="<?php echo $this->Html->safe($this->base_uri . 'services/manage/' . $this->Html->ifSet($service_id) . '/tabClientActions/restart/');?>">
+                <i class="fa fa-refresh"></i> <?php $this->_('Pterodactyl.!actions.restart');?>
             </a>
         </div>
     </div>

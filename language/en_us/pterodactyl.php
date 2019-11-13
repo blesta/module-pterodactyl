@@ -14,10 +14,9 @@ $lang['Pterodactyl.!error.application_api_key.valid'] = 'Unable to connect with 
 $lang['Pterodactyl.!error.module_row.missing'] = 'An internal error occurred. The module row is unavailable.';
 
 // Success
-$lang['Pterodactyl.!success.boot'] = 'The server is now booting.';
-$lang['Pterodactyl.!success.shutdown'] = 'The server is now shutting down.';
-$lang['Pterodactyl.!success.rebuild'] = 'The server is now rebooting.';
-$lang['Pterodactyl.!success.reinstall'] = 'The server is now reinstalling.';
+$lang['Pterodactyl.!success.start'] = 'The server is now booting.';
+$lang['Pterodactyl.!success.stop'] = 'The server is now shutting down.';
+$lang['Pterodactyl.!success.restart'] = 'The server is now rebooting.';
 
 
 // Add module row
@@ -89,7 +88,6 @@ $lang['Pterodactyl.tab_client_actions.status_online'] = 'Online';
 $lang['Pterodactyl.tab_client_actions.status_offline'] = 'Offline';
 
 
-$lang['Pterodactyl.!actions.boot'] = 'Boot';
-$lang['Pterodactyl.!actions.rebuild'] = 'Rebuild';
-$lang['Pterodactyl.!actions.shutdown'] = 'Shutdown';
-$lang['Pterodactyl.!actions.reinstall'] = 'Reinstall';
+$lang['Pterodactyl.!actions.start'] = 'Start';
+$lang['Pterodactyl.!actions.stop'] = 'Stop';
+$lang['Pterodactyl.!actions.restart'] = 'Restart';

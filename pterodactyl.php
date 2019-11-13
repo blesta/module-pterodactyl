@@ -364,10 +364,12 @@ class Pterodactyl extends Module
         $service_fields = $this->serviceFieldsToObject($service->fields);
 
         // Perform the actions
-        $this->actionsTab($package, $service, false, $get, $post);
+        $server = $this->apiRequest('Servers', 'get', [$service_fields->server_id]);
+        $server_id = isset($server->attributes->identifier) ? $server->attributes->identifier : null;
+        $this->actionsTab($package, $service, $server, false, $get, $post);
 
         // Fetch the server status
-        $this->view->set('server', $this->apiRequest('Servers', 'get', [$service_fields->server_id]));
+        $this->view->set('server', $this->apiRequest('Client', 'getServerUtilization', [$server_id], true));
 
         $this->view->set('client_id', $service->client_id);
         $this->view->set('service_id', $service->id);
@@ -398,10 +400,12 @@ class Pterodactyl extends Module
         $service_fields = $this->serviceFieldsToObject($service->fields);
 
         // Perform the actions
-        $this->actionsTab($package, $service, true, $get, $post);
+        $server = $this->apiRequest('Servers', 'get', [$service_fields->server_id]);
+        $server_id = isset($server->attributes->identifier) ? $server->attributes->identifier : null;
+        $this->actionsTab($package, $service, $server, true, $get, $post);
 
         // Fetch the server status and templates
-        $this->view->set('server', $this->apiRequest('Servers', 'get', [$service_fields->server_id]));
+        $this->view->set('server', $this->apiRequest('Client', 'getServerUtilization', [$server_id], true));
 
         $this->view->set('client_id', $service->client_id);
         $this->view->set('service_id', $service->id);
@@ -416,12 +420,13 @@ class Pterodactyl extends Module
      *
      * @param stdClass $package A stdClass object representing the current package
      * @param stdClass $service A stdClass object representing the current service
+     * @param stdClass $server A stdClass object representing the Pterodactyl server
      * @param bool $client True if the action is being performed by the client, false otherwise
      * @param array $get Any GET parameters
      * @param array $post Any POST parameters
      * @param array $files Any FILES parameters
      */
-    private function actionsTab($package, $service, $client = false, array $get = null, array $post = null)
+    private function actionsTab($package, $service, $server, $client = false, array $get = null, array $post = null)
     {
         // Get the service fields
         $get_key = '3';
@@ -429,33 +434,25 @@ class Pterodactyl extends Module
             $get_key = '2';
         }
 
-        // Get the service fields
-        $service_fields = $this->serviceFieldsToObject($service->fields);
-
         // Perform actions
-        if (!array_key_exists($get_key, (array)$get)) {
+        if (!array_key_exists($get_key, (array)$get) || !isset($server->attributes->identifier)) {
             return;
         }
 
         switch ($get[$get_key]) {
-            case 'boot':
-                if ($this->apiRequest('Servers', 'unsuspend', [$service_fields->server_id])) {
-                    $this->setMessage('success', Language::_('Pterodactyl.!success.boot', true));
+            case 'start':
+                if ($this->apiRequest('Client', 'serverPowerSignal', [$server->attributes->identifier, 'start'], true)) {
+                    $this->setMessage('success', Language::_('Pterodactyl.!success.start', true));
                 }
                 break;
-            case 'shutdown':
-                if ($this->apiRequest('Servers', 'suspend', [$service_fields->server_id])) {
-                    $this->setMessage('success', Language::_('Pterodactyl.!success.shutdown', true));
+            case 'stop':
+                if ($this->apiRequest('Client', 'serverPowerSignal', [$server->attributes->identifier, 'stop'], true)) {
+                    $this->setMessage('success', Language::_('Pterodactyl.!success.stop', true));
                 }
                 break;
-            case 'rebuild':
-                if ($this->apiRequest('Servers', 'rebuild', [$service_fields->server_id])) {
-                    $this->setMessage('success', Language::_('Pterodactyl.!success.rebuild', true));
-                }
-                break;
-            case 'reinstall':
-                if ($this->apiRequest('Servers', 'reinstall', [$service_fields->server_id])) {
-                    $this->setMessage('success', Language::_('Pterodactyl.!success.reinstall', true));
+            case 'restart':
+                if ($this->apiRequest('Client', 'serverPowerSignal', [$server->attributes->identifier, 'restart'], true)) {
+                    $this->setMessage('success', Language::_('Pterodactyl.!success.restart', true));
                 }
                 break;
             default:
@@ -471,7 +468,7 @@ class Pterodactyl extends Module
      * @param array $data The parameters to submit to the method (optional)
      * @return mixed The response from Pterodactyl
      */
-    private function apiRequest($requestor, $action, array $data = [])
+    private function apiRequest($requestor, $action, array $data = [], $client_api = false)
     {
         // Fetch the module row
         $row = $this->getModuleRow();
@@ -485,7 +482,7 @@ class Pterodactyl extends Module
         // Fetch the API
         $api = $this->getApi(
             $row->meta->panel_url,
-            $row->meta->application_api_key
+            $client_api ? $row->meta->account_api_key : $row->meta->application_api_key
         );
 
         // Perform the request
