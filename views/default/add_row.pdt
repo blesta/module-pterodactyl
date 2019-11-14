@@ -33,6 +33,12 @@
                         <span class="tooltip block"><?php $this->_('AppController.tooltip.text');?><div><?php $this->_('Pterodactyl.!tooltip.application_api_key');?></div></span>
                         <?php $this->Form->fieldText('application_api_key', $this->Html->ifSet($vars->application_api_key), ['id' => 'application_api_key', 'class' => 'block']);?>
                     </li>
+                    <li>
+                        <?php
+                        $this->Form->fieldCheckbox('use_ssl', 'true', $this->Html->ifSet($vars->use_ssl, 'true') == 'true', ['id'=>'use_ssl']);
+                        $this->Form->label($this->_('Pterodactyl.row_meta.use_ssl', true), 'use_ssl', ['class'=>'inline']);
+                        ?>
+                    </li>
                 </ul>
             </div>
 

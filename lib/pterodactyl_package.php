@@ -293,7 +293,7 @@ class PterodactylPackage
         $image->attach($tooltip);
         $fields->setField($image);
 
-        // Set the server databases
+        // Set the server database limit
         $databases = $fields->label(
             Language::_('PterodactylPackage.package_fields.databases', true),
             'Pterodactyl_databases'
@@ -309,9 +309,21 @@ class PterodactylPackage
         $databases->attach($tooltip);
         $fields->setField($databases);
 
-        ##
-        # TODO It is possible we should add a field for allocations
-        ##
+        // Set the server allocations limit
+        $allocations = $fields->label(
+            Language::_('PterodactylPackage.package_fields.allocations', true),
+            'Pterodactyl_allocations'
+        );
+        $allocations->attach(
+            $fields->fieldText(
+                'meta[allocations]',
+                $this->Html->ifSet($vars->meta['allocations']),
+                ['id' => 'Pterodactyl_allocations']
+            )
+        );
+        $tooltip = $fields->tooltip(Language::_('PterodactylPackage.package_fields.tooltip.allocations', true));
+        $allocations->attach($tooltip);
+        $fields->setField($allocations);
 
         return $fields;
     }
@@ -437,6 +449,14 @@ class PterodactylPackage
                         return empty($databaseLimit) || preg_match('/^[0-9]+$/', $databaseLimit);
                     },
                     'message' => Language::_('PterodactylPackage.!error.meta[databases].format', true)
+                ]
+            ],
+            'meta[allocations]' => [
+                'format' => [
+                    'rule' => function ($allocationLimit) {
+                        return empty($allocationLimit) || preg_match('/^[0-9]+$/', $allocationLimit);
+                    },
+                    'message' => Language::_('PterodactylPackage.!error.meta[allocations].format', true)
                 ]
             ],
         ];

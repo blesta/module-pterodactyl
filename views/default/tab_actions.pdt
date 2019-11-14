@@ -5,10 +5,10 @@
     <div class="pad">
         <div class="options" id="pterodactyl_actions">
             <p>
-                <?php $this->_('Pterodactyl.tab_actions.server_status');?> <span class="buff <?php echo $this->Html->ifSet($server->attributes->state) != 'on' ? 'offline' : 'online';?>"><?php $this->Html->ifSet($server->attributes->state) != 'on' ? $this->_('Pterodactyl.tab_actions.status_offline') : $this->_('Pterodactyl.tab_actions.status_online');?></span>
+                <?php $this->_('Pterodactyl.tab_actions.server_status');?> <span class="buff <?php $this->Html->_($server->attributes->state);?>"><?php $this->_('Pterodactyl.tab_actions.status_' . $this->Html->ifSet($server->attributes->state));?></span>
             </p>
 
-            <a href="<?php echo $this->Html->safe($this->base_uri . 'clients/servicetab/' . $this->Html->ifSet($client_id) . '/' . $this->Html->ifSet($service_id) . '/tabActions/start/');?>" <?php echo $this->Html->ifSet($server->attributes->state) == 'on' ? 'disabled' : '';?> class="start btn btn-default"><i class="fa fa-power-off"></i> <?php $this->_('Pterodactyl.!actions.start');?></a>
+            <a href="<?php echo $this->Html->safe($this->base_uri . 'clients/servicetab/' . $this->Html->ifSet($client_id) . '/' . $this->Html->ifSet($service_id) . '/tabActions/start/');?>" <?php echo $this->Html->ifSet($server->attributes->state) != 'off' ? 'disabled' : '';?> class="start btn btn-default"><i class="fa fa-power-off"></i> <?php $this->_('Pterodactyl.!actions.start');?></a>
             <a href="<?php echo $this->Html->safe($this->base_uri . 'clients/servicetab/' . $this->Html->ifSet($client_id) . '/' . $this->Html->ifSet($service_id) . '/tabActions/stop/');?>" <?php echo $this->Html->ifSet($server->attributes->state) != 'on' ? 'disabled' : '';?> class="stop btn btn-danger"><i class="fa fa-power-off"></i> <?php $this->_('Pterodactyl.!actions.stop');?></a>
             <a href="<?php echo $this->Html->safe($this->base_uri . 'clients/servicetab/' . $this->Html->ifSet($client_id) . '/' . $this->Html->ifSet($service_id) . '/tabActions/restart/');?>" <?php echo $this->Html->ifSet($server->attributes->state) != 'on' ? 'disabled' : '';?> class="btn btn-default"><i class="fa fa-refresh"></i> <?php $this->_('Pterodactyl.!actions.restart');?></a>
         </div>

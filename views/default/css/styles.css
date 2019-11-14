@@ -1,6 +1,7 @@
 
 .options {margin-top:15px;}
-.options span.online { background-color:#8dc248; color:#fff;}
-.options span.offline { background-color:#ca3334; color:#fff;}
+.options span.on { background-color:#8dc248; color:#fff;}
+.options span.off { background-color:#ca3334; color:#fff;}
+.options span.starting, .options span.stopping { background-color:#dad400; color:#fff;}
 
 .options .actions {float:left; margin-right:10px; background-color:#f9f9f9; padding:8px; border-radius:4px; -moz-border-radius:4px; -webkit-border-radius:4px;}

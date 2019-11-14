@@ -18,17 +18,23 @@ class Requestor
      * @var string The Pterodactyl API URL
      */
     private $apiUrl;
+    /**
+     * @var bool Whether to connect using ssl
+     */
+    private $useSsl;
 
     /**
      * Initializes the requestor with connection parameters
      *
      * @param string $apiKey The API key
      * @param string $apiUrl The API URL
+     * @param bool $useSsl Whether to connect using ssl
      */
-    public function __construct($apiKey, $apiUrl)
+    public function __construct($apiKey, $apiUrl, $useSsl)
     {
         $this->apiKey = $apiKey;
         $this->apiUrl = $apiUrl;
+        $this->useSsl = $useSsl;
     }
 
     /**
@@ -41,11 +47,7 @@ class Requestor
      */
     protected function apiRequest($route, array $body = [], $method = 'GET')
     {
-        // This uses only https but the probably should be a module row setting
-        ##
-        # TODO Update
-        ##
-        $url = 'https://' . $this->apiUrl . '/' . $route;
+        $url = ($this->useSsl ? 'https://' : '') . $this->apiUrl . '/' . $route;
         $curl = curl_init();
 
         switch (strtoupper($method)) {
