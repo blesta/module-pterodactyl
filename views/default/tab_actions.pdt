@@ -1,0 +1,46 @@
+
+    <div class="title_row first">
+        <h3><?php $this->_('Pterodactyl.tab_actions.heading_actions');?></h3>
+    </div>
+    <div class="pad">
+        <div class="options" id="pterodactyl_actions">
+            <p>
+                <?php $this->_('Pterodactyl.tab_actions.server_status');?> <span class="buff <?php echo $this->Html->ifSet($server->attributes->state) != 'on' ? 'offline' : 'online';?>"><?php $this->Html->ifSet($server->attributes->state) != 'on' ? $this->_('Pterodactyl.tab_actions.status_offline') : $this->_('Pterodactyl.tab_actions.status_online');?></span>
+            </p>
+
+            <a href="<?php echo $this->Html->safe($this->base_uri . 'clients/servicetab/' . $this->Html->ifSet($client_id) . '/' . $this->Html->ifSet($service_id) . '/tabActions/start/');?>" <?php echo $this->Html->ifSet($server->attributes->state) == 'on' ? 'disabled' : '';?> class="start btn btn-default"><i class="fa fa-power-off"></i> <?php $this->_('Pterodactyl.!actions.start');?></a>
+            <a href="<?php echo $this->Html->safe($this->base_uri . 'clients/servicetab/' . $this->Html->ifSet($client_id) . '/' . $this->Html->ifSet($service_id) . '/tabActions/stop/');?>" <?php echo $this->Html->ifSet($server->attributes->state) != 'on' ? 'disabled' : '';?> class="stop btn btn-danger"><i class="fa fa-power-off"></i> <?php $this->_('Pterodactyl.!actions.stop');?></a>
+            <a href="<?php echo $this->Html->safe($this->base_uri . 'clients/servicetab/' . $this->Html->ifSet($client_id) . '/' . $this->Html->ifSet($service_id) . '/tabActions/restart/');?>" <?php echo $this->Html->ifSet($server->attributes->state) != 'on' ? 'disabled' : '';?> class="btn btn-default"><i class="fa fa-refresh"></i> <?php $this->_('Pterodactyl.!actions.restart');?></a>
+        </div>
+    </div>
+
+
+<script type="text/javascript">
+$(document).ready(function() {
+    setPterodactylInterval('<?php echo Configure::get('Pterodactyl.page_refresh_rate_fast');?>', '');
+    $(this).blestaSetHeadTag("link", {media:"screen", type:"text/css", rel:"stylesheet", href: "<?php echo $this->Html->safe($this->view_dir . 'css/styles.css');?>"});
+
+    function setPterodactylInterval(pterodactyl_refresh_rate, pterodactyl_old_action_data) {
+        var interval = '';
+        interval = setInterval(function() {
+            $(this).blestaRequest("GET",
+                '<?php echo $this->base_uri . 'clients/servicetab/' . $this->Html->ifSet($client_id) . '/' . $this->Html->ifSet($service_id) . '/tabActions/';?>',
+                null,
+                // Success response
+                function(data) {
+                    if (data.replacer && data.content) {
+                        var html = $('div', data.content).filter('#pterodactyl_actions').html();
+                        $('#pterodactyl_actions').html(html);
+                        pterodactyl_refresh_rate = (html == pterodactyl_old_action_data) ? '<?php echo Configure::get('Pterodactyl.page_refresh_rate');?>' : '<?php echo Configure::get('Pterodactyl.page_refresh_rate_fast');?>';
+
+                        clearInterval(interval);
+                        setPterodactylInterval(pterodactyl_refresh_rate, html);
+                    }
+                },
+                null,
+                {dataType: 'json'}
+            );
+        }, pterodactyl_refresh_rate);
+    }
+});
+</script>

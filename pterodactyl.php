@@ -30,6 +30,9 @@ class Pterodactyl extends Module
 
         // Load configuration required by this module
         $this->loadConfig(dirname(__FILE__) . DS . 'config.json');
+
+        // Load additional config values
+        Configure::load('pterodactyl', dirname(__FILE__) . DS . 'config' . DS);
     }
 
     /**
@@ -311,6 +314,128 @@ class Pterodactyl extends Module
     }
 
     /**
+     * Returns all tabs to display to an admin when managing a service whose
+     * package uses this module
+     *
+     * @param stdClass $package A stdClass object representing the selected package
+     * @return array An array of tabs in the format of method => title.
+     *  Example: array('methodName' => "Title", 'methodName2' => "Title2")
+     */
+    public function getAdminTabs($package)
+    {
+        return [
+            'tabActions' => Language::_('Pterodactyl.tab_actions', true)
+        ];
+    }
+
+    /**
+     * Returns all tabs to display to a client when managing a service whose
+     * package uses this module
+     *
+     * @param stdClass $package A stdClass object representing the selected package
+     * @return array An array of tabs in the format of method => title.
+     *  Example: array('methodName' => "Title", 'methodName2' => "Title2")
+     */
+    public function getClientTabs($package)
+    {
+        return [
+            'tabClientActions' => Language::_('Pterodactyl.tab_client_actions', true)
+        ];
+    }
+
+    /**
+     * Actions tab (start, stop, restart)
+     *
+     * @param stdClass $package A stdClass object representing the current package
+     * @param stdClass $service A stdClass object representing the current service
+     * @param array $get Any GET parameters
+     * @param array $post Any POST parameters
+     * @param array $files Any FILES parameters
+     * @return string The string representing the contents of this tab
+     */
+    public function tabActions($package, $service, array $get = null, array $post = null, array $files = null)
+    {
+        $this->view = new View('tab_actions', 'default');
+
+        return $this->actionsTab($package, $service, false, $get, $post);
+    }
+
+    /**
+     * Client Actions tab (start, stop, restart)
+     *
+     * @param stdClass $package A stdClass object representing the current package
+     * @param stdClass $service A stdClass object representing the current service
+     * @param array $get Any GET parameters
+     * @param array $post Any POST parameters
+     * @param array $files Any FILES parameters
+     * @return string The string representing the contents of this tab
+     */
+    public function tabClientActions($package, $service, array $get = null, array $post = null, array $files = null)
+    {
+        $this->view = new View('tab_client_actions', 'default');
+
+        return $this->actionsTab($package, $service, true, $get, $post);
+    }
+    /**
+     * Handles data for the actions tab in the client and admin interfaces
+     * @see Pterodactyl::tabActions() and Pterodactyl::tabClientActions()
+     *
+     * @param stdClass $package A stdClass object representing the current package
+     * @param stdClass $service A stdClass object representing the current service
+     * @param bool $client True if the action is being performed by the client, false otherwise
+     * @param array $get Any GET parameters
+     * @param array $post Any POST parameters
+     * @param array $files Any FILES parameters
+     */
+    private function actionsTab($package, $service,$client = false, array $get = null, array $post = null)
+    {
+        $this->view->base_uri = $this->base_uri;
+        // Load the helpers required for this view
+        Loader::loadHelpers($this, ['Form', 'Html']);
+
+        // Get the service fields
+        $service_fields = $this->serviceFieldsToObject($service->fields);
+
+        // Get server information from the application API
+        $server = $this->apiRequest('Servers', 'get', [$service_fields->server_id]);
+        $server_id = isset($server->attributes->identifier) ? $server->attributes->identifier : null;
+
+        // Get the service fields
+        $get_key = '3';
+        if ($client) {
+            $get_key = '2';
+        }
+
+        // Perform actions
+        if (array_key_exists($get_key, (array)$get)
+            && in_array($get[$get_key], ['start', 'stop', 'restart'])
+            && isset($server->attributes->identifier)
+        ) {
+            // Send a power signal
+            $signal_response = $this->apiRequest(
+                'Client',
+                'serverPowerSignal',
+                [$server->attributes->identifier, $get[$get_key]],
+                true
+            );
+            if (empty($this->Input->errors())) {
+                $this->setMessage('success', Language::_('Pterodactyl.!success.' . $get[$get_key], true));
+            }
+        }
+
+        // Fetch the server status from the account API
+        $this->view->set('server', $this->apiRequest('Client', 'getServerUtilization', [$server_id], true));
+
+        $this->view->set('client_id', $service->client_id);
+        $this->view->set('service_id', $service->id);
+
+        $this->view->set('view', $this->view->view);
+        $this->view->setDefaultView('components' . DS . 'modules' . DS . 'pterodactyl' . DS);
+
+        return $this->view->fetch();
+    }
+
+    /**
      * Runs a particaluar API requestor method, logs, and reports errors
      *
      * @param string $requestor The name of the requestor class to use
@@ -318,7 +443,7 @@ class Pterodactyl extends Module
      * @param array $data The parameters to submit to the method (optional)
      * @return mixed The response from Pterodactyl
      */
-    private function apiRequest($requestor, $action, array $data = [])
+    private function apiRequest($requestor, $action, array $data = [], $client_api = false)
     {
         // Fetch the module row
         $row = $this->getModuleRow();
@@ -332,7 +457,7 @@ class Pterodactyl extends Module
         // Fetch the API
         $api = $this->getApi(
             $row->meta->panel_url,
-            $row->meta->application_api_key
+            $client_api ? $row->meta->account_api_key : $row->meta->application_api_key
         );
 
         // Perform the request
