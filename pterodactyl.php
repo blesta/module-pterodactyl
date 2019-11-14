@@ -356,27 +356,8 @@ class Pterodactyl extends Module
     public function tabActions($package, $service, array $get = null, array $post = null, array $files = null)
     {
         $this->view = new View('tab_actions', 'default');
-        $this->view->base_uri = $this->base_uri;
-        // Load the helpers required for this view
-        Loader::loadHelpers($this, ['Form', 'Html']);
 
-        // Get the service fields
-        $service_fields = $this->serviceFieldsToObject($service->fields);
-
-        // Perform the actions
-        $server = $this->apiRequest('Servers', 'get', [$service_fields->server_id]);
-        $server_id = isset($server->attributes->identifier) ? $server->attributes->identifier : null;
-        $this->actionsTab($package, $service, $server, false, $get, $post);
-
-        // Fetch the server status
-        $this->view->set('server', $this->apiRequest('Client', 'getServerUtilization', [$server_id], true));
-
-        $this->view->set('client_id', $service->client_id);
-        $this->view->set('service_id', $service->id);
-
-        $this->view->set('view', $this->view->view);
-        $this->view->setDefaultView('components' . DS . 'modules' . DS . 'pterodactyl' . DS);
-        return $this->view->fetch();
+        return $this->actionsTab($package, $service, false, $get, $post);
     }
 
     /**
@@ -392,6 +373,22 @@ class Pterodactyl extends Module
     public function tabClientActions($package, $service, array $get = null, array $post = null, array $files = null)
     {
         $this->view = new View('tab_client_actions', 'default');
+
+        return $this->actionsTab($package, $service, true, $get, $post);
+    }
+    /**
+     * Handles data for the actions tab in the client and admin interfaces
+     * @see Solusvm::tabActions() and Solusvm::tabClientActions()
+     *
+     * @param stdClass $package A stdClass object representing the current package
+     * @param stdClass $service A stdClass object representing the current service
+     * @param bool $client True if the action is being performed by the client, false otherwise
+     * @param array $get Any GET parameters
+     * @param array $post Any POST parameters
+     * @param array $files Any FILES parameters
+     */
+    private function actionsTab($package, $service,$client = false, array $get = null, array $post = null)
+    {
         $this->view->base_uri = $this->base_uri;
         // Load the helpers required for this view
         Loader::loadHelpers($this, ['Form', 'Html']);
@@ -402,7 +399,28 @@ class Pterodactyl extends Module
         // Perform the actions
         $server = $this->apiRequest('Servers', 'get', [$service_fields->server_id]);
         $server_id = isset($server->attributes->identifier) ? $server->attributes->identifier : null;
-        $this->actionsTab($package, $service, $server, true, $get, $post);
+
+        // Get the service fields
+        $get_key = '3';
+        if ($client) {
+            $get_key = '2';
+        }
+
+        // Perform actions
+        if (array_key_exists($get_key, (array)$get)
+            && in_array($get[$get_key], ['start', 'stop', 'restart'])
+            && isset($server->attributes->identifier)
+        ) {
+            $signal_response = $this->apiRequest(
+                'Client',
+                'serverPowerSignal',
+                [$server->attributes->identifier, $get[$get_key]],
+                true
+            );
+            if (empty($this->Input->errors())) {
+                $this->setMessage('success', Language::_('Pterodactyl.!success.' . $get[$get_key], true));
+            }
+        }
 
         // Fetch the server status and templates
         $this->view->set('server', $this->apiRequest('Client', 'getServerUtilization', [$server_id], true));
@@ -412,52 +430,8 @@ class Pterodactyl extends Module
 
         $this->view->set('view', $this->view->view);
         $this->view->setDefaultView('components' . DS . 'modules' . DS . 'pterodactyl' . DS);
+
         return $this->view->fetch();
-    }
-    /**
-     * Handles data for the actions tab in the client and admin interfaces
-     * @see Solusvm::tabActions() and Solusvm::tabClientActions()
-     *
-     * @param stdClass $package A stdClass object representing the current package
-     * @param stdClass $service A stdClass object representing the current service
-     * @param stdClass $server A stdClass object representing the Pterodactyl server
-     * @param bool $client True if the action is being performed by the client, false otherwise
-     * @param array $get Any GET parameters
-     * @param array $post Any POST parameters
-     * @param array $files Any FILES parameters
-     */
-    private function actionsTab($package, $service, $server, $client = false, array $get = null, array $post = null)
-    {
-        // Get the service fields
-        $get_key = '3';
-        if ($client) {
-            $get_key = '2';
-        }
-
-        // Perform actions
-        if (!array_key_exists($get_key, (array)$get) || !isset($server->attributes->identifier)) {
-            return;
-        }
-
-        switch ($get[$get_key]) {
-            case 'start':
-                if ($this->apiRequest('Client', 'serverPowerSignal', [$server->attributes->identifier, 'start'], true)) {
-                    $this->setMessage('success', Language::_('Pterodactyl.!success.start', true));
-                }
-                break;
-            case 'stop':
-                if ($this->apiRequest('Client', 'serverPowerSignal', [$server->attributes->identifier, 'stop'], true)) {
-                    $this->setMessage('success', Language::_('Pterodactyl.!success.stop', true));
-                }
-                break;
-            case 'restart':
-                if ($this->apiRequest('Client', 'serverPowerSignal', [$server->attributes->identifier, 'restart'], true)) {
-                    $this->setMessage('success', Language::_('Pterodactyl.!success.restart', true));
-                }
-                break;
-            default:
-                break;
-        }
     }
 
     /**
