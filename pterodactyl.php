@@ -1,5 +1,6 @@
 <?php
 use Blesta\PterodactylSDK\PterodactylApi;
+use Blesta\Core\Util\Validate\Server;
 /**
  * Pterodactyl Module
  *
@@ -138,7 +139,7 @@ class Pterodactyl extends Module
         $parent_service = null,
         $status = 'pending'
     ) {
-        $meta = ['server_id' => ''];
+        $meta = [];
         if ($vars['use_module'] == 'true') {
             // Get the service helper
             $this->loadLib('pterodactyl_service');
@@ -182,7 +183,9 @@ class Pterodactyl extends Module
         return [
             [
                 'key' => 'server_id',
-                'value' => $meta['server_id'],
+                'value' => isset($meta['server_id'])
+                    ? $meta['server_id'] :
+                    (isset($vars['server_id']) ? $vars['server_id'] : null),
                 'encrypted' => 0
             ],
             [
@@ -273,6 +276,7 @@ class Pterodactyl extends Module
             [
                 'key' => 'server_id',
                 'value' => $service_fields->server_id,
+                'value' => !empty($vars['server_id']) ? $vars['server_id'] : $service_fields->server_id,
                 'encrypted' => 0
             ],
             [
@@ -457,7 +461,8 @@ class Pterodactyl extends Module
         // Fetch the API
         $api = $this->getApi(
             $row->meta->panel_url,
-            $client_api ? $row->meta->account_api_key : $row->meta->application_api_key
+            $client_api ? $row->meta->account_api_key : $row->meta->application_api_key,
+            $row->meta->use_ssl == 'true'
         );
 
         // Perform the request
@@ -570,6 +575,13 @@ class Pterodactyl extends Module
         // Load the helpers required for this view
         Loader::loadHelpers($this, ['Form', 'Html', 'Widget']);
 
+        // Set unspecified checkboxes
+        if (!empty($vars)) {
+            if (empty($vars['use_ssl'])) {
+                $vars['use_ssl'] = 'false';
+            }
+        }
+
         $this->view->set('vars', (object)$vars);
         return $this->view->fetch();
     }
@@ -591,8 +603,14 @@ class Pterodactyl extends Module
 
         // Load the helpers required for this view
         Loader::loadHelpers($this, ['Form', 'Html', 'Widget']);
+
         if (empty($vars)) {
             $vars = $module_row->meta;
+        } else {
+            // Set unspecified checkboxes
+            if (empty($vars['use_ssl'])) {
+                $vars['use_ssl'] = 'false';
+            }
         }
 
         $this->view->set('vars', (object)$vars);
@@ -612,8 +630,13 @@ class Pterodactyl extends Module
      */
     public function addModuleRow(array &$vars)
     {
-        $meta_fields = ['server_name', 'panel_url', 'account_api_key', 'application_api_key'];
+        $meta_fields = ['server_name', 'panel_url', 'account_api_key', 'application_api_key', 'use_ssl'];
         $encrypted_fields = ['account_api_key', 'application_api_key'];
+
+        // Set unspecified checkboxes
+        if (empty($vars['use_ssl'])) {
+            $vars['use_ssl'] = 'false';
+        }
 
         $this->Input->setRules($this->getRowRules($vars));
 
@@ -680,14 +703,14 @@ class Pterodactyl extends Module
     public function getPackageLists($vars)
     {
         // Fetch all packages available for the given server or server group
-        $module_row = null;
+        $row = null;
         if (!isset($vars->module_group) || $vars->module_group == '') {
             if (isset($vars->module_row) && $vars->module_row > 0) {
-                $module_row = $this->getModuleRow($vars->module_row);
+                $row = $this->getModuleRow($vars->module_row);
             } else {
                 $rows = $this->getModuleRows();
                 if (isset($rows[0])) {
-                    $module_row = $rows[0];
+                    $row = $rows[0];
                 }
                 unset($rows);
             }
@@ -696,15 +719,15 @@ class Pterodactyl extends Module
             $rows = $this->getModuleRows($vars->module_group);
 
             if (isset($rows[0])) {
-                $module_row = $rows[0];
+                $row = $rows[0];
             }
             unset($rows);
         }
 
         $api = null;
         $package_lists = [];
-        if ($module_row) {
-            $api = $this->getApi($module_row->meta->panel_url, $module_row->meta->application_api_key);
+        if ($row) {
+            $api = $this->getApi($row->meta->panel_url, $row->meta->application_api_key, $row->meta->use_ssl == 'true');
 
             // API request for locations
             $locations_response = $api->Locations->getAll();
@@ -717,7 +740,7 @@ class Pterodactyl extends Module
             $this->log('Nests.getAll', $nests_response->raw(), 'output', $nests_response->status() == 200);
 
             // Gather a list of locations from the API response
-            if (!$locations_response->errors()) {
+            if ($locations_response->status() == 200) {
                 $package_lists['locations'] = ['' => Language::_('AppController.select.please', true)];
                 foreach ($locations_response->response()->data as $location) {
                     $package_lists['locations'][$location->attributes->id] = $location->attributes->long;
@@ -725,7 +748,7 @@ class Pterodactyl extends Module
             }
 
             // Gather a list of nests from the API response
-            if (!$nests_response->errors()) {
+            if ($nests_response->status() == 200) {
                 $package_lists['nests'] = ['' => Language::_('AppController.select.please', true)];
                 foreach ($nests_response->response()->data as $nest) {
                     $package_lists['nests'][$nest->attributes->id] = $nest->attributes->name;
@@ -736,7 +759,7 @@ class Pterodactyl extends Module
             if (!empty($vars->meta['nest_id'])) {
                 // API request for eggs
                 $eggs_response = $api->Nests->eggsGetAll($vars->meta['nest_id']);
-                if (!$eggs_response->errors()) {
+                if ($eggs_response->status() == 200) {
                     $package_lists['eggs'] = ['' => Language::_('AppController.select.please', true)];
                     foreach ($eggs_response->response()->data as $egg) {
                         // This lists egg IDs, but eggs have name, for some reason they are just not fetched by the API.
@@ -810,7 +833,7 @@ class Pterodactyl extends Module
         }
 
         // Fetch the service fields
-        return $service_helper->getFields($pterodactyl_egg, $vars);
+        return $service_helper->getFields($pterodactyl_egg, $vars, true);
     }
 
     /**
@@ -823,7 +846,29 @@ class Pterodactyl extends Module
      */
     public function getClientAddFields($package, $vars = null)
     {
-        return $this->getAdminAddFields($package, $vars);
+        // Get and set the module row to use for API calls
+        if ($package->module_group) {
+            $this->setModuleRow($this->getModuleRow($this->selectModuleRow($package->module_group)));
+        } else {
+            $this->setModuleRow($this->getModuleRow($package->module_row));
+        }
+
+        // Load the service helper
+        $this->loadLib('pterodactyl_service');
+        $service_helper = new PterodactylService();
+
+        // Load egg
+        $pterodactyl_egg = $this->apiRequest(
+            'Nests',
+            'eggsGet',
+            ['nest_id' => $package->meta->nest_id, 'egg_id' => $package->meta->egg_id]
+        );
+        if ($this->Input->errors()) {
+            return new ModuleFields();
+        }
+
+        // Fetch the service fields
+        return $service_helper->getFields($pterodactyl_egg, $vars);
     }
 
     /**
@@ -849,7 +894,7 @@ class Pterodactyl extends Module
      */
     public function getClientEditFields($package, $vars = null)
     {
-        return $this->getAdminAddFields($package, $vars);
+        return $this->getClientAddFields($package, $vars);
     }
 
     ##
@@ -861,15 +906,16 @@ class Pterodactyl extends Module
      *
      * @param string $host The host to the Pterodactyl server
      * @param string $api_key The user to connect as
+     * @param bool $use_ssl Whether to connect over ssl
      * @return PterodactylApi The PterodactylApi instance
      */
-    private function getApi($host, $api_key)
+    private function getApi($host, $api_key, $use_ssl)
     {
         Loader::load(
             dirname(__FILE__) . DS . 'components' . DS . 'modules' . DS . 'pterodactyl-sdk' . DS . 'PterodactylApi.php'
         );
 
-        return new PterodactylApi($api_key, $host);
+        return new PterodactylApi($api_key, $host, $use_ssl);
     }
 
     /**
@@ -890,7 +936,10 @@ class Pterodactyl extends Module
             ],
             'panel_url' => [
                 'valid' => [
-                    'rule' => [[$this, 'validateHostName']],
+                    'rule' => function ($host_name) {
+                        $validator = new Server();
+                        return $validator->isDomain($host_name);
+                    },
                     'message' => Language::_('Pterodactyl.!error.panel_url.valid', true)
                 ]
             ],
@@ -903,10 +952,14 @@ class Pterodactyl extends Module
                 'valid' => [
                     'rule' => function ($api_key) use ($vars) {
                         try {
-                            $api = $this->getApi(isset($vars['panel_url']) ? $vars['panel_url'] : '', $api_key);
+                            $api = $this->getApi(
+                                isset($vars['panel_url']) ? $vars['panel_url'] : '',
+                                $api_key,
+                                (isset($vars['use_ssl']) ? $vars['use_ssl'] : 'true') == 'true'
+                            );
                             $servers_response = $api->Client->getServers();
 
-                            return empty($servers_response->errors());
+                            return $servers_response->status() == 200;
                         } catch (Exception $e) {
                             return false;
                         }
@@ -923,10 +976,14 @@ class Pterodactyl extends Module
                 'valid' => [
                     'rule' => function ($api_key) use ($vars) {
                         try {
-                            $api = $this->getApi(isset($vars['panel_url']) ? $vars['panel_url'] : '', $api_key);
+                            $api = $this->getApi(
+                                isset($vars['panel_url']) ? $vars['panel_url'] : '',
+                                $api_key,
+                                (isset($vars['use_ssl']) ? $vars['use_ssl'] : 'true') == 'true'
+                            );
                             $locations_response = $api->Locations->getAll();
 
-                            return empty($locations_response->errors());
+                            return $locations_response->status() == 200;
                         } catch (Exception $e) {
                             return false;
                         }
@@ -935,26 +992,5 @@ class Pterodactyl extends Module
                 ]
             ]
         ];
-    }
-
-    /**
-     * Validates that the given hostname is valid
-     *
-     * @param string $host_name The host name to validate
-     * @return bool True if the hostname is valid, false otherwise
-     */
-    public function validateHostName($host_name)
-    {
-        ##
-        # TODO Update to use the validator utility
-        ##
-        if (strlen($host_name) > 255) {
-            return false;
-        }
-
-        return $this->Input->matches(
-            $host_name,
-            "/^([a-z0-9]|[a-z0-9][a-z0-9\-]{0,61}[a-z0-9])(\.([a-z0-9]|[a-z0-9][a-z0-9\-]{0,61}[a-z0-9]))+$/i"
-        );
     }
 }

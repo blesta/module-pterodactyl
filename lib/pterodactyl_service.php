@@ -75,8 +75,8 @@ class PterodactylService
 
         // Gather server data
         return [
-            'description' => '', // TODO create service description
             'name' => $vars['server_name'],
+            'description' => $vars['server_description'],
             'user' => $pterodactyl_user->attributes->id,
             'nest' => $package->meta->nest_id,
             'egg' => $package->meta->egg_id,
@@ -96,6 +96,7 @@ class PterodactylService
             ],
             'feature_limits' => [
                 'databases' => $package->meta->databases ? $package->meta->databases : null,
+                'allocations' => $package->meta->allocations ? $package->meta->allocations : null,
             ],
             'deploy' => [
                 'locations' => [$package->meta->location_id],
@@ -119,8 +120,8 @@ class PterodactylService
         // Gather server data
         return [
             'name' => $vars['server_name'],
+            'description' => $vars['server_description'],
             'user' => $pterodactyl_user->attributes->id,
-            'description' => '', // TODO create service description
         ];
     }
 
@@ -143,6 +144,7 @@ class PterodactylService
             ],
             'feature_limits' => [
                 'databases' => $package->meta->databases ? $package->meta->databases : null,
+                'allocations' => $package->meta->allocations ? $package->meta->allocations : null,
             ]
         ];
     }
@@ -191,14 +193,33 @@ class PterodactylService
      *
      * @param stdClass $pterodactyl_egg An object representing the Pterodacytl egg
      * @param stdClass $vars A stdClass object representing a set of post fields (optional)
+     * @param bool $admin Whether these fields will be displayed to a admin (optional)
      * @return ModuleFields A ModuleFields object, containing the fields
      *  to render as well as any additional HTML markup to include
      */
-    public function getFields($pterodactyl_egg, $vars = null)
+    public function getFields($pterodactyl_egg, $vars = null, $admin = false)
     {
         Loader::loadHelpers($this, ['Html']);
 
         $fields = new ModuleFields();
+
+        if ($admin) {
+            // Set the server ID
+            $server_id = $fields->label(
+                Language::_('PterodactylService.service_fields.server_id', true),
+                'server_id'
+            );
+            $server_id->attach(
+                $fields->fieldText(
+                    'server_id',
+                    $this->Html->ifSet($vars->server_id),
+                    ['id' => 'server_id']
+                )
+            );
+            $tooltip = $fields->tooltip(Language::_('PterodactylService.service_fields.tooltip.server_id', true));
+            $server_id->attach($tooltip);
+            $fields->setField($server_id);
+        }
 
         // Set the server name
         $serverName = $fields->label(
@@ -215,6 +236,22 @@ class PterodactylService
         $tooltip = $fields->tooltip(Language::_('PterodactylService.service_fields.tooltip.server_name', true));
         $serverName->attach($tooltip);
         $fields->setField($serverName);
+
+        // Set the server description
+        $serverDescription = $fields->label(
+            Language::_('PterodactylService.service_fields.server_description', true),
+            'server_description'
+        );
+        $serverDescription->attach(
+            $fields->fieldText(
+                'server_description',
+                $this->Html->ifSet($vars->server_description),
+                ['id' => 'server_description']
+            )
+        );
+        $tooltip = $fields->tooltip(Language::_('PterodactylService.service_fields.tooltip.server_description', true));
+        $serverDescription->attach($tooltip);
+        $fields->setField($serverDescription);
 
         // Get service fields
         foreach ($pterodactyl_egg->attributes->relationships->variables->data as $env_variable) {

@@ -16,6 +16,7 @@ $lang['PterodactylPackage.!error.meta[disk].format'] = 'The disk space amount mu
 $lang['PterodactylPackage.!error.meta[io].format'] = 'The IO weight must be numeric.';
 $lang['PterodactylPackage.!error.meta[image].length'] = 'The image path must be a most 255 characters.';
 $lang['PterodactylPackage.!error.meta[databases].format'] = 'The number of databases must be numeric.';
+$lang['PterodactylPackage.!error.meta[allocations].format'] = 'The number of allocations must be numeric.';
 
 
 // Package fields
@@ -59,4 +60,7 @@ $lang['PterodactylPackage.package_fields.image'] = 'Image (optional)';
 $lang['PterodactylPackage.package_fields.tooltip.image'] = 'Custom Docker image to assign to the created server (e.g. quay.io/pterodactyl/core:java-glibc).';
 
 $lang['PterodactylPackage.package_fields.databases'] = 'Database Limit (optional)';
-$lang['PterodactylPackage.package_fields.tooltip.databases'] = 'Client will be able to create this number of databases for their server.';
+$lang['PterodactylPackage.package_fields.tooltip.databases'] = 'The total number of databases a user is allowed to create for this server. Leave blank to allow unlimited.';
+
+$lang['PterodactylPackage.package_fields.allocations'] = 'Allocation Limit (optional)';
+$lang['PterodactylPackage.package_fields.tooltip.allocations'] = 'The total number of allocations a user is allowed to create for this server. Leave blank to allow unlimited.';

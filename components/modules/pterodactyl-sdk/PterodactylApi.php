@@ -26,17 +26,23 @@ class PterodactylApi
      * @var string The Pterodactyl API key
      */
     private $apiKey;
+    /**
+     * @var bool Whether to connect using ssl
+     */
+    private $useSsl;
 
     /**
      * Initializes the request parameter
      *
      * @param string $apiKey The API key
      * @param string $baseUrl The base URL of the pterodactyl panel
+     * @param bool $useSsl Whether to connect using ssl
      */
-    public function __construct($apiKey, $baseUrl)
+    public function __construct($apiKey, $baseUrl, $useSsl)
     {
         $this->apiKey = $apiKey;
         $this->apiUrl = trim($baseUrl, '/') . '/api';
+        $this->useSsl = $useSsl;
     }
 
     /**
@@ -48,7 +54,7 @@ class PterodactylApi
     public function __get($className)
     {
         $r = new \ReflectionClass('\\Blesta\\PterodactylSDK\\Requestors\\' . $className);
-        $this->{$className} = $r->newInstanceArgs([$this->apiKey, $this->apiUrl]);
+        $this->{$className} = $r->newInstanceArgs([$this->apiKey, $this->apiUrl, $this->useSsl]);
         return $this->{$className};
     }
 }
