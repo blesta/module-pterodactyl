@@ -193,7 +193,7 @@ class PterodactylService
      *
      * @param stdClass $pterodactyl_egg An object representing the Pterodacytl egg
      * @param stdClass $vars A stdClass object representing a set of post fields (optional)
-     * @param bool $admin Whether these fields will be displayed to a admin (optional)
+     * @param bool $admin Whether these fields will be displayed to an admin (optional)
      * @return ModuleFields A ModuleFields object, containing the fields
      *  to render as well as any additional HTML markup to include
      */
@@ -253,7 +253,7 @@ class PterodactylService
         $serverDescription->attach($tooltip);
         $fields->setField($serverDescription);
 
-        // Get service fields
+        // Get service fields from the egg
         foreach ($pterodactyl_egg->attributes->relationships->variables->data as $env_variable) {
             // Create a label for the environment variable
             $label = strpos($env_variable->attributes->rules, 'required') === 0
