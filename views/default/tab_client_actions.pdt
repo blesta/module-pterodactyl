@@ -44,7 +44,7 @@ $(document).ready(function() {
                         pterodactyl_refresh_rate = (html == pterodactyl_old_action_data) ? '<?php echo Configure::get('Pterodactyl.page_refresh_rate');?>' : '<?php echo Configure::get('Pterodactyl.page_refresh_rate_fast');?>';
 
                         clearInterval(interval);
-                        setpterodactylInterval(pterodactyl_refresh_rate, html);
+                        setPterodactylInterval(pterodactyl_refresh_rate, html);
                     }
                 },
                 null,

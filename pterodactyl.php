@@ -344,7 +344,7 @@ class Pterodactyl extends Module
     }
 
     /**
-     * Actions tab (boot, rebuild, shutdown, etc.)
+     * Actions tab (start, stop, restart)
      *
      * @param stdClass $package A stdClass object representing the current package
      * @param stdClass $service A stdClass object representing the current service
@@ -361,7 +361,7 @@ class Pterodactyl extends Module
     }
 
     /**
-     * Client Actions tab (boot, rebuild, shutdown, etc.)
+     * Client Actions tab (start, stop, restart)
      *
      * @param stdClass $package A stdClass object representing the current package
      * @param stdClass $service A stdClass object representing the current service
@@ -378,7 +378,7 @@ class Pterodactyl extends Module
     }
     /**
      * Handles data for the actions tab in the client and admin interfaces
-     * @see Solusvm::tabActions() and Solusvm::tabClientActions()
+     * @see Pterodactyl::tabActions() and Pterodactyl::tabClientActions()
      *
      * @param stdClass $package A stdClass object representing the current package
      * @param stdClass $service A stdClass object representing the current service
@@ -396,7 +396,7 @@ class Pterodactyl extends Module
         // Get the service fields
         $service_fields = $this->serviceFieldsToObject($service->fields);
 
-        // Perform the actions
+        // Get server information from the application API
         $server = $this->apiRequest('Servers', 'get', [$service_fields->server_id]);
         $server_id = isset($server->attributes->identifier) ? $server->attributes->identifier : null;
 
@@ -411,6 +411,7 @@ class Pterodactyl extends Module
             && in_array($get[$get_key], ['start', 'stop', 'restart'])
             && isset($server->attributes->identifier)
         ) {
+            // Send a power signal
             $signal_response = $this->apiRequest(
                 'Client',
                 'serverPowerSignal',
@@ -422,7 +423,7 @@ class Pterodactyl extends Module
             }
         }
 
-        // Fetch the server status and templates
+        // Fetch the server status from the account API
         $this->view->set('server', $this->apiRequest('Client', 'getServerUtilization', [$server_id], true));
 
         $this->view->set('client_id', $service->client_id);
