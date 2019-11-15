@@ -150,11 +150,10 @@ class Pterodactyl extends Module
             return;
         }
 
+        // Get the service helper
+        $this->loadLib('pterodactyl_service');
+        $service_helper = new PterodactylService();
         if ($vars['use_module'] == 'true') {
-            // Get the service helper
-            $this->loadLib('pterodactyl_service');
-            $service_helper = new PterodactylService();
-
             // Load/create user account
             $pterodactyl_user = $this->apiRequest('Users', 'getByExternalId', [$vars['client_id']]);
             if ($this->Input->errors()) {
@@ -200,15 +199,13 @@ class Pterodactyl extends Module
             ],
         ];
 
-        // Add egg variables
-        foreach ($pterodactyl_egg->attributes->relationships->variables->data as $env_variable) {
-            if (isset($vars[$env_variable->attributes->env_variable])) {
-                $return[] = [
-                    'key' => $env_variable->attributes->env_variable,
-                    'value' =>  $vars[$env_variable->attributes->env_variable],
-                    'encrypted' => 0
-                ];
-            }
+        $environment_variables = $service_helper->getEnvironmentVariables($vars, $package, $pterodactyl_egg);
+        foreach ($environment_variables as $environment_variable => $value) {
+            $return[] = [
+                'key' => strtolower($environment_variable),
+                'value' => $value,
+                'encrypted' => 0
+            ];
         }
 
         return $return;
@@ -290,10 +287,10 @@ class Pterodactyl extends Module
 
         }
 
-        return [
+
+        $return = [
             [
                 'key' => 'server_id',
-                'value' => $service_fields->server_id,
                 'value' => !empty($vars['server_id']) ? $vars['server_id'] : $service_fields->server_id,
                 'encrypted' => 0
             ],
@@ -302,7 +299,35 @@ class Pterodactyl extends Module
                 'value' => isset($vars['server_name']) ? $vars['server_name'] : $service_fields->server_name,
                 'encrypted' => 0
             ],
+            [
+                'key' => 'server_description',
+                'value' => isset($vars['server_description'])
+                    ? $vars['server_description']
+                    : $service_fields->server_description,
+                'encrypted' => 0
+            ],
         ];
+
+        // TODO Check this to see if config option is being saved
+        // Add egg variables
+        foreach ($pterodactyl_egg->attributes->relationships->variables->data as $env_variable) {
+            $blesta_field_name = strtolower($env_variable->attributes->env_variable);
+            if (isset($vars[$blesta_field_name])) {
+                $return[] = [
+                    'key' => $blesta_field_name,
+                    'value' =>  $vars[$blesta_field_name],
+                    'encrypted' => 0
+                ];
+            } elseif (isset($service_fields->{$blesta_field_name})) {
+                $return[] = [
+                    'key' => $blesta_field_name,
+                    'value' =>  $vars[$service_fields->{$blesta_field_name}],
+                    'encrypted' => 0
+                ];
+            }
+        }
+
+        return $return;
     }
 
     /**
