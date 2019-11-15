@@ -139,9 +139,10 @@ class PterodactylService
      * @param array $vars An array of post fields
      * @param stdClass $package The package to pull server info from
      * @param stdClass $pterodactylEgg An object representing the Pterodacytl egg
+     * @param stdClass $serviceFields An object representing the fields set on the current service (optional)
      * @return array The list of parameters
      */
-    public function editServerStartupParameters(array $vars, $package, $pterodactylEgg)
+    public function editServerStartupParameters(array $vars, $package, $pterodactylEgg, $serviceFields = null)
     {
         // Gather server data
         return [
@@ -153,7 +154,7 @@ class PterodactylService
             'startup' => !empty($package->meta->startup)
                 ? $package->meta->startup
                 : $pterodactylEgg->attributes->startup,
-            'environment' => $this->getEnvironmentVariables($vars, $package, $pterodactylEgg),
+            'environment' => $this->getEnvironmentVariables($vars, $package, $pterodactylEgg, $serviceFields),
             'skip_scripts' => false,
         ];
     }
@@ -164,9 +165,10 @@ class PterodactylService
      * @param array $vars An array of post fields
      * @param stdClass $package The package to pull server info from
      * @param stdClass $pterodactylEgg An object representing the Pterodacytl egg
+     * @param stdClass $serviceFields An object representing the fields set on the current service (optional)
      * @return array The list of environment variables and their values
      */
-    public function getEnvironmentVariables(array $vars, $package, $pterodactylEgg)
+    public function getEnvironmentVariables(array $vars, $package, $pterodactylEgg, $serviceFields = null)
     {
         // Get environment data from the egg
         $environment = [];
@@ -174,13 +176,16 @@ class PterodactylService
             $variableName = $envVariable->attributes->env_variable;
             $blestaVariableName = strtolower($variableName);
             // Set the variable value based on values submitted in the following
-            // priority order: service field, config option, package field, Pterodactyl default
-            if (isset($vars[$blestaVariableName])) {
-                // Use the service field
-                $environment[$variableName] = $vars[$blestaVariableName];
-            } elseif (isset($vars['configoptions']) && isset($vars['configoptions'][$blestaVariableName])) {
+            // priority order: config option, service field, package field, Pterodactyl default
+            if (isset($vars['configoptions']) && isset($vars['configoptions'][$blestaVariableName])) {
                 // Use a config option
                 $environment[$variableName] = $vars['configoptions'][$blestaVariableName];
+            } elseif (isset($vars[$blestaVariableName])) {
+                // Use the service field
+                $environment[$variableName] = $vars[$blestaVariableName];
+            } elseif (isset($serviceFields) && isset($serviceFields->{$blestaVariableName})) {
+                // Reset the previously saved value
+                $environment[$variableName] = $serviceFields->{$blestaVariableName};
             } elseif (isset($package->meta->{$blestaVariableName})) {
                 // Default to the value set on the package
                 $environment[$variableName] = $package->meta->{$blestaVariableName};
