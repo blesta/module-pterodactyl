@@ -51,44 +51,26 @@ class PterodactylService
      *
      * @param array $vars An array of post fields
      * @param stdClass $package The package to pull server info from
-     * @param stdClass $pterodactyl_user An object representing the Pterodacytl user
-     * @param stdClass $pterodactyl_egg An object representing the Pterodacytl egg
+     * @param stdClass $pterodactylUser An object representing the Pterodacytl user
+     * @param stdClass $pterodactylEgg An object representing the Pterodacytl egg
      * @return array The list of parameters
      */
-    public function addServerParameters(array $vars, $package, $pterodactyl_user, $pterodactyl_egg)
+    public function addServerParameters(array $vars, $package, $pterodactylUser, $pterodactylEgg)
     {
-        ##
-        # TODO allow the service fields to overriden by config options
-        ##
-        // Get environment data from the egg
-        $environment = [];
-        foreach ($pterodactyl_egg->attributes->relationships->variables->data as $env_variable) {
-            // Check service options for the given variable
-            $variable_name = $env_variable->attributes->env_variable;
-            if (isset($vars[$variable_name])) {
-                $environment[$variable_name] = $vars[$variable_name];
-            } else {
-                // Default to the default value or the value set on the package
-                $environment[$variable_name] = isset($package->meta->{$variable_name})
-                    ? $package->meta->{$variable_name}
-                    : $env_variable->attributes->default_value;
-            }
-        }
-
         // Gather server data
         return [
             'name' => $vars['server_name'],
             'description' => $vars['server_description'],
-            'user' => $pterodactyl_user->attributes->id,
+            'user' => $pterodactylUser->attributes->id,
             'nest' => $package->meta->nest_id,
             'egg' => $package->meta->egg_id,
             'pack' => $package->meta->pack_id,
             'docker_image' => !empty($package->meta->image)
                 ? $package->meta->image
-                : $pterodactyl_egg->attributes->docker_image,
+                : $pterodactylEgg->attributes->docker_image,
             'startup' => !empty($package->meta->startup)
                 ? $package->meta->startup
-                : $pterodactyl_egg->attributes->startup,
+                : $pterodactylEgg->attributes->startup,
             'limits' => [
                 'memory' => $package->meta->memory,
                 'swap' => $package->meta->swap,
@@ -105,7 +87,7 @@ class PterodactylService
                 'dedicated_ip' => $package->meta->dedicated_ip,
                 'port_range' => explode(',', $package->meta->port_range),
             ],
-            'environment' => $environment,
+            'environment' =>  $this->getEnvironmentVariables($vars, $package, $pterodactylEgg),
             'start_on_completion' => true,
         ];
     }
@@ -114,16 +96,16 @@ class PterodactylService
      * Gets a list of parameters to submit to Pterodactyl for editing server details
      *
      * @param array $vars An array of post fields
-     * @param stdClass $pterodactyl_user An object representing the Pterodacytl user
+     * @param stdClass $pterodactylUser An object representing the Pterodacytl user
      * @return array The list of parameters
      */
-    public function editServerParameters(array $vars, $pterodactyl_user)
+    public function editServerParameters(array $vars, $pterodactylUser)
     {
         // Gather server data
         return [
             'name' => $vars['server_name'],
             'description' => $vars['server_description'],
-            'user' => $pterodactyl_user->attributes->id,
+            'user' => $pterodactylUser->attributes->id,
         ];
     }
 
@@ -156,53 +138,78 @@ class PterodactylService
      *
      * @param array $vars An array of post fields
      * @param stdClass $package The package to pull server info from
-     * @param stdClass $pterodactyl_egg An object representing the Pterodacytl egg
+     * @param stdClass $pterodactylEgg An object representing the Pterodacytl egg
+     * @param stdClass $serviceFields An object representing the fields set on the current service (optional)
      * @return array The list of parameters
      */
-    public function editServerStartupParameters(array $vars, $package, $pterodactyl_egg)
+    public function editServerStartupParameters(array $vars, $package, $pterodactylEgg, $serviceFields = null)
     {
-        // Get environment data from the egg
-        $environment = [];
-        foreach ($pterodactyl_egg->attributes->relationships->variables->data as $env_variable) {
-            // Check service options for the given variable
-            $variable_name = $env_variable->attributes->env_variable;
-            if (isset($vars[$variable_name])) {
-                $environment[$variable_name] = $vars[$variable_name];
-            } else {
-                // Default to the default value or the value set on the package
-                $environment[$variable_name] = isset($package->meta->{$variable_name})
-                    ? $package->meta->{$variable_name}
-                    : $env_variable->attributes->default_value;
-            }
-        }
-
         // Gather server data
         return [
             'egg' => $package->meta->egg_id,
             'pack' => $package->meta->pack_id,
             'image' => !empty($package->meta->image)
                 ? $package->meta->image
-                : $pterodactyl_egg->attributes->docker_image,
+                : $pterodactylEgg->attributes->docker_image,
             'startup' => !empty($package->meta->startup)
                 ? $package->meta->startup
-                : $pterodactyl_egg->attributes->startup,
-            'environment' => $environment,
+                : $pterodactylEgg->attributes->startup,
+            'environment' => $this->getEnvironmentVariables($vars, $package, $pterodactylEgg, $serviceFields),
             'skip_scripts' => false,
         ];
+    }
+
+    /**
+     * Gets a list of environment variables to submit to Pterodactyl
+     *
+     * @param array $vars An array of post fields
+     * @param stdClass $package The package to pull server info from
+     * @param stdClass $pterodactylEgg An object representing the Pterodacytl egg
+     * @param stdClass $serviceFields An object representing the fields set on the current service (optional)
+     * @return array The list of environment variables and their values
+     */
+    public function getEnvironmentVariables(array $vars, $package, $pterodactylEgg, $serviceFields = null)
+    {
+        // Get environment data from the egg
+        $environment = [];
+        foreach ($pterodactylEgg->attributes->relationships->variables->data as $envVariable) {
+            $variableName = $envVariable->attributes->env_variable;
+            $blestaVariableName = strtolower($variableName);
+            // Set the variable value based on values submitted in the following
+            // priority order: config option, service field, package field, Pterodactyl default
+            if (isset($vars['configoptions']) && isset($vars['configoptions'][$blestaVariableName])) {
+                // Use a config option
+                $environment[$variableName] = $vars['configoptions'][$blestaVariableName];
+            } elseif (isset($vars[$blestaVariableName])) {
+                // Use the service field
+                $environment[$variableName] = $vars[$blestaVariableName];
+            } elseif (isset($serviceFields) && isset($serviceFields->{$blestaVariableName})) {
+                // Reset the previously saved value
+                $environment[$variableName] = $serviceFields->{$blestaVariableName};
+            } elseif (isset($package->meta->{$blestaVariableName})) {
+                // Default to the value set on the package
+                $environment[$variableName] = $package->meta->{$blestaVariableName};
+            } else {
+                // Default to the default value from Pterodactyl
+                $environment[$variableName] = $envVariable->attributes->default_value;
+            }
+        }
+
+        return $environment;
     }
 
     /**
      * Returns all fields used when adding/editing a service, including any
      * javascript to execute when the page is rendered with these fields.
      *
-     * @param stdClass $pterodactyl_egg An object representing the Pterodacytl egg
+     * @param stdClass $pterodactylEgg An object representing the Pterodacytl egg
      * @param stdClass $package The package to pull server info from
      * @param stdClass $vars A stdClass object representing a set of post fields (optional)
      * @param bool $admin Whether these fields will be displayed to an admin (optional)
      * @return ModuleFields A ModuleFields object, containing the fields
      *  to render as well as any additional HTML markup to include
      */
-    public function getFields($pterodactyl_egg, $package, $vars = null, $admin = false)
+    public function getFields($pterodactylEgg, $package, $vars = null, $admin = false)
     {
         Loader::loadHelpers($this, ['Html']);
 
@@ -210,11 +217,11 @@ class PterodactylService
 
         if ($admin) {
             // Set the server ID
-            $server_id = $fields->label(
+            $serverId = $fields->label(
                 Language::_('PterodactylService.service_fields.server_id', true),
                 'server_id'
             );
-            $server_id->attach(
+            $serverId->attach(
                 $fields->fieldText(
                     'server_id',
                     $this->Html->ifSet($vars->server_id),
@@ -222,8 +229,8 @@ class PterodactylService
                 )
             );
             $tooltip = $fields->tooltip(Language::_('PterodactylService.service_fields.tooltip.server_id', true));
-            $server_id->attach($tooltip);
-            $fields->setField($server_id);
+            $serverId->attach($tooltip);
+            $fields->setField($serverId);
         }
 
         // Set the server name
@@ -258,11 +265,11 @@ class PterodactylService
         $serverDescription->attach($tooltip);
         $fields->setField($serverDescription);
 
-        if ($pterodactyl_egg) {
+        if ($pterodactylEgg) {
             // Get service fields from the egg
-            foreach ($pterodactyl_egg->attributes->relationships->variables->data as $env_variable) {
+            foreach ($pterodactylEgg->attributes->relationships->variables->data as $envVariable) {
                 // Hide the field from clients unless it is marked for display on the package
-                $key = strtolower($env_variable->attributes->env_variable);
+                $key = strtolower($envVariable->attributes->env_variable);
                 if (!$admin
                     && (!isset($package->meta->{$key . '_display'}) || $package->meta->{$key . '_display'} != '1')
                 ) {
@@ -270,9 +277,9 @@ class PterodactylService
                 }
 
                 // Create a label for the environment variable
-                $label = strpos($env_variable->attributes->rules, 'required') === 0
-                    ? $env_variable->attributes->name
-                    : Language::_('PterodactylService.service_fields.optional', true, $env_variable->attributes->name);
+                $label = strpos($envVariable->attributes->rules, 'required') === 0
+                    ? $envVariable->attributes->name
+                    : Language::_('PterodactylService.service_fields.optional', true, $envVariable->attributes->name);
                 $field = $fields->label($label, $key);
                 // Create the environment variable field and attach to the label
                 $field->attach(
@@ -282,14 +289,14 @@ class PterodactylService
                             $vars->{$key},
                             $this->Html->ifSet(
                                 $package->meta->{$key},
-                                $env_variable->attributes->default_value
+                                $envVariable->attributes->default_value
                             )
                         ),
                         ['id' => $key]
                     )
                 );
                 // Add tooltip based on the description from Pterodactyl
-                $tooltip = $fields->tooltip($env_variable->attributes->description);
+                $tooltip = $fields->tooltip($envVariable->attributes->description);
                 $field->attach($tooltip);
                 // Set the label as a field
                 $fields->setField($field);
@@ -318,12 +325,12 @@ class PterodactylService
         $rules = [];
 
         // Set the values that may be empty
-        $empty_values = [];
+        $emptyValues = [];
         if ($edit) {
         }
 
         // Remove rules on empty fields
-        foreach ($empty_values as $value) {
+        foreach ($emptyValues as $value) {
             if (empty($vars[$value])) {
                 unset($rules[$value]);
             }
