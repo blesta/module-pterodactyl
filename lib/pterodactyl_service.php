@@ -58,7 +58,7 @@ class PterodactylService
     public function addServerParameters(array $vars, $package, $pterodactyl_user, $pterodactyl_egg)
     {
         ##
-        # TODO allow the service fields to be hidden and overriden by package fields or config options
+        # TODO allow the service fields to overriden by config options
         ##
         // Get environment data from the egg
         $environment = [];
@@ -68,8 +68,10 @@ class PterodactylService
             if (isset($vars[$variable_name])) {
                 $environment[$variable_name] = $vars[$variable_name];
             } else {
-                // Default to the default value
-                $environment[$variable_name] = $env_variable->attributes->default_value;
+                // Default to the default value or the value set on the package
+                $environment[$variable_name] = isset($package->meta->{$variable_name})
+                    ? $package->meta->{$variable_name}
+                    : $env_variable->attributes->default_value;
             }
         }
 
@@ -167,8 +169,10 @@ class PterodactylService
             if (isset($vars[$variable_name])) {
                 $environment[$variable_name] = $vars[$variable_name];
             } else {
-                // Default to the default value
-                $environment[$variable_name] = $env_variable->attributes->default_value;
+                // Default to the default value or the value set on the package
+                $environment[$variable_name] = isset($package->meta->{$variable_name})
+                    ? $package->meta->{$variable_name}
+                    : $env_variable->attributes->default_value;
             }
         }
 
@@ -192,12 +196,13 @@ class PterodactylService
      * javascript to execute when the page is rendered with these fields.
      *
      * @param stdClass $pterodactyl_egg An object representing the Pterodacytl egg
+     * @param stdClass $package The package to pull server info from
      * @param stdClass $vars A stdClass object representing a set of post fields (optional)
      * @param bool $admin Whether these fields will be displayed to an admin (optional)
      * @return ModuleFields A ModuleFields object, containing the fields
      *  to render as well as any additional HTML markup to include
      */
-    public function getFields($pterodactyl_egg, $vars = null, $admin = false)
+    public function getFields($pterodactyl_egg, $package, $vars = null, $admin = false)
     {
         Loader::loadHelpers($this, ['Html']);
 
@@ -256,8 +261,15 @@ class PterodactylService
         if ($pterodactyl_egg) {
             // Get service fields from the egg
             foreach ($pterodactyl_egg->attributes->relationships->variables->data as $env_variable) {
-                // Create a label for the environment variable
+                // Hide the field from clients unless it is marked for display on the package
                 $key = strtolower($env_variable->attributes->env_variable);
+                if (!$admin
+                    && (!isset($package->meta->{$key . '_display'}) || $package->meta->{$key . '_display'} != '1')
+                ) {
+                    continue;
+                }
+
+                // Create a label for the environment variable
                 $label = strpos($env_variable->attributes->rules, 'required') === 0
                     ? $env_variable->attributes->name
                     : Language::_('PterodactylService.service_fields.optional', true, $env_variable->attributes->name);
@@ -266,7 +278,13 @@ class PterodactylService
                 $field->attach(
                     $fields->fieldText(
                         $key,
-                        $this->Html->ifSet($vars->{$key}, $env_variable->attributes->default_value),
+                        $this->Html->ifSet(
+                            $vars->{$key},
+                            $this->Html->ifSet(
+                                $package->meta->{$key},
+                                $env_variable->attributes->default_value
+                            )
+                        ),
                         ['id' => $key]
                     )
                 );
