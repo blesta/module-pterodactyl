@@ -764,7 +764,7 @@ class Pterodactyl extends Module
                     foreach ($eggs_response->response()->data as $egg) {
                         // This lists egg IDs, but eggs have name, for some reason they are just not fetched by the API.
                         // We should probably look into that.
-                        $package_lists['eggs'][$egg->attributes->id] = $egg->attributes->id;
+                        $package_lists['eggs'][$egg->attributes->id] = $egg;
                     }
                 }
 
@@ -828,9 +828,6 @@ class Pterodactyl extends Module
             'eggsGet',
             ['nest_id' => $package->meta->nest_id, 'egg_id' => $package->meta->egg_id]
         );
-        if ($this->Input->errors()) {
-            return new ModuleFields();
-        }
 
         // Fetch the service fields
         return $service_helper->getFields($pterodactyl_egg, $vars, true);

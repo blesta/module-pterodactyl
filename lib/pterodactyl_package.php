@@ -89,33 +89,45 @@ class PterodactylPackage
 
         $fields = new ModuleFields();
 
+        // Set js to refetch options when the nest or egg is changed
         $fields->setHtml("
 			<script type=\"text/javascript\">
 				$(document).ready(function() {
 					// Re-fetch module options to pull in eggs when a nest is selected
-					$('#Pterodactyl_nest_id').change(function() {
+					$('#Pterodactyl_nest_id, #Pterodactyl_egg_id').change(function() {
 						fetchModuleOptions();
 					});
 				});
 			</script>
 		");
 
-        // Set the Location ID
-        $locationId = $fields->label(
-            Language::_('PterodactylPackage.package_fields.location_id', true),
-            'Pterodactyl_location_id'
-        );
-        $locationId->attach(
-            $fields->fieldSelect(
-                'meta[location_id]',
-                isset($packageLists['locations']) ? $packageLists['locations'] : [],
-                $this->Html->ifSet($vars->meta['location_id']),
-                ['id' => 'Pterodactyl_location_id']
-            )
-        );
-        $tooltip = $fields->tooltip(Language::_('PterodactylPackage.package_fields.tooltip.location_id', true));
-        $locationId->attach($tooltip);
-        $fields->setField($locationId);
+
+        // Set the select fields
+        $selectFields = [
+            'location_id' => isset($packageLists['locations']) ? $packageLists['locations'] : [],
+            'nest_id' => isset($packageLists['nests']) ? $packageLists['nests'] : [],
+            'egg_id' => isset($packageLists['eggs'])
+                    ? array_combine(array_keys($packageLists['eggs']), array_keys($packageLists['eggs']))
+                    : [],
+        ];
+        foreach ($selectFields as $selectField => $list) {
+            // Set the select field
+            $field = $fields->label(
+                Language::_('PterodactylPackage.package_fields.' . $selectField, true),
+                'Pterodactyl_' . $selectField
+            );
+            $field->attach(
+                $fields->fieldSelect(
+                    'meta[' . $selectField . ']',
+                    $list,
+                    $this->Html->ifSet($vars->meta[$selectField]),
+                    ['id' => 'Pterodactyl_' . $selectField]
+                )
+            );
+            $tooltip = $fields->tooltip(Language::_('PterodactylPackage.package_fields.tooltip.' . $selectField, true));
+            $field->attach($tooltip);
+            $fields->setField($field);
+        }
 
         // Set the Dedicated IP
         $dedicatedIp = $fields->label(
@@ -135,195 +147,80 @@ class PterodactylPackage
         $dedicatedIp->attach($tooltip);
         $fields->setField($dedicatedIp);
 
-        // Set the Port Range
-        $portRange = $fields->label(
-            Language::_('PterodactylPackage.package_fields.port_range', true),
-            'Pterodactyl_port_range'
-        );
-        $portRange->attach(
-            $fields->fieldText(
-                'meta[port_range]',
-                $this->Html->ifSet($vars->meta['port_range']),
-                ['id' => 'Pterodactyl_port_range']
-            )
-        );
-        $tooltip = $fields->tooltip(Language::_('PterodactylPackage.package_fields.tooltip.port_range', true));
-        $portRange->attach($tooltip);
-        $fields->setField($portRange);
+        // Set text fields
+        $textFields = [
+            'port_range', 'pack_id', 'memory', 'swap', 'cpu', 'disk',
+            'io', 'startup', 'image', 'databases', 'allocations'
+        ];
+        foreach ($textFields as $textField) {
+            // Set the label
+            $field = $fields->label(
+                Language::_('PterodactylPackage.package_fields.' . $textField, true),
+                'Pterodactyl_' . $textField
+            );
+            $field->attach(
+                $fields->fieldText(
+                    'meta[' . $textField . ']',
+                    $this->Html->ifSet($vars->meta[$textField]),
+                    ['id' => 'Pterodactyl_' . $textField]
+                )
+            );
+            $tooltip = $fields->tooltip(Language::_('PterodactylPackage.package_fields.tooltip.' . $textField, true));
+            $field->attach($tooltip);
+            $fields->setField($field);
+        }
 
-        // Set the Nest ID
-        $nestId = $fields->label(
-            Language::_('PterodactylPackage.package_fields.nest_id', true),
-            'Pterodactyl_nest_id'
-        );
-        $nestId->attach(
-            $fields->fieldSelect(
-                'meta[nest_id]',
-                isset($packageLists['nests']) ? $packageLists['nests'] : [],
-                $this->Html->ifSet($vars->meta['nest_id']),
-                ['id' => 'Pterodactyl_nest_id']
-            )
-        );
-        $tooltip = $fields->tooltip(Language::_('PterodactylPackage.package_fields.tooltip.nest_id', true));
-        $nestId->attach($tooltip);
-        $fields->setField($nestId);
+        return isset($packageLists['eggs'][$this->Html->ifSet($vars->meta['egg_id'])])
+            ? $this->attachEggFields($packageLists['eggs'][$this->Html->ifSet($vars->meta['egg_id'])], $fields, $vars)
+            : $fields;
+    }
 
-        // Set the Egg ID
-        $eggId = $fields->label(Language::_('PterodactylPackage.package_fields.egg_id', true), 'Pterodactyl_egg_id');
-        $eggId->attach(
-            $fields->fieldSelect(
-                'meta[egg_id]',
-                isset($packageLists['eggs']) ? $packageLists['eggs'] : [],
-                $this->Html->ifSet($vars->meta['egg_id']),
-                ['id' => 'Pterodactyl_egg_id']
-            )
-        );
-        $tooltip = $fields->tooltip(Language::_('PterodactylPackage.package_fields.tooltip.egg_id', true));
-        $eggId->attach($tooltip);
-        $fields->setField($eggId);
-
-        // Set the Pack ID
-        $packId = $fields->label(
-            Language::_('PterodactylPackage.package_fields.pack_id', true),
-            'Pterodactyl_pack_id'
-        );
-        $packId->attach(
-            $fields->fieldText(
-                'meta[pack_id]',
-                $this->Html->ifSet($vars->meta['pack_id']),
-                ['id' => 'Pterodactyl_pack_id']
-            )
-        );
-        $tooltip = $fields->tooltip(Language::_('PterodactylPackage.package_fields.tooltip.pack_id', true));
-        $packId->attach($tooltip);
-        $fields->setField($packId);
-
-
-        // Set the memory (in MB)
-        $memory = $fields->label(Language::_('PterodactylPackage.package_fields.memory', true), 'Pterodactyl_memory');
-        $memory->attach(
-            $fields->fieldText(
-                'meta[memory]',
-                $this->Html->ifSet($vars->meta['memory']),
-                ['id' => 'Pterodactyl_memory']
-            )
-        );
-        $tooltip = $fields->tooltip(Language::_('PterodactylPackage.package_fields.tooltip.memory', true));
-        $memory->attach($tooltip);
-        $fields->setField($memory);
-
-        // Set the swap (in MB)
-        $swap = $fields->label(Language::_('PterodactylPackage.package_fields.swap', true), 'Pterodactyl_swap');
-        $swap->attach(
-            $fields->fieldText(
-                'meta[swap]',
-                $this->Html->ifSet($vars->meta['swap']),
-                ['id' => 'Pterodactyl_swap']
-            )
-        );
-        $tooltip = $fields->tooltip(Language::_('PterodactylPackage.package_fields.tooltip.swap', true));
-        $swap->attach($tooltip);
-        $fields->setField($swap);
-
-        // Set the CPU Limit (%)
-        $cpu = $fields->label(Language::_('PterodactylPackage.package_fields.cpu', true), 'Pterodactyl_cpu');
-        $cpu->attach(
-            $fields->fieldText(
-                'meta[cpu]',
-                $this->Html->ifSet($vars->meta['cpu']),
-                ['id' => 'Pterodactyl_cpu']
-            )
-        );
-        $tooltip = $fields->tooltip(Language::_('PterodactylPackage.package_fields.tooltip.cpu', true));
-        $cpu->attach($tooltip);
-        $fields->setField($cpu);
-
-        // Set the Disk MB
-        $disk = $fields->label(Language::_('PterodactylPackage.package_fields.disk', true), 'Pterodactyl_disk');
-        $disk->attach(
-            $fields->fieldText(
-                'meta[disk]',
-                $this->Html->ifSet($vars->meta['disk']),
-                ['id' => 'Pterodactyl_disk']
-            )
-        );
-        $tooltip = $fields->tooltip(Language::_('PterodactylPackage.package_fields.tooltip.disk', true));
-        $disk->attach($tooltip);
-        $fields->setField($disk);
-
-        // Set the Block IO Weight
-        $io = $fields->label(Language::_('PterodactylPackage.package_fields.io', true), 'Pterodactyl_io');
-        $io->attach(
-            $fields->fieldText(
-                'meta[io]',
-                $this->Html->ifSet($vars->meta['io'], 500),
-                ['id' => 'Pterodactyl_io']
-            )
-        );
-        $tooltip = $fields->tooltip(Language::_('PterodactylPackage.package_fields.tooltip.io', true));
-        $io->attach($tooltip);
-        $fields->setField($io);
-
-        // Set the startup command
-        $startup = $fields->label(
-            Language::_('PterodactylPackage.package_fields.startup', true),
-            'Pterodactyl_startup'
-        );
-        $startup->attach(
-            $fields->fieldText(
-                'meta[startup]',
-                $this->Html->ifSet($vars->meta['startup']),
-                ['id' => 'Pterodactyl_startup']
-            )
-        );
-        $tooltip = $fields->tooltip(Language::_('PterodactylPackage.package_fields.tooltip.startup', true));
-        $startup->attach($tooltip);
-        $fields->setField($startup);
-
-        // Set the image
-        $image = $fields->label(Language::_('PterodactylPackage.package_fields.image', true), 'Pterodactyl_image');
-        $image->attach(
-            $fields->fieldText(
-                'meta[image]',
-                $this->Html->ifSet($vars->meta['image']),
-                ['id' => 'Pterodactyl_image']
-            )
-        );
-        $tooltip = $fields->tooltip(Language::_('PterodactylPackage.package_fields.tooltip.image', true));
-        $image->attach($tooltip);
-        $fields->setField($image);
-
-        // Set the server database limit
-        $databases = $fields->label(
-            Language::_('PterodactylPackage.package_fields.databases', true),
-            'Pterodactyl_databases'
-        );
-        $databases->attach(
-            $fields->fieldText(
-                'meta[databases]',
-                $this->Html->ifSet($vars->meta['databases']),
-                ['id' => 'Pterodactyl_databases']
-            )
-        );
-        $tooltip = $fields->tooltip(Language::_('PterodactylPackage.package_fields.tooltip.databases', true));
-        $databases->attach($tooltip);
-        $fields->setField($databases);
-
-        // Set the server allocations limit
-        $allocations = $fields->label(
-            Language::_('PterodactylPackage.package_fields.allocations', true),
-            'Pterodactyl_allocations'
-        );
-        $allocations->attach(
-            $fields->fieldText(
-                'meta[allocations]',
-                $this->Html->ifSet($vars->meta['allocations']),
-                ['id' => 'Pterodactyl_allocations']
-            )
-        );
-        $tooltip = $fields->tooltip(Language::_('PterodactylPackage.package_fields.tooltip.allocations', true));
-        $allocations->attach($tooltip);
-        $fields->setField($allocations);
+    /**
+     * Attaches package fields for each environment from the Pterodactyle egg
+     *
+     * @param stdClass $pterodactyl_egg The egg to pull environment variables from
+     * @param ModuleFields $fields The fields object to attach the new fields to
+     * @param stdClass $vars A stdClass object representing a set of post fields (optional)
+     * @return ModuleFields The new fields object with all environment variable fields attached
+     */
+    private function attachEggFields($pterodactyl_egg, $fields, $vars = null)
+    {
+        // Get service fields from the egg
+        foreach ($pterodactyl_egg->attributes->relationships->variables->data as $env_variable) {
+            // Create a label for the environment variable
+            $label = strpos($env_variable->attributes->rules, 'required') === 0
+                ? $env_variable->attributes->name
+                : Language::_('PterodactylPackage.package_fields.optional', true, $env_variable->attributes->name);
+            $key = strtolower($env_variable->attributes->env_variable);
+            $field = $fields->label($label, $key);
+            // Create the environment variable field and attach to the label
+            $field->attach(
+                $fields->fieldText(
+                    'meta[' . $key . ']',
+                    $this->Html->ifSet($vars->meta[$key], $env_variable->attributes->default_value),
+                    ['id' => $key]
+                )
+            );
+            // Add tooltip based on the description from Pterodactyl
+            $tooltip = $fields->tooltip(
+                $env_variable->attributes->description
+                . ' '
+                . Language::_('PterodactylPackage.package_fields.tooltip.display', true)
+            );
+            // Create a field for whether to display the environment variable to the client
+            $checkboxKey = $key . '_display';
+            $field->attach($tooltip);
+            $field->attach(
+                $fields->fieldCheckbox(
+                    'meta[' . $checkboxKey . ']',
+                    '1',
+                    $this->Html->ifSet($vars->meta[$checkboxKey], '0') == '1',
+                    ['id' => $checkboxKey, 'class' => 'inline']
+                )
+            );
+            // Set the label as a field
+            $fields->setField($field);
+        }
 
         return $fields;
     }

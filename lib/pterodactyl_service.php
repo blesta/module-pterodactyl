@@ -253,29 +253,29 @@ class PterodactylService
         $serverDescription->attach($tooltip);
         $fields->setField($serverDescription);
 
-        // Get service fields from the egg
-        foreach ($pterodactyl_egg->attributes->relationships->variables->data as $env_variable) {
-            // Create a label for the environment variable
-            $label = strpos($env_variable->attributes->rules, 'required') === 0
-                ? $env_variable->attributes->name
-                : Language::_('PterodactylService.service_fields.optional', true, $env_variable->attributes->name);
-            $field = $fields->label($label, $env_variable->attributes->env_variable);
-            // Create the environment variable field and attach to the label
-            $field->attach(
-                $fields->fieldText(
-                    $env_variable->attributes->env_variable,
-                    $this->Html->ifSet(
-                        $vars->{$env_variable->attributes->env_variable},
-                        $env_variable->attributes->default_value
-                    ),
-                    ['id' => $env_variable->attributes->env_variable]
-                )
-            );
-            // Add tooltip based on the description from Pterodactyl
-            $tooltip = $fields->tooltip($env_variable->attributes->description);
-            $field->attach($tooltip);
-            // Set the label as a field
-            $fields->setField($field);
+        if ($pterodactyl_egg) {
+            // Get service fields from the egg
+            foreach ($pterodactyl_egg->attributes->relationships->variables->data as $env_variable) {
+                // Create a label for the environment variable
+                $key = strtolower($env_variable->attributes->env_variable);
+                $label = strpos($env_variable->attributes->rules, 'required') === 0
+                    ? $env_variable->attributes->name
+                    : Language::_('PterodactylService.service_fields.optional', true, $env_variable->attributes->name);
+                $field = $fields->label($label, $key);
+                // Create the environment variable field and attach to the label
+                $field->attach(
+                    $fields->fieldText(
+                        $key,
+                        $this->Html->ifSet($vars->{$key}, $env_variable->attributes->default_value),
+                        ['id' => $key]
+                    )
+                );
+                // Add tooltip based on the description from Pterodactyl
+                $tooltip = $fields->tooltip($env_variable->attributes->description);
+                $field->attach($tooltip);
+                // Set the label as a field
+                $fields->setField($field);
+            }
         }
 
         return $fields;
