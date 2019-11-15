@@ -64,3 +64,6 @@ $lang['PterodactylPackage.package_fields.tooltip.databases'] = 'The total number
 
 $lang['PterodactylPackage.package_fields.allocations'] = 'Allocation Limit (optional)';
 $lang['PterodactylPackage.package_fields.tooltip.allocations'] = 'The total number of allocations a user is allowed to create for this server. Leave blank to allow unlimited.';
+
+$lang['PterodactylPackage.package_fields.optional'] = '%1$s (Optional)'; // %1$s is the name of the field
+$lang['PterodactylPackage.package_fields.tooltip.display'] = 'Check to allow clients to modify this value during service add/edit.';

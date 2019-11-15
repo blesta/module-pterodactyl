@@ -140,6 +140,16 @@ class Pterodactyl extends Module
         $status = 'pending'
     ) {
         $meta = [];
+        // Load egg
+        $pterodactyl_egg = $this->apiRequest(
+            'Nests',
+            'eggsGet',
+            ['nest_id' => $package->meta->nest_id, 'egg_id' => $package->meta->egg_id]
+        );
+        if ($this->Input->errors()) {
+            return;
+        }
+
         if ($vars['use_module'] == 'true') {
             // Get the service helper
             $this->loadLib('pterodactyl_service');
@@ -155,16 +165,6 @@ class Pterodactyl extends Module
                 }
             }
 
-            // Load egg
-            $pterodactyl_egg = $this->apiRequest(
-                'Nests',
-                'eggsGet',
-                ['nest_id' => $package->meta->nest_id, 'egg_id' => $package->meta->egg_id]
-            );
-            if ($this->Input->errors()) {
-                // No need to roll back user creation, we'll just use that user for future requests
-                return;
-            }
 
             // Create server
             $pterodactyl_server = $this->apiRequest(
@@ -180,7 +180,7 @@ class Pterodactyl extends Module
             $meta['server_id'] = $pterodactyl_server->attributes->id;
         }
 
-        return [
+        $return = [
             [
                 'key' => 'server_id',
                 'value' => isset($meta['server_id'])
@@ -193,7 +193,25 @@ class Pterodactyl extends Module
                 'value' => isset($vars['server_name']) ? $vars['server_name'] : '',
                 'encrypted' => 0
             ],
+            [
+                'key' => 'server_description',
+                'value' => isset($vars['server_description']) ? $vars['server_description'] : '',
+                'encrypted' => 0
+            ],
         ];
+
+        // Add egg variables
+        foreach ($pterodactyl_egg->attributes->relationships->variables->data as $env_variable) {
+            if (isset($vars[$env_variable->attributes->env_variable])) {
+                $return[] = [
+                    'key' => $env_variable->attributes->env_variable,
+                    'value' =>  $vars[$env_variable->attributes->env_variable],
+                    'encrypted' => 0
+                ];
+            }
+        }
+
+        return $return;
     }
 
     /**
@@ -764,7 +782,7 @@ class Pterodactyl extends Module
                     foreach ($eggs_response->response()->data as $egg) {
                         // This lists egg IDs, but eggs have name, for some reason they are just not fetched by the API.
                         // We should probably look into that.
-                        $package_lists['eggs'][$egg->attributes->id] = $egg->attributes->id;
+                        $package_lists['eggs'][$egg->attributes->id] = $egg;
                     }
                 }
 
@@ -828,12 +846,9 @@ class Pterodactyl extends Module
             'eggsGet',
             ['nest_id' => $package->meta->nest_id, 'egg_id' => $package->meta->egg_id]
         );
-        if ($this->Input->errors()) {
-            return new ModuleFields();
-        }
 
         // Fetch the service fields
-        return $service_helper->getFields($pterodactyl_egg, $vars, true);
+        return $service_helper->getFields($pterodactyl_egg, $package, $vars, true);
     }
 
     /**
@@ -868,7 +883,7 @@ class Pterodactyl extends Module
         }
 
         // Fetch the service fields
-        return $service_helper->getFields($pterodactyl_egg, $vars);
+        return $service_helper->getFields($pterodactyl_egg, $package, $vars);
     }
 
     /**
