@@ -27,6 +27,7 @@ class Pterodactyl extends Module
         Language::loadLang('pterodactyl', null, dirname(__FILE__) . DS . 'language' . DS);
         Language::loadLang('pterodactyl_package', null, dirname(__FILE__) . DS . 'language' . DS);
         Language::loadLang('pterodactyl_service', null, dirname(__FILE__) . DS . 'language' . DS);
+        Language::loadLang('pterodactyl_rule', null, dirname(__FILE__) . DS . 'language' . DS);
 
 
         // Load configuration required by this module

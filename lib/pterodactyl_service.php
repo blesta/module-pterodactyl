@@ -314,7 +314,7 @@ class PterodactylService
      * @param bool $edit True to get the edit rules, false for the add rules (optional)
      * @return array Service rules
      */
-    public function getServiceRules(array $vars = null, $package = null, $edit = false)
+    public function getServiceRules(array $vars = null, $package = null, $edit = false, $pterodactylEgg = null)
     {
         ##
         # TODO Add service rules base on the egg variable rules. The fact that no rules exist will
@@ -323,6 +323,19 @@ class PterodactylService
         ##
         // Set rules
         $rules = [];
+
+        // Get the rule helper
+        Loader::load(dirname(__FILE__). DS . 'pterodactyl_rule.php');
+        $rule_helper = new PterodactylRule();
+
+        $rules = $this->getRules($packageLists, $vars);
+        // Get egg variable rules
+        if ($pterodactylEgg) {
+            foreach ($egg->attributes->relationships->variables->data as $envVariable) {
+                $fieldName = strtolower($envVariable->attributes->env_variable);
+                $rules['meta[' . $fieldName . ']'] = $rule_helper->parseEggVariable($envVariable);
+            }
+        }
 
         // Set the values that may be empty
         $emptyValues = [];
