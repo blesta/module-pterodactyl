@@ -316,23 +316,35 @@ class PterodactylService
      */
     public function getServiceRules(array $vars = null, $package = null, $edit = false)
     {
-        ##
-        # TODO Add service rules base on the egg variable rules. The fact that no rules exist will
-        # cause the service to pass steps of approval that it should not (e.g. an admin can create
-        # a pending service with invalid credentials)
-        ##
         // Set rules
-        $rules = [];
+        $rules = [
+            'server_name' => [
+                'empty' => [
+                    'rule' => 'isEmpty',
+                    'negate' => true,
+                    'message' => Language::_('PterodactylService.!error.server_name.empty', true)
+                ]
+            ]
+        ];
 
-        // Set the values that may be empty
-        $emptyValues = [];
-        if ($edit) {
-        }
+        // Get the rule helper
+        Loader::load(dirname(__FILE__). DS . 'pterodactyl_rule.php');
+        $rule_helper = new PterodactylRule();
 
-        // Remove rules on empty fields
-        foreach ($emptyValues as $value) {
-            if (empty($vars[$value])) {
-                unset($rules[$value]);
+        // Get egg variable rules
+        if ($pterodactylEgg) {
+            foreach ($pterodactylEgg->attributes->relationships->variables->data as $envVariable) {
+                $fieldName = strtolower($envVariable->attributes->env_variable);
+                $rules[$fieldName] = $rule_helper->parseEggVariable($envVariable);
+
+                foreach ($rules[$fieldName] as $rule) {
+                    if (array_key_exists('if_set', $rule)
+                        && $rule['if_set'] == true
+                        && empty($vars[$fieldName])
+                    ) {
+                        unset($rules[$fieldName]);
+                    }
+                }
             }
         }
 

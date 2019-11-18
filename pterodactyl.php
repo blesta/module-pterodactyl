@@ -104,7 +104,26 @@ class Pterodactyl extends Module
         $this->loadLib('pterodactyl_service');
         $service_helper = new PterodactylService();
 
-        return $service_helper->getServiceRules($vars, $package, $edit);
+        if ($package) {
+            // Get and set the module row to use for API calls
+            if ($package->module_group) {
+                $this->setModuleRow($this->getModuleRow($this->selectModuleRow($package->module_group)));
+            } else {
+                $this->setModuleRow($this->getModuleRow($package->module_row));
+            }
+
+            // Load egg
+            $pterodactyl_egg = $this->apiRequest(
+                'Nests',
+                'eggsGet',
+                ['nest_id' => $package->meta->nest_id, 'egg_id' => $package->meta->egg_id]
+            );
+            if (!empty($this->Input->errors())) {
+                $pterodactyl_egg = null;
+            }
+        }
+
+        return $service_helper->getServiceRules($vars, $package, $edit, $pterodactyl_egg);
     }
 
     /**
@@ -146,6 +165,11 @@ class Pterodactyl extends Module
             'eggsGet',
             ['nest_id' => $package->meta->nest_id, 'egg_id' => $package->meta->egg_id]
         );
+        if ($this->Input->errors()) {
+            return;
+        }
+
+        $this->validateService($package, $vars);
         if ($this->Input->errors()) {
             return;
         }
@@ -238,6 +262,11 @@ class Pterodactyl extends Module
         $parent_service = null
     ) {
         $service_fields = $this->serviceFieldsToObject($service->fields);
+
+        $this->validateServiceEdit($service, $vars);
+        if ($this->Input->errors()) {
+            return;
+        }
 
         // Get the service helper
         $this->loadLib('pterodactyl_service');

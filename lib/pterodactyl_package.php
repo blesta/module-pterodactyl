@@ -55,6 +55,29 @@ class PterodactylPackage
             }
         }
 
+        // Get the rule helper
+        Loader::load(dirname(__FILE__). DS . 'pterodactyl_rule.php');
+        $rule_helper = new PterodactylRule();
+
+        $rules = $this->getRules($packageLists, $vars);
+        // Get egg variable rules
+        if (isset($vars['meta']['egg_id']) && isset($packageLists['eggs'][$vars['meta']['egg_id']])) {
+            $egg = $packageLists['eggs'][$vars['meta']['egg_id']];
+            foreach ($egg->attributes->relationships->variables->data as $envVariable) {
+                $fieldName = strtolower($envVariable->attributes->env_variable);
+                $rules['meta[' . $fieldName . ']'] = $rule_helper->parseEggVariable($envVariable);
+
+                foreach ($rules['meta[' . $fieldName . ']'] as $rule) {
+                    if (array_key_exists('if_set', $rule)
+                        && $rule['if_set'] == true
+                        && empty($vars['meta'][$fieldName])
+                    ) {
+                        unset($rules['meta[' . $fieldName . ']']);
+                    }
+                }
+            }
+        }
+
         // Set rules to validate input data
         $this->Input->setRules($this->getRules($packageLists, $vars));
 
