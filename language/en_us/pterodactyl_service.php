@@ -1,6 +1,6 @@
 <?php
 // Errors
-$lang['PterodactylService.!error.meta[server_name].format'] = 'Please set a name for the server.';
+$lang['PterodactylService.!error.server_name.empty'] = 'Please set a name for the server.';
 
 
 // Service fields

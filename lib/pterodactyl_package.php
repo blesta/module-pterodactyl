@@ -66,6 +66,15 @@ class PterodactylPackage
             foreach ($egg->attributes->relationships->variables->data as $envVariable) {
                 $fieldName = strtolower($envVariable->attributes->env_variable);
                 $rules['meta[' . $fieldName . ']'] = $rule_helper->parseEggVariable($envVariable);
+
+                foreach ($rules['meta[' . $fieldName . ']'] as $rule) {
+                    if (array_key_exists('if_set', $rule)
+                        && $rule['if_set'] == true
+                        && empty($vars['meta'][$fieldName])
+                    ) {
+                        unset($rules['meta[' . $fieldName . ']']);
+                    }
+                }
             }
         }
 
