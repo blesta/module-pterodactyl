@@ -1,0 +1,20 @@
+    <div class="table-responsive">
+        <table class="table table-curved table-striped">
+            <thead>
+                <tr>
+                    <th><i class="fa fa-share fa-flip-vertical"></i></th>
+                    <th><?php $this->_('Pterodactyl.service_info.username');?></th>
+                    <th><?php $this->_('Pterodactyl.service_info.login');?></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td></td>
+                    <td><?php $this->Html->_($service_fields->username);?></td>
+                    <td>
+                        <a href="<?php echo $module_row->meta->use_ssl ? 'https://' : 'http://';?><?php $this->Html->_($module_row->meta->panel_url);?>/auth/login" target="_blank"><?php $this->Html->_($module_row->meta->panel_url);?>/auth/login</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
