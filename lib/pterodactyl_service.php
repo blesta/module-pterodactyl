@@ -312,9 +312,10 @@ class PterodactylService
      * @param array $vars A list of input vars (optional)
      * @param stdClass $package A stdClass object representing the selected package (optional)
      * @param bool $edit True to get the edit rules, false for the add rules (optional)
+     * @param stdClass $pterodactylEgg An egg object from Pterodactyl (optional)
      * @return array Service rules
      */
-    public function getServiceRules(array $vars = null, $package = null, $edit = false)
+    public function getServiceRules(array $vars = null, $package = null, $edit = false, $pterodactylEgg = null)
     {
         // Set rules
         $rules = [
