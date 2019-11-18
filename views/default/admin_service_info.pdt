@@ -1,0 +1,14 @@
+    <table class="table">
+        <tr class="heading_row">
+            <td class="fixed_small center border_none"><i class="fa fa-level-up fa-rotate-90"></i></td>
+            <td class="border_left"><?php $this->_('Pterodactyl.service_info.username');?></td>
+            <td class="last"><?php $this->_('Pterodactyl.service_info.login');?></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><?php $this->Html->_($service_fields->username);?></td>
+            <td>
+                <a href="<?php echo $module_row->meta->use_ssl ? 'https://' : 'http://';?><?php $this->Html->_($module_row->meta->panel_url);?>/auth/login" target="_blank"><?php $this->Html->_($module_row->meta->panel_url);?>/auth/login</a>
+            </td>
+        </tr>
+    </table>
