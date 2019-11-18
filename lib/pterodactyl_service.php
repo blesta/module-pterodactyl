@@ -314,7 +314,7 @@ class PterodactylService
      * @param bool $edit True to get the edit rules, false for the add rules (optional)
      * @return array Service rules
      */
-    public function getServiceRules(array $vars = null, $package = null, $edit = false, $pterodactylEgg = null)
+    public function getServiceRules(array $vars = null, $package = null, $edit = false)
     {
         // Set rules
         $rules = [

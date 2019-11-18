@@ -28,9 +28,9 @@ class Requestor
      *
      * @param string $apiKey The API key
      * @param string $apiUrl The API URL
-     * @param bool $useSsl Whether to connect using ssl
+     * @param bool $useSsl Whether to connect using ssl (optional)
      */
-    public function __construct($apiKey, $apiUrl, $useSsl)
+    public function __construct($apiKey, $apiUrl, $useSsl = true)
     {
         $this->apiKey = $apiKey;
         $this->apiUrl = $apiUrl;

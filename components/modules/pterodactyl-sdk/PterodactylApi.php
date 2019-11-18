@@ -36,9 +36,9 @@ class PterodactylApi
      *
      * @param string $apiKey The API key
      * @param string $baseUrl The base URL of the pterodactyl panel
-     * @param bool $useSsl Whether to connect using ssl
+     * @param bool $useSsl Whether to connect using ssl (optional)
      */
-    public function __construct($apiKey, $baseUrl, $useSsl)
+    public function __construct($apiKey, $baseUrl, $useSsl = true)
     {
         $this->apiKey = $apiKey;
         $this->apiUrl = trim($baseUrl, '/') . '/api';
