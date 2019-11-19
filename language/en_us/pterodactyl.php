@@ -68,6 +68,11 @@ $lang['Pterodactyl.manage.module_groups_no_results'] = 'There are no server grou
 $lang['Pterodactyl.order_options.first'] = 'First Non-full Server';
 
 
+// Service Info
+$lang['Pterodactyl.service_info.username'] = 'Username';
+$lang['Pterodactyl.service_info.login'] = 'Login URL';
+
+
 // Tabs
 $lang['Pterodactyl.tab_actions'] = 'Server Actions';
 $lang['Pterodactyl.tab_client_actions'] = 'Server Actions';

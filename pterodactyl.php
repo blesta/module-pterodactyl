@@ -174,9 +174,9 @@ class Pterodactyl extends Module
         // Get the service helper
         $this->loadLib('pterodactyl_service');
         $service_helper = new PterodactylService();
+        $pterodactyl_user = $this->apiRequest('Users', 'getByExternalId', [$vars['client_id']]);
         if ($vars['use_module'] == 'true') {
             // Load/create user account
-            $pterodactyl_user = $this->apiRequest('Users', 'getByExternalId', [$vars['client_id']]);
             if ($this->Input->errors()) {
                 $this->Input->setErrors([]);
                 $pterodactyl_user = $this->apiRequest('Users', 'add', [$service_helper->addUserParameters($vars)]);
@@ -201,6 +201,13 @@ class Pterodactyl extends Module
         }
 
         $return = [
+            [
+                'key' => 'username',
+                'value' => isset($pterodactyl_user->attributes->username)
+                    ? $pterodactyl_user->attributes->username
+                    : '',
+                'encrypted' => 0
+            ],
             [
                 'key' => 'server_id',
                 'value' => isset($meta['server_id'])
@@ -268,13 +275,10 @@ class Pterodactyl extends Module
         // Get the service helper
         $this->loadLib('pterodactyl_service');
         $service_helper = new PterodactylService();
-        if ($vars['use_module'] == 'true') {
-            // Load user account
-            $pterodactyl_user = $this->apiRequest('Users', 'getByExternalId', [$service->client_id]);
-            if ($this->Input->errors()) {
-                return;
-            }
 
+        // Load user account
+        $pterodactyl_user = $this->apiRequest('Users', 'getByExternalId', [$service->client_id]);
+        if ($vars['use_module'] == 'true') {
             // Load egg
             $pterodactyl_egg = $this->apiRequest(
                 'Nests',
@@ -314,6 +318,13 @@ class Pterodactyl extends Module
 
 
         $return = [
+            [
+                'key' => 'username',
+                'value' => isset($pterodactyl_user->attributes->username)
+                    ? $pterodactyl_user->attributes->username
+                    : '',
+                'encrypted' => 0
+            ],
             [
                 'key' => 'server_id',
                 'value' => !empty($vars['server_id']) ? $vars['server_id'] : $service_fields->server_id,
@@ -379,6 +390,60 @@ class Pterodactyl extends Module
         // We do not delete the user, but rather leave it around to be used for any current or future services
 
         return null;
+    }
+
+    /**
+     * Fetches the HTML content to display when viewing the service info in the
+     * admin interface.
+     *
+     * @param stdClass $service A stdClass object representing the service
+     * @param stdClass $package A stdClass object representing the service's package
+     * @return string HTML content containing information to display when viewing the service info
+     */
+    public function getAdminServiceInfo($service, $package)
+    {
+        $row = $this->getModuleRow();
+
+        // Load the view into this object, so helpers can be automatically added to the view
+        $this->view = new View('admin_service_info', 'default');
+        $this->view->base_uri = $this->base_uri;
+        $this->view->setDefaultView('components' . DS . 'modules' . DS . 'pterodactyl' . DS);
+
+        // Load the helpers required for this view
+        Loader::loadHelpers($this, ['Form', 'Html']);
+
+        $service_fields = $this->serviceFieldsToObject($service->fields);
+        $this->view->set('module_row', $row);
+        $this->view->set('service_fields', $service_fields);
+
+        return $this->view->fetch();
+    }
+
+    /**
+     * Fetches the HTML content to display when viewing the service info in the
+     * client interface.
+     *
+     * @param stdClass $service A stdClass object representing the service
+     * @param stdClass $package A stdClass object representing the service's package
+     * @return string HTML content containing information to display when viewing the service info
+     */
+    public function getClientServiceInfo($service, $package)
+    {
+        $row = $this->getModuleRow();
+
+        // Load the view into this object, so helpers can be automatically added to the view
+        $this->view = new View('client_service_info', 'default');
+        $this->view->base_uri = $this->base_uri;
+        $this->view->setDefaultView('components' . DS . 'modules' . DS . 'pterodactyl' . DS);
+
+        // Load the helpers required for this view
+        Loader::loadHelpers($this, ['Form', 'Html']);
+
+        $service_fields = $this->serviceFieldsToObject($service->fields);
+        $this->view->set('module_row', $row);
+        $this->view->set('service_fields', $service_fields);
+
+        return $this->view->fetch();
     }
 
     /**
