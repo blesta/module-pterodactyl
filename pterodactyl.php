@@ -17,9 +17,6 @@ class Pterodactyl extends Module
      */
     public function __construct()
     {
-        // Load the Pterodactyl API
-        Loader::load(dirname(__FILE__) . DS . 'api' . DS . 'pterodactyl_api.php');
-
         // Load components required by this module
         Loader::loadComponents($this, ['Input']);
 

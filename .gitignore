@@ -2,5 +2,5 @@
 /vendor/
 
 # Ignore composer lock
-public_html/composer.lock
+/composer.lock
 /nbproject/
