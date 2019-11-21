@@ -1,6 +1,7 @@
 <?php
 use Blesta\PterodactylSDK\PterodactylApi;
 use Blesta\Core\Util\Validate\Server;
+
 /**
  * Pterodactyl Module
  *
@@ -24,6 +25,7 @@ class Pterodactyl extends Module
         Language::loadLang('pterodactyl', null, dirname(__FILE__) . DS . 'language' . DS);
         Language::loadLang('pterodactyl_package', null, dirname(__FILE__) . DS . 'language' . DS);
         Language::loadLang('pterodactyl_service', null, dirname(__FILE__) . DS . 'language' . DS);
+        Language::loadLang('pterodactyl_rule', null, dirname(__FILE__) . DS . 'language' . DS);
 
 
         // Load configuration required by this module
@@ -891,8 +893,8 @@ class Pterodactyl extends Module
                 if ($eggs_response->status() == 200) {
                     $package_lists['eggs'] = ['' => Language::_('AppController.select.please', true)];
                     foreach ($eggs_response->response()->data as $egg) {
-                        // This lists egg IDs, but eggs have name, for some reason they are just not fetched by the API.
-                        // We should probably look into that.
+                        // TODO This lists egg IDs, but eggs have name, for some reason they are just not fetched by
+                        // the API. We should probably look into that.
                         $package_lists['eggs'][$egg->attributes->id] = $egg;
                     }
                 }
@@ -989,9 +991,6 @@ class Pterodactyl extends Module
             'eggsGet',
             ['nest_id' => $package->meta->nest_id, 'egg_id' => $package->meta->egg_id]
         );
-        if ($this->Input->errors()) {
-            return new ModuleFields();
-        }
 
         // Fetch the service fields
         return $service_helper->getFields($pterodactyl_egg, $package, $vars);
@@ -1023,14 +1022,10 @@ class Pterodactyl extends Module
         return $this->getClientAddFields($package, $vars);
     }
 
-    ##
-    # TODO Implement service info methods
-    ##
-
     /**
      * Initializes the PterodactylApi and returns an instance of that object with the given $host and $api_key set
      *
-     * @param string $host The host to the Pterodactyl server
+     * @param string $host The hostname of the Pterodactyl server
      * @param string $api_key The user to connect as
      * @param bool $use_ssl Whether to connect over ssl
      * @return PterodactylApi The PterodactylApi instance
@@ -1050,7 +1045,7 @@ class Pterodactyl extends Module
      * @param array $vars An array of key/value data pairs
      * @return array An array of Input rules suitable for Input::setRules()
      */
-    private function getRowRules(&$vars)
+    private function getRowRules(array &$vars)
     {
         return [
             'server_name' => [

@@ -98,7 +98,7 @@ class PterodactylPackage
         }
 
         // Set rules to validate input data
-        $this->Input->setRules($this->getRules($packageLists, $vars));
+        $this->Input->setRules($rules);
 
         // Build meta data to return
         $meta = [];
