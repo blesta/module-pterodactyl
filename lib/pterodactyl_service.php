@@ -1,6 +1,6 @@
 <?php
 /**
- * Pterodactyl Service actions
+ * Pterodactyl Service helper
  *
  * @package blesta
  * @subpackage blesta.components.modules.Pterodactyl.lib

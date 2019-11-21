@@ -21,11 +21,12 @@ $lang['PterodactylPackage.!error.meta[allocations].format'] = 'The number of all
 
 // Package fields
 $lang['PterodactylPackage.package_fields.location_id'] = 'Location';
-$lang['PterodactylPackage.package_fields.tooltip.location_id'] = 'The Location to automatically deploy to.';
+$lang['PterodactylPackage.package_fields.tooltip.location_id'] = 'The Location to automatically deploy servers to.';
 
 $lang['PterodactylPackage.package_fields.dedicated_ip'] = 'Dedicated IP (optional)';
-$lang['PterodactylPackage.package_fields.tooltip.dedicated_ip'] = 'Assign dedicated ip to the server.';
+$lang['PterodactylPackage.package_fields.tooltip.dedicated_ip'] = 'Assign dedicated ip to the created servers.';
 
+// TODO Should this be a service field instead?
 $lang['PterodactylPackage.package_fields.port_range'] = 'Port Range (optional)';
 $lang['PterodactylPackage.package_fields.tooltip.port_range'] = 'Port ranges seperated by comma to assign to the server (Example: 25565-25570,25580-25590).';
 
@@ -39,31 +40,31 @@ $lang['PterodactylPackage.package_fields.pack_id'] = 'Pack ID (optional)';
 $lang['PterodactylPackage.package_fields.tooltip.pack_id'] = 'ID of the Pack to install the server with.';
 
 $lang['PterodactylPackage.package_fields.memory'] = 'Memory (MB)';
-$lang['PterodactylPackage.package_fields.tooltip.memory'] = 'Amount of Memory to assign to the created server.';
+$lang['PterodactylPackage.package_fields.tooltip.memory'] = 'Amount of Memory to assign to the created servers.';
 
 $lang['PterodactylPackage.package_fields.swap'] = 'Swap (MB)';
-$lang['PterodactylPackage.package_fields.tooltip.swap'] = 'Amount of Swap to assign to the created server.';
+$lang['PterodactylPackage.package_fields.tooltip.swap'] = 'Amount of Swap to assign to the created servers.';
 
 $lang['PterodactylPackage.package_fields.cpu'] = 'CPU Limit (%)';
-$lang['PterodactylPackage.package_fields.tooltip.cpu'] = 'Amount of CPU to assign to the created server.';
+$lang['PterodactylPackage.package_fields.tooltip.cpu'] = 'Amount of CPU to assign to the created servers.';
 
 $lang['PterodactylPackage.package_fields.disk'] = 'Disk Space (MB)';
-$lang['PterodactylPackage.package_fields.tooltip.disk'] = 'Amount of Disk Space to assign to the created server.';
+$lang['PterodactylPackage.package_fields.tooltip.disk'] = 'Amount of Disk Space to assign to the created servers.';
 
 $lang['PterodactylPackage.package_fields.io'] = 'Block IO Weight';
 $lang['PterodactylPackage.package_fields.tooltip.io'] = 'Block IO Adjustment number (10-1000).';
 
 $lang['PterodactylPackage.package_fields.startup'] = 'Startup (optional)';
-$lang['PterodactylPackage.package_fields.tooltip.startup'] = 'Custom startup command to assign to the created server (e.g. java -Xms128M -Xmx 1024M -jar server.jar).';
+$lang['PterodactylPackage.package_fields.tooltip.startup'] = 'Custom startup command to assign to the created servers (e.g. java -Xms128M -Xmx 1024M -jar server.jar).';
 
 $lang['PterodactylPackage.package_fields.image'] = 'Image (optional)';
-$lang['PterodactylPackage.package_fields.tooltip.image'] = 'Custom Docker image to assign to the created server (e.g. quay.io/pterodactyl/core:java-glibc).';
+$lang['PterodactylPackage.package_fields.tooltip.image'] = 'Custom Docker image to assign to the created servers (e.g. quay.io/pterodactyl/core:java-glibc).';
 
 $lang['PterodactylPackage.package_fields.databases'] = 'Database Limit (optional)';
-$lang['PterodactylPackage.package_fields.tooltip.databases'] = 'The total number of databases a user is allowed to create for this server. Leave blank to allow unlimited.';
+$lang['PterodactylPackage.package_fields.tooltip.databases'] = 'The total number of databases a user is allowed to created servers. Leave blank to allow unlimited.';
 
 $lang['PterodactylPackage.package_fields.allocations'] = 'Allocation Limit (optional)';
-$lang['PterodactylPackage.package_fields.tooltip.allocations'] = 'The total number of allocations a user is allowed to create for this server. Leave blank to allow unlimited.';
+$lang['PterodactylPackage.package_fields.tooltip.allocations'] = 'The total number of allocations a user is allowed to created servers. Leave blank to allow unlimited.';
 
 $lang['PterodactylPackage.package_fields.optional'] = '%1$s (Optional)'; // %1$s is the name of the field
 $lang['PterodactylPackage.package_fields.tooltip.display'] = 'Check to allow clients to modify this value during service add/edit. Leave unchecked if you plan to use a configurable option for this field.';

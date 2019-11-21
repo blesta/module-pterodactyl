@@ -4,15 +4,17 @@ $lang['Pterodactyl.module_row'] = 'Server';
 $lang['Pterodactyl.module_row_plural'] = 'Servers';
 $lang['Pterodactyl.module_group'] = 'Server Group';
 
+
 // Errors
 $lang['Pterodactyl.!error.server_name.empty'] = 'You must enter a server name.';
 $lang['Pterodactyl.!error.panel_url.valid'] = 'The Panel URL appears to be invalid.';
-$lang['Pterodactyl.!error.account_api_key.empty'] = 'You must enter an API key.';
+$lang['Pterodactyl.!error.account_api_key.empty'] = 'You must enter an Account API key.';
 $lang['Pterodactyl.!error.account_api_key.valid'] = 'Unable to connect with the given URL and Account API key.';
-$lang['Pterodactyl.!error.application_api_key.empty'] = 'You must enter an API key.';
+$lang['Pterodactyl.!error.application_api_key.empty'] = 'You must enter an Application API key.';
 $lang['Pterodactyl.!error.application_api_key.valid'] = 'Unable to connect with the given URL and Application API key.';
 
 $lang['Pterodactyl.!error.module_row.missing'] = 'An internal error occurred. The module row is unavailable.';
+
 
 // Success
 $lang['Pterodactyl.!success.start'] = 'The server is now booting.';
@@ -25,10 +27,12 @@ $lang['Pterodactyl.add_row.box_title'] = 'Add Pterodactyl Server';
 $lang['Pterodactyl.add_row.basic_title'] = 'Basic Settings';
 $lang['Pterodactyl.add_row.add_btn'] = 'Add Server';
 
+
 // Edit module row
 $lang['Pterodactyl.edit_row.box_title'] = 'Edit Pterodactyl Server';
 $lang['Pterodactyl.edit_row.basic_title'] = 'Basic Settings';
 $lang['Pterodactyl.edit_row.add_btn'] = 'Edit Server';
+
 
 // Module row meta data
 $lang['Pterodactyl.row_meta.server_name'] = 'Server Label';
@@ -36,6 +40,7 @@ $lang['Pterodactyl.row_meta.panel_url'] = 'Panel URL';
 $lang['Pterodactyl.row_meta.use_ssl'] = 'Use SSL when connecting to the API (recommended)';
 $lang['Pterodactyl.row_meta.account_api_key'] = 'Account API Key';
 $lang['Pterodactyl.row_meta.application_api_key'] = 'Application API Key';
+
 
 // Module row tooltips
 $lang['Pterodactyl.!tooltip.panel_url'] = 'Enter the URL or IP of your Pterodactyl panel. e.g. http://panel.domain.com/';
@@ -91,7 +96,7 @@ $lang['Pterodactyl.tab_actions.status_stopping'] = 'Stopping';
 
 // Client Actions Tab
 $lang['Pterodactyl.tab_client_actions.heading_actions'] = 'Actions';
-$lang['Pterodactyl.tab_client_actions.heading_server_status'] = 'Server Status';
+$lang['Pterodactyl.tab_client_actions.server_status'] = 'Server Status';
 
 $lang['Pterodactyl.tab_client_actions.status_on'] = 'Online';
 $lang['Pterodactyl.tab_client_actions.status_off'] = 'Offline';

@@ -52,7 +52,7 @@ class PterodactylRule
     /**
      * Gets a rule to require the given field
      *
-     * @param string $fieldName The name of the required field
+     * @param string $fieldName The name of the field to validate
      * @return array An array representing the validation rule
      */
     private function required($fieldName)
@@ -67,7 +67,7 @@ class PterodactylRule
     /**
      * Gets a rule to validate the given field against a regex
      *
-     * @param string $fieldName The name of the required field
+     * @param string $fieldName The name of the field to validate
      * @param array $params A list parameters for the validation rule
      * @return array An array representing the validation rule
      */
@@ -82,7 +82,7 @@ class PterodactylRule
     /**
      * Gets a rule to validate the given field is numeric
      *
-     * @param string $fieldName The name of the required field
+     * @param string $fieldName The name of the field to validate
      * @return array An array representing the validation rule
      */
     private function numeric($fieldName)
@@ -96,7 +96,7 @@ class PterodactylRule
     /**
      * Gets a rule to validate the given field is an integer
      *
-     * @param string $fieldName The name of the required field
+     * @param string $fieldName The name of the field to validate
      * @return array An array representing the validation rule
      */
     private function integer($fieldName)
@@ -112,7 +112,7 @@ class PterodactylRule
     /**
      * Gets a rule to validate the given field is a string
      *
-     * @param string $fieldName The name of the required field
+     * @param string $fieldName The name of the field to validate
      * @return array An array representing the validation rule
      */
     private function string($fieldName)
@@ -126,7 +126,7 @@ class PterodactylRule
     /**
      * Gets a rule to validate the given field is alpha_numeric
      *
-     * @param string $fieldName The name of the required field
+     * @param string $fieldName The name of the field to validate
      * @return array An array representing the validation rule
      */
     private function alphaNum($fieldName)
@@ -140,7 +140,7 @@ class PterodactylRule
     /**
      * Gets a rule to validate the given field is only alpha_numeric characters or dashes and underscores
      *
-     * @param string $fieldName The name of the required field
+     * @param string $fieldName The name of the field to validate
      * @return array An array representing the validation rule
      */
     private function alphaDash($fieldName)
@@ -156,7 +156,7 @@ class PterodactylRule
     /**
      * Gets a rule to validate the given field is a valid URL
      *
-     * @param string $fieldName The name of the required field
+     * @param string $fieldName The name of the field to validate
      * @return array An array representing the validation rule
      */
     private function url($fieldName)
@@ -173,7 +173,7 @@ class PterodactylRule
     /**
      * Gets a rule to validate the given field has a value with a given minimum
      *
-     * @param string $fieldName The name of the required field
+     * @param string $fieldName The name of the field to validate
      * @param array $params A list parameters for the validation rule
      * @return array An array representing the validation rule
      */
@@ -185,7 +185,7 @@ class PterodactylRule
                     case 'string':
                         return strlen($value) >= $params[0];
                     case 'integer':
-                        // Same a double
+                        // Same as double
                     case 'double':
                         return $value >= $params[0];
                     case 'array':
@@ -199,7 +199,7 @@ class PterodactylRule
     /**
      * Gets a rule to validate the given field has a value with a given maximum
      *
-     * @param string $fieldName The name of the required field
+     * @param string $fieldName The name of the field to validate
      * @param array $params A list parameters for the validation rule
      * @return array An array representing the validation rule
      */
@@ -211,7 +211,7 @@ class PterodactylRule
                     case 'string':
                         return strlen($value) <= $params[0];
                     case 'integer':
-                        // Same a double
+                        // Same as double
                     case 'double':
                         return $value <= $params[0];
                     case 'array':
@@ -225,7 +225,7 @@ class PterodactylRule
     /**
      * Gets a rule to validate the given field has a value within a given range
      *
-     * @param string $fieldName The name of the required field
+     * @param string $fieldName The name of the field to validate
      * @param array $params A list parameters for the validation rule
      * @return array An array representing the validation rule
      */
@@ -237,7 +237,7 @@ class PterodactylRule
                     case 'string':
                         return strlen($value) >= $params[0] && strlen($value) <= $params[1];
                     case 'integer':
-                        // Same a double
+                        // Same as double
                     case 'double':
                         return $value >= $params[0] && $value <= $params[1];
                     case 'array':
@@ -251,7 +251,7 @@ class PterodactylRule
     /**
      * Gets a rule to validate the given field has a numeric value within a given range
      *
-     * @param string $fieldName The name of the required field
+     * @param string $fieldName The name of the field to validate
      * @param array $params A list parameters for the validation rule
      * @return array An array representing the validation rule
      */

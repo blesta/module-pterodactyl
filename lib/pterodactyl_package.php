@@ -1,6 +1,6 @@
 <?php
 /**
- * Pterodactyl Package actions
+ * Pterodactyl Package helper
  *
  * @package blesta
  * @subpackage blesta.components.modules.Pterodactyl.lib
@@ -33,9 +33,30 @@ class PterodactylPackage
      * the package on the remote server. Sets Input errors on failure,
      * preventing the package from being added.
      *
-     * @param array $packageLists An array of package fields lists from the API
-     * @param array $vars An array of key/value pairs used to add the package
-     * @return array A numerically indexed array of meta fields to be stored for this package containing: (optional)
+     * @param array $packageLists An array of package fields lists from the API including:
+     *
+     *  - locations A list of location IDs
+     *  - nests A list of nest IDs
+     *  - eggs A list of eggs keyed by their IDs
+     * @param array $vars An array of key/value pairs used to add the package (optional) including:
+     *
+     *  - location_id The ID of the Location to automatically deploy servers to.
+     *  - nest_id The ID of the Nest to use for created servers.
+     *  - egg_id The ID of the Egg to use for created servers.
+     *  - dedicated_ip Whether to assign a dedicated ip to created servers (optional)
+     *  - port_range Comma seperated port ranges to assign to created servers (optional)
+     *  - pack_id The ID of the Pack to use for created servers (optional)
+     *  - memory The memory limit in megabytes to assign created servers
+     *  - swap The swap memory limit in megabytes to assign created servers
+     *  - cpu The CPU limit in percentage to assign created servers
+     *  - disk The disk space limit in megabytes to assign created servers
+     *  - io The block IO adjustment number to assign created servers
+     *  - startup The custom startup command to assign created servers (optional)
+     *  - image The custom docker image to assign created servers (optional)
+     *  - databases The database limit to assign created servers (optional)
+     *  - allocations The allocations limit to assign created servers (optional)
+     *  - * Egg variables should also be submitted
+     * @return array A numerically indexed array of meta fields to be stored for this package containing:
      *
      *  - key The key for this meta field
      *  - value The value for this key
@@ -46,9 +67,7 @@ class PterodactylPackage
     public function add(array $packageLists, array $vars = null)
     {
         // Set missing checkboxes
-        $checkboxes = [
-            'dedicated_ip',
-        ];
+        $checkboxes = ['dedicated_ip'];
         foreach ($checkboxes as $checkbox) {
             if (empty($vars['meta'][$checkbox])) {
                 $vars['meta'][$checkbox] = '0';
@@ -56,7 +75,7 @@ class PterodactylPackage
         }
 
         // Get the rule helper
-        Loader::load(dirname(__FILE__). DS . 'pterodactyl_rule.php');
+        Loader::load(dirname(__FILE__) . DS . 'pterodactyl_rule.php');
         $rule_helper = new PterodactylRule();
 
         $rules = $this->getRules($packageLists, $vars);
@@ -101,12 +120,33 @@ class PterodactylPackage
      * Returns all fields used when adding/editing a package, including any
      * javascript to execute when the page is rendered with these fields.
      *
-     * @param array $packageLists An array of package fields lists from the API
-     * @param stdClass $vars A stdClass object representing a set of post fields (optional)
+     * @param array $packageLists An array of package fields lists from the API including:
+     *
+     *  - locations A list of location IDs
+     *  - nests A list of nest IDs
+     *  - eggs A list of eggs keyed by their IDs
+     * @param stdClass $vars A stdClass object representing a set of post fields (optional) including:
+     *
+     *  - location_id The ID of the Location to automatically deploy servers to.
+     *  - nest_id The ID of the Nest to use for created servers.
+     *  - egg_id The ID of the Egg to use for created servers.
+     *  - dedicated_ip Whether to assign a dedicated ip to created servers (optional)
+     *  - port_range Comma seperated port ranges to assign to created servers (optional)
+     *  - pack_id The ID of the Pack to use for created servers (optional)
+     *  - memory The memory limit in megabytes to assign created servers
+     *  - swap The swap memory limit in megabytes to assign created servers
+     *  - cpu The CPU limit in percentage to assign created servers
+     *  - disk The disk space limit in megabytes to assign created servers
+     *  - io The block IO adjustment number to assign created servers
+     *  - startup The custom startup command to assign created servers (optional)
+     *  - image The custom docker image to assign created servers (optional)
+     *  - databases The database limit to assign created servers (optional)
+     *  - allocations The allocations limit to assign created servers (optional)
+     *  - * Egg variables should also be submitted
      * @return ModuleFields A ModuleFields object, containing the fields
      *  to render as well as any additional HTML markup to include
      */
-    public function getFields($packageLists, $vars = null)
+    public function getFields(array $packageLists, $vars = null)
     {
         Loader::loadHelpers($this, ['Html']);
 
@@ -116,7 +156,8 @@ class PterodactylPackage
         $fields->setHtml("
 			<script type=\"text/javascript\">
 				$(document).ready(function() {
-					// Re-fetch module options to pull in eggs when a nest is selected
+					// Re-fetch module options to pull in eggs and egg variables
+                    // when a nest or egg respectively is selected
 					$('#Pterodactyl_nest_id, #Pterodactyl_egg_id').change(function() {
 						fetchModuleOptions();
 					});
@@ -124,21 +165,21 @@ class PterodactylPackage
 			</script>
 		");
 
-
         // Set the select fields
         $selectFields = [
             'location_id' => isset($packageLists['locations']) ? $packageLists['locations'] : [],
             'nest_id' => isset($packageLists['nests']) ? $packageLists['nests'] : [],
             'egg_id' => isset($packageLists['eggs'])
-                    ? array_combine(array_keys($packageLists['eggs']), array_keys($packageLists['eggs']))
-                    : [],
+                ? array_combine(array_keys($packageLists['eggs']), array_keys($packageLists['eggs']))
+                : [],
         ];
         foreach ($selectFields as $selectField => $list) {
-            // Set the select field
+            // Create the select field label
             $field = $fields->label(
                 Language::_('PterodactylPackage.package_fields.' . $selectField, true),
                 'Pterodactyl_' . $selectField
             );
+            // Set the select field
             $field->attach(
                 $fields->fieldSelect(
                     'meta[' . $selectField . ']',
@@ -147,6 +188,7 @@ class PterodactylPackage
                     ['id' => 'Pterodactyl_' . $selectField]
                 )
             );
+            // Add a tooltip based on the select field
             $tooltip = $fields->tooltip(Language::_('PterodactylPackage.package_fields.tooltip.' . $selectField, true));
             $field->attach($tooltip);
             $fields->setField($field);
@@ -176,11 +218,12 @@ class PterodactylPackage
             'io', 'startup', 'image', 'databases', 'allocations'
         ];
         foreach ($textFields as $textField) {
-            // Set the label
+            // Create the text field label
             $field = $fields->label(
                 Language::_('PterodactylPackage.package_fields.' . $textField, true),
                 'Pterodactyl_' . $textField
             );
+            // Set the text field
             $field->attach(
                 $fields->fieldText(
                     'meta[' . $textField . ']',
@@ -188,11 +231,13 @@ class PterodactylPackage
                     ['id' => 'Pterodactyl_' . $textField]
                 )
             );
+            // Add a tooltip based on the text field
             $tooltip = $fields->tooltip(Language::_('PterodactylPackage.package_fields.tooltip.' . $textField, true));
             $field->attach($tooltip);
             $fields->setField($field);
         }
 
+        // Return standard package fields and attach any applicable egg fields
         return isset($packageLists['eggs'][$this->Html->ifSet($vars->meta['egg_id'])])
             ? $this->attachEggFields($packageLists['eggs'][$this->Html->ifSet($vars->meta['egg_id'])], $fields, $vars)
             : $fields;
@@ -251,8 +296,29 @@ class PterodactylPackage
     /**
      * Builds and returns the rules required to add/edit a package
      *
-     * @param array $packageLists An array of package fields lists from the API
+     * @param array $packageLists An array of package fields lists from the API including:
+     *
+     *  - locations A list of location IDs
+     *  - nests A list of nest IDs
+     *  - eggs A list of eggs keyed by their IDs
      * @param array $vars An array of key/value data pairs
+     *
+     *  - location_id The ID of the Location to automatically deploy servers to.
+     *  - nest_id The ID of the Nest to use for created servers.
+     *  - egg_id The ID of the Egg to use for created servers.
+     *  - dedicated_ip Whether to assign a dedicated ip to created servers (optional)
+     *  - port_range Comma seperated port ranges to assign to created servers (optional)
+     *  - pack_id The ID of the Pack to use for created servers (optional)
+     *  - memory The memory limit in megabytes to assign created servers
+     *  - swap The swap memory limit in megabytes to assign created servers
+     *  - cpu The CPU limit in percentage to assign created servers
+     *  - disk The disk space limit in megabytes to assign created servers
+     *  - io The block IO adjustment number to assign created servers
+     *  - startup The custom startup command to assign created servers (optional)
+     *  - image The custom docker image to assign created servers (optional)
+     *  - databases The database limit to assign created servers (optional)
+     *  - allocations The allocations limit to assign created servers (optional)
+     *  - * Egg variables should also be submitted
      * @return array An array of Input rules suitable for Input::setRules()
      */
     public function getRules(array $packageLists, array $vars)
