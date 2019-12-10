@@ -19,9 +19,9 @@
                         ?>
                     </li>
                     <li>
-                        <?php $this->Form->label($this->_('Pterodactyl.row_meta.panel_url', true), 'panel_url', ['class' => 'inline']);?>
-                        <span class="tooltip block"><?php $this->_('AppController.tooltip.text');?><div><?php $this->_('Pterodactyl.!tooltip.panel_url');?></div></span>
-                        <?php $this->Form->fieldText('panel_url', $this->Html->ifSet($vars->panel_url), ['id' => 'panel_url', 'class' => 'block']);?>
+                        <?php $this->Form->label($this->_('Pterodactyl.row_meta.host_name', true), 'host_name', ['class' => 'inline']);?>
+                        <span class="tooltip block"><?php $this->_('AppController.tooltip.text');?><div><?php $this->_('Pterodactyl.!tooltip.host_name');?></div></span>
+                        <?php $this->Form->fieldText('host_name', $this->Html->ifSet($vars->host_name), ['id' => 'host_name', 'class' => 'block']);?>
                     </li>
                     <li>
                         <?php $this->Form->label($this->_('Pterodactyl.row_meta.account_api_key', true), 'account_api_key', ['class' => 'inline']);?>
