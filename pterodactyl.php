@@ -70,8 +70,7 @@ class Pterodactyl extends Module
      */
     public function validateService($package, array $vars = null)
     {
-        $this->Input->setRules($this->getServiceRules($vars, $package));
-        return $this->Input->validates($vars);
+        return $this->getServiceRules($vars, $package);
     }
 
     /**
@@ -84,9 +83,7 @@ class Pterodactyl extends Module
     public function validateServiceEdit($service, array $vars = null)
     {
         $package = isset($service->package) ? $service->package : null;
-
-        $this->Input->setRules($this->getServiceRules($vars, $package, true));
-        return $this->Input->validates($vars);
+        return $this->getServiceRules($vars, $package, true);
     }
 
     /**
@@ -117,12 +114,18 @@ class Pterodactyl extends Module
                 'eggsGet',
                 ['nest_id' => $package->meta->nest_id, 'egg_id' => $package->meta->egg_id]
             );
+
             if (!empty($this->Input->errors())) {
                 $pterodactyl_egg = null;
+            } else {
+                // Set egg variables from service, package, or config options
+                $egg_variables = $service_helper->getEnvironmentVariables($vars, $package, $pterodactyl_egg);
+                $vars = array_merge($vars, array_change_key_case($egg_variables));
             }
         }
 
-        return $service_helper->getServiceRules($vars, $package, $edit, $pterodactyl_egg);
+        $this->Input->setRules($service_helper->getServiceRules($vars, $package, $edit, $pterodactyl_egg));
+        return $this->Input->validates($vars);
     }
 
     /**
