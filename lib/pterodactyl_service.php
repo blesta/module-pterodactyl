@@ -38,7 +38,7 @@ class PterodactylService
         Loader::loadModels($this, ['Clients']);
         $client = $this->Clients->get($vars['client_id']);
         return [
-            'username' => $client->email,
+            'username' => $client->first_name . '_' . $client->last_name . '_' . $client->id,
             'email' => $client->email,
             'first_name' => $client->first_name,
             'last_name' => $client->last_name,

@@ -157,6 +157,8 @@ class Pterodactyl extends Module
         $parent_service = null,
         $status = 'pending'
     ) {
+        Loader::loadModels($this, ['Clients']);
+        $client = $this->Clients->get($vars['client_id']);
         $meta = [];
         // Load egg
         $pterodactyl_egg = $this->apiRequest(
@@ -176,9 +178,9 @@ class Pterodactyl extends Module
         // Get the service helper
         $this->loadLib('pterodactyl_service');
         $service_helper = new PterodactylService();
-        $pterodactyl_user = $this->apiRequest('Users', 'getByExternalId', [$vars['client_id']]);
         if ($vars['use_module'] == 'true') {
             // Load/create user account
+            $pterodactyl_user = $this->apiRequest('Users', 'getByExternalId', [$vars['client_id']]);
             if ($this->Input->errors()) {
                 $this->Input->setErrors([]);
                 $pterodactyl_user = $this->apiRequest('Users', 'add', [$service_helper->addUserParameters($vars)]);
@@ -207,7 +209,7 @@ class Pterodactyl extends Module
                 'key' => 'username',
                 'value' => isset($pterodactyl_user->attributes->username)
                     ? $pterodactyl_user->attributes->username
-                    : '',
+                    : $client->first_name . '_' . $client->last_name . '_' . $client->id,
                 'encrypted' => 0
             ],
             [
