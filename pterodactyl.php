@@ -1088,7 +1088,7 @@ class Pterodactyl extends Module
                 'valid' => [
                     'rule' => function ($host_name) {
                         $validator = new Server();
-                        return $validator->isDomain($host_name);
+                        return $validator->isDomain($host_name) || $validator->isIp($host_name);
                     },
                     'message' => Language::_('Pterodactyl.!error.host_name.valid', true)
                 ]
