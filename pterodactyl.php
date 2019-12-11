@@ -178,7 +178,7 @@ class Pterodactyl extends Module
         $service_helper = new PterodactylService();
         if ($vars['use_module'] == 'true') {
             // Load/create user account
-            $pterodactyl_user = $this->apiRequest('Users', 'getByExternalId', [$vars['client_id']]);
+            $pterodactyl_user = $this->apiRequest('Users', 'getByExternalId', ['blesta-' . $vars['client_id']]);
             if ($this->Input->errors()) {
                 $this->Input->setErrors([]);
                 $pterodactyl_user = $this->apiRequest('Users', 'add', [$service_helper->addUserParameters($vars)]);

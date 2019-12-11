@@ -42,7 +42,7 @@ class PterodactylService
             'email' => $client->email,
             'first_name' => $client->first_name,
             'last_name' => $client->last_name,
-            'external_id' => $client->id,
+            'external_id' => 'blesta-' . $client->id,
         ];
     }
 
