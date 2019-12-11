@@ -36,6 +36,36 @@ class Pterodactyl extends Module
     }
 
     /**
+     * Performs migration of data from $current_version (the current installed version)
+     * to the given file set version. Sets Input errors on failure, preventing
+     * the module from being upgraded.
+     *
+     * @param string $current_version The current installed version of this module
+     */
+    public function upgrade($current_version)
+    {
+        if (version_compare($current_version, '1.1.0', '<')) {
+            if (!isset($this->ModuleManager)) {
+                Loader::loadModels($this, ['ModuleManager']);
+            }
+
+            // Update all module rows to set host_name instead of panel_url
+            $modules = $this->ModuleManager->getByClass('pterodactyl');
+            foreach ($modules as $module) {
+                $rows = $this->ModuleManager->getRows($module->id);
+                foreach ($rows as $row) {
+                    $meta = (array)$row->meta;
+                    if (isset($meta['panel_url'])) {
+                        $meta['host_name'] = $meta['panel_url'];
+                        unset($meta['panel_url']);
+                        $this->ModuleManager->editRow($row->id, $meta);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
      * Loads a library class
      *
      * @param string $command The filename of the class to load
@@ -186,7 +216,6 @@ class Pterodactyl extends Module
                     return;
                 }
             }
-
 
             // Create server
             $pterodactyl_server = $this->apiRequest(
@@ -591,7 +620,7 @@ class Pterodactyl extends Module
 
         // Fetch the API
         $api = $this->getApi(
-            $row->meta->panel_url,
+            $row->meta->host_name,
             $client_api ? $row->meta->account_api_key : $row->meta->application_api_key,
             $row->meta->use_ssl == 'true'
         );
@@ -761,7 +790,7 @@ class Pterodactyl extends Module
      */
     public function addModuleRow(array &$vars)
     {
-        $meta_fields = ['server_name', 'panel_url', 'account_api_key', 'application_api_key', 'use_ssl'];
+        $meta_fields = ['server_name', 'host_name', 'account_api_key', 'application_api_key', 'use_ssl'];
         $encrypted_fields = ['account_api_key', 'application_api_key'];
 
         // Set unspecified checkboxes
@@ -858,7 +887,7 @@ class Pterodactyl extends Module
         $api = null;
         $package_lists = [];
         if ($row) {
-            $api = $this->getApi($row->meta->panel_url, $row->meta->application_api_key, $row->meta->use_ssl == 'true');
+            $api = $this->getApi($row->meta->host_name, $row->meta->application_api_key, $row->meta->use_ssl == 'true');
 
             // API request for locations
             $locations_response = $api->Locations->getAll();
@@ -926,7 +955,7 @@ class Pterodactyl extends Module
     public function getEmailTags()
     {
         return [
-            'module' => ['server_name', 'panel_url'],
+            'module' => ['server_name', 'host_name'],
             'package' => ['location_id', 'nest_id', 'egg_id', 'image'],
             'service' => ['server_name']
         ];
@@ -1055,13 +1084,13 @@ class Pterodactyl extends Module
                     'message' => Language::_('Pterodactyl.!error.server_name.empty', true)
                 ]
             ],
-            'panel_url' => [
+            'host_name' => [
                 'valid' => [
                     'rule' => function ($host_name) {
                         $validator = new Server();
-                        return $validator->isDomain($host_name);
+                        return $validator->isDomain($host_name) || $validator->isIp($host_name);
                     },
-                    'message' => Language::_('Pterodactyl.!error.panel_url.valid', true)
+                    'message' => Language::_('Pterodactyl.!error.host_name.valid', true)
                 ]
             ],
             'account_api_key' => [
@@ -1074,7 +1103,7 @@ class Pterodactyl extends Module
                     'rule' => function ($api_key) use ($vars) {
                         try {
                             $api = $this->getApi(
-                                isset($vars['panel_url']) ? $vars['panel_url'] : '',
+                                isset($vars['host_name']) ? $vars['host_name'] : '',
                                 $api_key,
                                 (isset($vars['use_ssl']) ? $vars['use_ssl'] : 'true') == 'true'
                             );
@@ -1098,7 +1127,7 @@ class Pterodactyl extends Module
                     'rule' => function ($api_key) use ($vars) {
                         try {
                             $api = $this->getApi(
-                                isset($vars['panel_url']) ? $vars['panel_url'] : '',
+                                isset($vars['host_name']) ? $vars['host_name'] : '',
                                 $api_key,
                                 (isset($vars['use_ssl']) ? $vars['use_ssl'] : 'true') == 'true'
                             );
