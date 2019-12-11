@@ -279,7 +279,7 @@ class Pterodactyl extends Module
         $service_helper = new PterodactylService();
 
         // Load user account
-        $pterodactyl_user = $this->apiRequest('Users', 'getByExternalId', [$service->client_id]);
+        $pterodactyl_user = $this->apiRequest('Users', 'getByExternalId', ['blesta-' . $service->client_id]);
         if ($vars['use_module'] == 'true') {
             // Load egg
             $pterodactyl_egg = $this->apiRequest(
