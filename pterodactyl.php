@@ -157,8 +157,6 @@ class Pterodactyl extends Module
         $parent_service = null,
         $status = 'pending'
     ) {
-        Loader::loadModels($this, ['Clients']);
-        $client = $this->Clients->get($vars['client_id']);
         $meta = [];
         // Load egg
         $pterodactyl_egg = $this->apiRequest(
@@ -209,7 +207,7 @@ class Pterodactyl extends Module
                 'key' => 'username',
                 'value' => isset($pterodactyl_user->attributes->username)
                     ? $pterodactyl_user->attributes->username
-                    : $client->first_name . '_' . $client->last_name . '_' . $client->id,
+                    : 'blesta_' . $vars['client_id'],
                 'encrypted' => 0
             ],
             [
