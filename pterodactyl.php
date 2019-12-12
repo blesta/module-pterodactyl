@@ -100,8 +100,7 @@ class Pterodactyl extends Module
      */
     public function validateService($package, array $vars = null)
     {
-        $this->Input->setRules($this->getServiceRules($vars, $package));
-        return $this->Input->validates($vars);
+        return $this->getServiceRules($vars, $package);
     }
 
     /**
@@ -114,9 +113,7 @@ class Pterodactyl extends Module
     public function validateServiceEdit($service, array $vars = null)
     {
         $package = isset($service->package) ? $service->package : null;
-
-        $this->Input->setRules($this->getServiceRules($vars, $package, true));
-        return $this->Input->validates($vars);
+        return $this->getServiceRules($vars, $package, true);
     }
 
     /**
@@ -147,12 +144,18 @@ class Pterodactyl extends Module
                 'eggsGet',
                 ['nest_id' => $package->meta->nest_id, 'egg_id' => $package->meta->egg_id]
             );
+
             if (!empty($this->Input->errors())) {
                 $pterodactyl_egg = null;
+            } else {
+                // Set egg variables from service, package, or config options
+                $egg_variables = $service_helper->getEnvironmentVariables($vars, $package, $pterodactyl_egg);
+                $vars = array_merge($vars, array_change_key_case($egg_variables));
             }
         }
 
-        return $service_helper->getServiceRules($vars, $package, $edit, $pterodactyl_egg);
+        $this->Input->setRules($service_helper->getServiceRules($vars, $package, $edit, $pterodactyl_egg));
+        return $this->Input->validates($vars);
     }
 
     /**
@@ -206,9 +209,9 @@ class Pterodactyl extends Module
         // Get the service helper
         $this->loadLib('pterodactyl_service');
         $service_helper = new PterodactylService();
-        $pterodactyl_user = $this->apiRequest('Users', 'getByExternalId', [$vars['client_id']]);
         if ($vars['use_module'] == 'true') {
             // Load/create user account
+            $pterodactyl_user = $this->apiRequest('Users', 'getByExternalID', ['bl-' . $vars['client_id']]);
             if ($this->Input->errors()) {
                 $this->Input->setErrors([]);
                 $pterodactyl_user = $this->apiRequest('Users', 'add', [$service_helper->addUserParameters($vars)]);
@@ -236,7 +239,7 @@ class Pterodactyl extends Module
                 'key' => 'username',
                 'value' => isset($pterodactyl_user->attributes->username)
                     ? $pterodactyl_user->attributes->username
-                    : '',
+                    : 'bl_' . $vars['client_id'],
                 'encrypted' => 0
             ],
             [
@@ -307,9 +310,10 @@ class Pterodactyl extends Module
         $this->loadLib('pterodactyl_service');
         $service_helper = new PterodactylService();
 
-        // Load user account
-        $pterodactyl_user = $this->apiRequest('Users', 'getByExternalId', [$service->client_id]);
         if ($vars['use_module'] == 'true') {
+            // Load user account
+            $pterodactyl_user = $this->apiRequest('Users', 'getByExternalID', ['bl-' . $service->client_id]);
+
             // Load egg
             $pterodactyl_egg = $this->apiRequest(
                 'Nests',
@@ -353,7 +357,7 @@ class Pterodactyl extends Module
                 'key' => 'username',
                 'value' => isset($pterodactyl_user->attributes->username)
                     ? $pterodactyl_user->attributes->username
-                    : '',
+                    : $service_fields->username,
                 'encrypted' => 0
             ],
             [

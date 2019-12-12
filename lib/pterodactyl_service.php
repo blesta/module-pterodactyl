@@ -38,11 +38,11 @@ class PterodactylService
         Loader::loadModels($this, ['Clients']);
         $client = $this->Clients->get($vars['client_id']);
         return [
-            'username' => $client->email,
+            'username' => 'bl_' . $client->id,
             'email' => $client->email,
             'first_name' => $client->first_name,
             'last_name' => $client->last_name,
-            'external_id' => $client->id,
+            'external_id' => 'bl-' . $client->id,
         ];
     }
 
