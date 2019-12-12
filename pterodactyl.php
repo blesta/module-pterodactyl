@@ -178,7 +178,7 @@ class Pterodactyl extends Module
         $service_helper = new PterodactylService();
         if ($vars['use_module'] == 'true') {
             // Load/create user account
-            $pterodactyl_user = $this->apiRequest('Users', 'getByExternalId', ['blesta-' . $vars['client_id']]);
+            $pterodactyl_user = $this->apiRequest('Users', 'getByExternalID', ['bl-' . $vars['client_id']]);
             if ($this->Input->errors()) {
                 $this->Input->setErrors([]);
                 $pterodactyl_user = $this->apiRequest('Users', 'add', [$service_helper->addUserParameters($vars)]);
@@ -186,7 +186,6 @@ class Pterodactyl extends Module
                     return;
                 }
             }
-
 
             // Create server
             $pterodactyl_server = $this->apiRequest(
@@ -207,7 +206,7 @@ class Pterodactyl extends Module
                 'key' => 'username',
                 'value' => isset($pterodactyl_user->attributes->username)
                     ? $pterodactyl_user->attributes->username
-                    : 'blesta_' . $vars['client_id'],
+                    : 'bl_' . $vars['client_id'],
                 'encrypted' => 0
             ],
             [
@@ -278,9 +277,10 @@ class Pterodactyl extends Module
         $this->loadLib('pterodactyl_service');
         $service_helper = new PterodactylService();
 
-        // Load user account
-        $pterodactyl_user = $this->apiRequest('Users', 'getByExternalId', ['blesta-' . $service->client_id]);
         if ($vars['use_module'] == 'true') {
+            // Load user account
+            $pterodactyl_user = $this->apiRequest('Users', 'getByExternalID', ['bl-' . $service->client_id]);
+
             // Load egg
             $pterodactyl_egg = $this->apiRequest(
                 'Nests',
@@ -324,7 +324,7 @@ class Pterodactyl extends Module
                 'key' => 'username',
                 'value' => isset($pterodactyl_user->attributes->username)
                     ? $pterodactyl_user->attributes->username
-                    : '',
+                    : $service_fields->username,
                 'encrypted' => 0
             ],
             [
