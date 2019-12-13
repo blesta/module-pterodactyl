@@ -190,6 +190,8 @@ class Pterodactyl extends Module
         $parent_service = null,
         $status = 'pending'
     ) {
+        Loader::loadModels($this, ['ModuleClientMeta']);
+
         $meta = [];
         // Load egg
         $pterodactyl_egg = $this->apiRequest(
@@ -214,10 +216,23 @@ class Pterodactyl extends Module
             $pterodactyl_user = $this->apiRequest('Users', 'getByExternalID', ['bl-' . $vars['client_id']]);
             if ($this->Input->errors()) {
                 $this->Input->setErrors([]);
-                $pterodactyl_user = $this->apiRequest('Users', 'add', [$service_helper->addUserParameters($vars)]);
+                $addParameters = $service_helper->addUserParameters($vars);
+                $pterodactyl_user = $this->apiRequest('Users', 'add', [$addParameters]);
                 if ($this->Input->errors()) {
                     return;
                 }
+
+                // Keep track of the username and password used for this client
+                $module = $this->getModule();
+                $this->ModuleClientMeta->set(
+                    $vars['client_id'],
+                    $module->id,
+                    0,
+                    [
+                        ['key' => 'pterodactyl_username', 'value' => $addParameters['username'], 'encrypted' => 0],
+                        ['key' => 'pterodactyl_password', 'value' => $addParameters['password'], 'encrypted' => 1]
+                    ]
+                );
             }
 
             // Create server
@@ -235,13 +250,6 @@ class Pterodactyl extends Module
         }
 
         $return = [
-            [
-                'key' => 'username',
-                'value' => isset($pterodactyl_user->attributes->username)
-                    ? $pterodactyl_user->attributes->username
-                    : 'bl_' . $vars['client_id'],
-                'encrypted' => 0
-            ],
             [
                 'key' => 'server_id',
                 'value' => isset($meta['server_id'])
@@ -354,13 +362,6 @@ class Pterodactyl extends Module
 
         $return = [
             [
-                'key' => 'username',
-                'value' => isset($pterodactyl_user->attributes->username)
-                    ? $pterodactyl_user->attributes->username
-                    : $service_fields->username,
-                'encrypted' => 0
-            ],
-            [
                 'key' => 'server_id',
                 'value' => !empty($vars['server_id']) ? $vars['server_id'] : $service_fields->server_id,
                 'encrypted' => 0
@@ -437,6 +438,7 @@ class Pterodactyl extends Module
      */
     public function getAdminServiceInfo($service, $package)
     {
+        Loader::loadModels($this, ['ModuleClientMeta']);
         $row = $this->getModuleRow();
 
         // Load the view into this object, so helpers can be automatically added to the view
@@ -447,9 +449,15 @@ class Pterodactyl extends Module
         // Load the helpers required for this view
         Loader::loadHelpers($this, ['Form', 'Html']);
 
-        $service_fields = $this->serviceFieldsToObject($service->fields);
+        // Get username and password for the account
+        $module = $this->getModule();
+        $username = $this->ModuleClientMeta->get($service->client_id, 'pterodactyl_username', $module->id);
+        $password = $this->ModuleClientMeta->get($service->client_id, 'pterodactyl_password', $module->id);
+
+        // Set view data
         $this->view->set('module_row', $row);
-        $this->view->set('service_fields', $service_fields);
+        $this->view->set('username', $username ? $username->value : '');
+        $this->view->set('password', $password ? $password->value : '');
 
         return $this->view->fetch();
     }
@@ -464,6 +472,7 @@ class Pterodactyl extends Module
      */
     public function getClientServiceInfo($service, $package)
     {
+        Loader::loadModels($this, ['ModuleClientMeta']);
         $row = $this->getModuleRow();
 
         // Load the view into this object, so helpers can be automatically added to the view
@@ -474,9 +483,15 @@ class Pterodactyl extends Module
         // Load the helpers required for this view
         Loader::loadHelpers($this, ['Form', 'Html']);
 
-        $service_fields = $this->serviceFieldsToObject($service->fields);
+        // Get username and password for the account
+        $module = $this->getModule();
+        $username = $this->ModuleClientMeta->get($service->client_id, 'pterodactyl_username', $module->id);
+        $password = $this->ModuleClientMeta->get($service->client_id, 'pterodactyl_password', $module->id);
+
+        // Set view data
         $this->view->set('module_row', $row);
-        $this->view->set('service_fields', $service_fields);
+        $this->view->set('username', $username ? $username->value : '');
+        $this->view->set('password', $password ? $password->value : '');
 
         return $this->view->fetch();
     }

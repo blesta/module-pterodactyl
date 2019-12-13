@@ -39,11 +39,33 @@ class PterodactylService
         $client = $this->Clients->get($vars['client_id']);
         return [
             'username' => 'bl_' . $client->id,
+            'password' => $this->generatePassword(),
             'email' => $client->email,
             'first_name' => $client->first_name,
             'last_name' => $client->last_name,
             'external_id' => 'bl-' . $client->id,
         ];
+    }
+
+    /**
+     * Generates a password.
+     *
+     * @param int $min_length The minimum character length for the password (5 or larger)
+     * @param int $max_length The maximum character length for the password (14 or fewer)
+     * @return string The generated password
+     */
+    private function generatePassword($min_length = 10, $max_length = 14)
+    {
+        $pool = 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()';
+        $pool_size = strlen($pool);
+        $length = mt_rand(max($min_length, 5), min($max_length, 14));
+        $password = '';
+
+        for ($i = 0; $i < $length; $i++) {
+            $password .= substr($pool, mt_rand(0, $pool_size - 1), 1);
+        }
+
+        return $password;
     }
 
     /**

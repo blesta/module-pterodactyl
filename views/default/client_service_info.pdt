@@ -4,13 +4,15 @@
                 <tr>
                     <th><i class="fa fa-share fa-flip-vertical"></i></th>
                     <th><?php $this->_('Pterodactyl.service_info.username');?></th>
+                    <th><?php $this->_('Pterodactyl.service_info.password');?></th>
                     <th><?php $this->_('Pterodactyl.service_info.login');?></th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td></td>
-                    <td><?php $this->Html->_($service_fields->username);?></td>
+                    <td><?php $this->Html->_($username);?></td>
+                    <td><?php $this->Html->_($password);?></td>
                     <td>
                         <a href="<?php echo $module_row->meta->use_ssl ? 'https://' : 'http://';?><?php $this->Html->_($module_row->meta->host_name);?>/auth/login" target="_blank"><?php $this->Html->_($module_row->meta->host_name);?>/auth/login</a>
                     </td>
