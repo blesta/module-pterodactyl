@@ -75,6 +75,7 @@ $lang['Pterodactyl.order_options.first'] = 'First Non-full Server';
 
 // Service Info
 $lang['Pterodactyl.service_info.username'] = 'Username';
+$lang['Pterodactyl.service_info.password'] = 'Password';
 $lang['Pterodactyl.service_info.login'] = 'Login URL';
 
 
