@@ -346,14 +346,13 @@ class PterodactylPackage
             'meta[port_range]' => [
                 'format' => [
                     'rule' => function ($portRanges) {
-                        if (!empty($portRanges)) {
-                            $ranges = explode(',', $portRanges);
-                            foreach ($ranges as $range) {
-                                if (!preg_match('/^[0-9]+\-[0-9]+$/', $range)) {
-                                    return false;
-                                }
+                        $ranges = explode(',', $portRanges);
+                        foreach ($ranges as $range) {
+                            if (!preg_match('/^[0-9]+\-[0-9]+$/', $range)) {
+                                return false;
                             }
                         }
+
                         return true;
                     },
                     'message' => Language::_('PterodactylPackage.!error.meta[port_range].format', true)

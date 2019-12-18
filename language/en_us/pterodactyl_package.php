@@ -27,7 +27,7 @@ $lang['PterodactylPackage.package_fields.dedicated_ip'] = 'Dedicated IP (optiona
 $lang['PterodactylPackage.package_fields.tooltip.dedicated_ip'] = 'Assign dedicated ip to the created servers.';
 
 // TODO Should this be a service field instead?
-$lang['PterodactylPackage.package_fields.port_range'] = 'Port Range (optional)';
+$lang['PterodactylPackage.package_fields.port_range'] = 'Port Range';
 $lang['PterodactylPackage.package_fields.tooltip.port_range'] = 'Port ranges seperated by comma to assign to the server (Example: 25565-25570,25580-25590).';
 
 $lang['PterodactylPackage.package_fields.nest_id'] = 'Nest';
