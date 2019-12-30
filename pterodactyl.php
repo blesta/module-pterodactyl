@@ -92,6 +92,36 @@ class Pterodactyl extends Module
     }
 
     /**
+     * Determines which module row should be attempted when a service is provisioned
+     * for the given group based upon the order method set for that group.
+     *
+     * @return int The module row ID to attempt to add the service with
+     * @see Module::getGroupOrderOptions()
+     */
+    public function selectModuleRow($module_group_id)
+    {
+        if (!isset($this->ModuleManager)) {
+            Loader::loadModels($this, ['ModuleManager']);
+        }
+
+        $group = $this->ModuleManager->getGroup($module_group_id);
+
+        if ($group) {
+            switch ($group->add_order) {
+                default:
+                case 'first':
+
+                    foreach ($group->rows as $row) {
+                        return $row->id;
+                    }
+
+                    break;
+            }
+        }
+        return 0;
+    }
+
+    /**
      * Attempts to validate service info. This is the top-level error checking method. Sets Input errors on failure.
      *
      * @param stdClass $package A stdClass object representing the selected package
