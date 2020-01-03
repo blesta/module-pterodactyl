@@ -145,7 +145,8 @@ class Pterodactyl extends Module
                 ['nest_id' => $package->meta->nest_id, 'egg_id' => $package->meta->egg_id]
             );
 
-            if (!empty($this->Input->errors())) {
+            $errors = $this->Input->errors();
+            if (!empty($errors)) {
                 $pterodactyl_egg = null;
             } else {
                 // Set egg variables from service, package, or config options
@@ -601,7 +602,8 @@ class Pterodactyl extends Module
                 [$server->attributes->identifier, $get[$get_key]],
                 true
             );
-            if (empty($this->Input->errors())) {
+            $errors = $this->Input->errors();
+            if (empty($errors)) {
                 $this->setMessage('success', Language::_('Pterodactyl.!success.' . $get[$get_key], true));
             }
         }
