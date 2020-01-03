@@ -253,6 +253,10 @@ class PterodactylPackage
      */
     private function attachEggFields($pterodactyl_egg, $fields, $vars = null)
     {
+        if (!is_object($pterodactyl_egg)) {
+            return $fields;
+        }
+
         // Get service fields from the egg
         foreach ($pterodactyl_egg->attributes->relationships->variables->data as $env_variable) {
             // Create a label for the environment variable
