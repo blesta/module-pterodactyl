@@ -11,26 +11,28 @@
             $status_class = 'info';
     }
     ?>
-    <span class="label label-<?php $this->Html->_($status_class);?>">
-        <i class="fa fa-lightbulb-o"></i> <?php $this->_('Pterodactyl.tab_client_actions.status_' . $this->Html->ifSet($server->attributes->state));?>
-    </span>
+    <div id="pterodactyl_actions">
+        <span class="label label-<?php $this->Html->_($status_class);?>">
+            <i class="fa fa-lightbulb-o"></i> <?php $this->_('Pterodactyl.tab_client_actions.status_' . $this->Html->ifSet($server->attributes->state));?>
+        </span>
 
-    <h4><?php $this->_('Pterodactyl.tab_client_actions.heading_actions');?></h4>
-    <div class="row options" id="pterodactyl_actions">
-        <div class="col-md-4">
-            <a<?php echo $this->Html->ifSet($server->attributes->state, 'on') != 'off' ? ' disabled="disabled"' : '';?> class="btn btn-default btn-block" href="<?php echo $this->Html->safe($this->base_uri . 'services/manage/' . $this->Html->ifSet($service_id) . '/tabClientActions/start/');?>">
-                <i class="fa fa-power-off"></i> <?php $this->_('Pterodactyl.!actions.start');?>
-            </a>
-        </div>
-        <div class="col-md-4">
-            <a<?php echo $this->Html->ifSet($server->attributes->state, 'on') != 'on' ? ' disabled="disabled"' : '';?> class="btn btn-default btn-block btn-danger" href="<?php echo $this->Html->safe($this->base_uri . 'services/manage/' . $this->Html->ifSet($service_id) . '/tabClientActions/stop/');?>">
-                <i class="fa fa-power-off"></i> <?php $this->_('Pterodactyl.!actions.stop');?>
-            </a>
-        </div>
-        <div class="col-md-4">
-            <a<?php echo $this->Html->ifSet($server->attributes->state, 'on') != 'on' ? ' disabled="disabled"' : '';?> class="restart btn btn-default btn-block" href="<?php echo $this->Html->safe($this->base_uri . 'services/manage/' . $this->Html->ifSet($service_id) . '/tabClientActions/restart/');?>">
-                <i class="fa fa-refresh"></i> <?php $this->_('Pterodactyl.!actions.restart');?>
-            </a>
+        <h4><?php $this->_('Pterodactyl.tab_client_actions.heading_actions');?></h4>
+        <div class="row options">
+            <div class="col-md-4">
+                <a<?php echo $this->Html->ifSet($server->attributes->state, 'on') != 'off' ? ' disabled="disabled"' : '';?> class="btn btn-default btn-block" href="<?php echo $this->Html->safe($this->base_uri . 'services/manage/' . $this->Html->ifSet($service_id) . '/tabClientActions/start/');?>">
+                    <i class="fa fa-power-off"></i> <?php $this->_('Pterodactyl.!actions.start');?>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a<?php echo $this->Html->ifSet($server->attributes->state, 'on') != 'on' ? ' disabled="disabled"' : '';?> class="btn btn-default btn-block btn-danger" href="<?php echo $this->Html->safe($this->base_uri . 'services/manage/' . $this->Html->ifSet($service_id) . '/tabClientActions/stop/');?>">
+                    <i class="fa fa-power-off"></i> <?php $this->_('Pterodactyl.!actions.stop');?>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a<?php echo $this->Html->ifSet($server->attributes->state, 'on') != 'on' ? ' disabled="disabled"' : '';?> class="restart btn btn-default btn-block" href="<?php echo $this->Html->safe($this->base_uri . 'services/manage/' . $this->Html->ifSet($service_id) . '/tabClientActions/restart/');?>">
+                    <i class="fa fa-refresh"></i> <?php $this->_('Pterodactyl.!actions.restart');?>
+                </a>
+            </div>
         </div>
     </div>
 
