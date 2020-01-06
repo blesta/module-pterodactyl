@@ -19,8 +19,15 @@ class PterodactylRule
      */
     public function parseEggVariable($eggVariable)
     {
+        // Parse rule string for regexes and remove them to simplify parsing
+        $ruleString = $eggVariable->attributes->rules;
+        $regexRuleStrings = [];
+        preg_match('/regex:(\/.*\/)/', $ruleString, $regexRuleStrings);
+        $regexFilteredRuleString = str_replace($regexRuleStrings, '{{{regex}}}', $ruleString);
+        $ruleStrings = explode('|', $regexFilteredRuleString);
+
+        // Parse rules from the string
         $rules = [];
-        $ruleStrings = explode('|', $eggVariable->attributes->rules);
         $fieldName = $eggVariable->attributes->name;
         foreach ($ruleStrings as $ruleString) {
             $ruleParts = explode(':', $ruleString);
@@ -31,6 +38,14 @@ class PterodactylRule
                 $ruleParameters = explode(',', $ruleParts[1]);
             }
 
+            // Re-add filtered regexes
+            if (!empty($regexRuleStrings)) {
+                foreach ($ruleParameters as &$ruleParameter) {
+                    $ruleParameter = str_replace('{{{regex}}}', $regexRuleStrings, $ruleParameter);
+                }
+            }
+
+            // Generate validation rule
             if (method_exists($this, $ruleName)) {
                 $rules[$ruleName] = call_user_func_array(
                     [$this, $ruleName],
