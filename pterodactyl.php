@@ -248,6 +248,14 @@ class Pterodactyl extends Module
             }
 
             $meta['server_id'] = $pterodactyl_server->attributes->id;
+            if (isset($pterodactyl_server->attributes->relationships)
+                && isset($pterodactyl_server->attributes->relationships->allocations)
+                && isset($pterodactyl_server->attributes->relationships->allocations->data[0])
+            ) {
+                $allocation = $pterodactyl_server->attributes->relationships->allocations->data[0];
+                $meta['server_ip'] = $allocation->attributes->ip;
+                $meta['server_port'] = $allocation->attributes->port;
+            }
         }
 
         $return = [
@@ -256,6 +264,20 @@ class Pterodactyl extends Module
                 'value' => isset($meta['server_id'])
                     ? $meta['server_id'] :
                     (isset($vars['server_id']) ? $vars['server_id'] : null),
+                'encrypted' => 0
+            ],
+            [
+                'key' => 'server_ip',
+                'value' => isset($meta['server_ip'])
+                    ? $meta['server_ip'] :
+                    (isset($vars['server_ip']) ? $vars['server_ip'] : null),
+                'encrypted' => 0
+            ],
+            [
+                'key' => 'server_port',
+                'value' => isset($meta['server_port'])
+                    ? $meta['server_port'] :
+                    (isset($vars['server_port']) ? $vars['server_port'] : null),
                 'encrypted' => 0
             ],
             [
@@ -334,13 +356,22 @@ class Pterodactyl extends Module
             }
 
             // Edit server details
-            $this->apiRequest(
+            $pterodactyl_server = $this->apiRequest(
                 'Servers',
                 'editDetails',
                 [$service_fields->server_id, $service_helper->editServerParameters($vars, $pterodactyl_user)]
             );
             if ($this->Input->errors()) {
                 return;
+            }
+
+            if (isset($pterodactyl_server->attributes->relationships)
+                && isset($pterodactyl_server->attributes->relationships->allocations)
+                && isset($pterodactyl_server->attributes->relationships->allocations->data[0])
+            ) {
+                $allocation = $pterodactyl_server->attributes->relationships->allocations->data[0];
+                $vars['server_ip'] = $allocation->attributes->ip;
+                $vars['server_port'] = $allocation->attributes->port;
             }
 
             // It is also possible to edit build details, but that is affeced purely by package
@@ -365,6 +396,16 @@ class Pterodactyl extends Module
             [
                 'key' => 'server_id',
                 'value' => !empty($vars['server_id']) ? $vars['server_id'] : $service_fields->server_id,
+                'encrypted' => 0
+            ],
+            [
+                'key' => 'server_ip',
+                'value' => !empty($vars['server_ip']) ? $vars['server_ip'] : $service_fields->server_ip,
+                'encrypted' => 0
+            ],
+            [
+                'key' => 'server_port',
+                'value' => !empty($vars['server_port']) ? $vars['server_port'] : $service_fields->server_port,
                 'encrypted' => 0
             ],
             [
@@ -978,7 +1019,7 @@ class Pterodactyl extends Module
         return [
             'module' => ['server_name', 'host_name'],
             'package' => ['location_id', 'nest_id', 'egg_id', 'image'],
-            'service' => ['server_name']
+            'service' => ['server_name', 'server_ip', 'server_port']
         ];
     }
 
