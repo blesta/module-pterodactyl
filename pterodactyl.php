@@ -253,8 +253,8 @@ class Pterodactyl extends Module
                 && isset($pterodactyl_server->attributes->relationships->allocations->data[0])
             ) {
                 $allocation = $pterodactyl_server->attributes->relationships->allocations->data[0];
-                $meta['server_ip'] = $allocation->attributes->ip;
-                $meta['server_port'] = $allocation->attributes->port;
+                $meta['server_ip'] = isset($allocation->attributes->ip) ? $allocation->attributes->ip : null;
+                $meta['server_port'] = isset($allocation->attributes->port) ? $allocation->attributes->port : null;
             }
         }
 
@@ -370,8 +370,8 @@ class Pterodactyl extends Module
                 && isset($pterodactyl_server->attributes->relationships->allocations->data[0])
             ) {
                 $allocation = $pterodactyl_server->attributes->relationships->allocations->data[0];
-                $vars['server_ip'] = $allocation->attributes->ip;
-                $vars['server_port'] = $allocation->attributes->port;
+                $vars['server_ip'] = isset($allocation->attributes->ip) ? $allocation->attributes->ip : null;
+                $vars['server_port'] = isset($allocation->attributes->port) ? $allocation->attributes->port : null;
             }
 
             // It is also possible to edit build details, but that is affeced purely by package
