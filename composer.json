@@ -6,7 +6,7 @@
     "require": {
         "php": ">=5.4.0",
         "blesta/composer-installer": "~1.0",
-        "blesta/pterodactyl-sdk": "~0.1"
+        "blesta/pterodactyl-sdk": "~1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "~4.6",
