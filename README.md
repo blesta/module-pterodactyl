@@ -29,3 +29,10 @@ your Blesta installation path.
 5. Add a server with your Pterodactyl credentials
 
 6. You're done!
+
+### Blesta Compatibility
+
+|Blesta Version|Module Version|
+|--------------|--------------|
+|< v4.9.0|v1.3.0|
+|>= v4.9.0|v1.4.0+|
