@@ -612,7 +612,7 @@ class Pterodactyl extends Module
             $pterodactyl_server = $this->apiRequest(
                 'Servers',
                 'getByExternalID',
-                [empty($service_fields->external_id) ? $service_fields->external_id : null]
+                [!empty($service_fields->external_id) ? $service_fields->external_id : null]
             );
         }
 
