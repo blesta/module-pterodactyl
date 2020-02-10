@@ -278,6 +278,7 @@ class Pterodactyl extends Module
             }
 
             $meta['server_id'] = $pterodactyl_server->attributes->id;
+            $meta['external_id'] = $pterodactyl_server->attributes->external_id;
             if (isset($pterodactyl_server->attributes->relationships)
                 && isset($pterodactyl_server->attributes->relationships->allocations)
                 && isset($pterodactyl_server->attributes->relationships->allocations->data[0])
@@ -294,6 +295,13 @@ class Pterodactyl extends Module
                 'value' => isset($meta['server_id'])
                     ? $meta['server_id'] :
                     (isset($vars['server_id']) ? $vars['server_id'] : null),
+                'encrypted' => 0
+            ],
+            [
+                'key' => 'external_id',
+                'value' => !empty($meta['external_id'])
+                    ? $meta['external_id']
+                    : (isset($vars['external_id']) ? $vars['external_id'] : null),
                 'encrypted' => 0
             ],
             [
@@ -375,6 +383,9 @@ class Pterodactyl extends Module
             // Load user account
             $pterodactyl_user = $this->apiRequest('Users', 'getByExternalID', ['bl-' . $service->client_id]);
 
+            // Load the server
+            $pterodactyl_server = $this->getServer($service);
+
             // Load egg
             $pterodactyl_egg = $this->apiRequest(
                 'Nests',
@@ -386,20 +397,25 @@ class Pterodactyl extends Module
             }
 
             // Edit server details
-            $pterodactyl_server = $this->apiRequest(
+            $vars['service_id'] = $service->id;
+            $vars['client_id'] = $service->client_id;
+            $pterodactyl_server_edited = $this->apiRequest(
                 'Servers',
                 'editDetails',
-                [$service_fields->server_id, $service_helper->editServerParameters($vars, $pterodactyl_user)]
+                [$pterodactyl_server->attributes->id, $service_helper->editServerParameters($vars, $pterodactyl_user)]
             );
             if ($this->Input->errors()) {
                 return;
             }
 
-            if (isset($pterodactyl_server->attributes->relationships)
-                && isset($pterodactyl_server->attributes->relationships->allocations)
-                && isset($pterodactyl_server->attributes->relationships->allocations->data[0])
+            // Set service fields
+            $vars['server_id'] = $pterodactyl_server_edited->attributes->id;
+            $vars['external_id'] = $pterodactyl_server_edited->attributes->external_id;
+            if (isset($pterodactyl_server_edited->attributes->relationships)
+                && isset($pterodactyl_server_edited->attributes->relationships->allocations)
+                && isset($pterodactyl_server_edited->attributes->relationships->allocations->data[0])
             ) {
-                $allocation = $pterodactyl_server->attributes->relationships->allocations->data[0];
+                $allocation = $pterodactyl_server_edited->attributes->relationships->allocations->data[0];
                 $vars['server_ip'] = isset($allocation->attributes->ip) ? $allocation->attributes->ip : null;
                 $vars['server_port'] = isset($allocation->attributes->port) ? $allocation->attributes->port : null;
             }
@@ -412,7 +428,7 @@ class Pterodactyl extends Module
                 'Servers',
                 'editStartup',
                 [
-                    $service_fields->server_id,
+                    $pterodactyl_server->attributes->id,
                     $service_helper->editServerStartupParameters($vars, $package, $pterodactyl_egg, $service_fields)
                 ]
             );
@@ -426,6 +442,13 @@ class Pterodactyl extends Module
             [
                 'key' => 'server_id',
                 'value' => !empty($vars['server_id']) ? $vars['server_id'] : $service_fields->server_id,
+                'encrypted' => 0
+            ],
+            [
+                'key' => 'external_id',
+                'value' => !empty($vars['external_id'])
+                    ? $vars['external_id']
+                    : (isset($service_fields->external_id) ? $service_fields->external_id : null),
                 'encrypted' => 0
             ],
             [
@@ -491,9 +514,15 @@ class Pterodactyl extends Module
      */
     public function cancelService($package, $service, $parent_package = null, $parent_service = null)
     {
+        // Load the server
+        $pterodactyl_server = $this->getServer($service);
+
         // Delete the server
-        $service_fields = $this->serviceFieldsToObject($service->fields);
-        $this->apiRequest('Servers', 'delete', ['server_id' => $service_fields->server_id]);
+        $this->apiRequest(
+            'Servers',
+            'delete',
+            ['server_id' => $pterodactyl_server ? $pterodactyl_server->attributes->id : null]
+        );
 
         // We do not delete the user, but rather leave it around to be used for any current or future services
 
@@ -520,9 +549,15 @@ class Pterodactyl extends Module
      */
     public function suspendService($package, $service, $parent_package = null, $parent_service = null)
     {
+        // Load the server
+        $pterodactyl_server = $this->getServer($service);
+
         // Suspend the server
-        $service_fields = $this->serviceFieldsToObject($service->fields);
-        $this->apiRequest('Servers', 'suspend', ['server_id' => $service_fields->server_id]);
+        $this->apiRequest(
+            'Servers',
+            'suspend',
+            ['server_id' => $pterodactyl_server ? $pterodactyl_server->attributes->id : null]
+        );
 
         return null;
     }
@@ -547,11 +582,41 @@ class Pterodactyl extends Module
      */
     public function unsuspendService($package, $service, $parent_package = null, $parent_service = null)
     {
+        // Load the server
+        $pterodactyl_server = $this->getServer($service);
+
         // Unsuspend the server
-        $service_fields = $this->serviceFieldsToObject($service->fields);
-        $this->apiRequest('Servers', 'unsuspend', ['server_id' => $service_fields->server_id]);
+        $this->apiRequest(
+            'Servers',
+            'unsuspend',
+            ['server_id' => $pterodactyl_server ? $pterodactyl_server->attributes->id : null]
+        );
 
         return null;
+    }
+
+    /**
+     * Gets a Pterodactyl server for the given service
+     *
+     * @param stdClass $service A stdClass object representing the current service
+     * @return PterodactylResponse An object representing the Pterodactyl server
+     */
+    private function getServer($service)
+    {
+        $service_fields = $this->serviceFieldsToObject($service->fields);
+
+        // Load server
+        if (!empty($service_fields->server_id)) {
+            $pterodactyl_server = $this->apiRequest('Servers', 'get', [$service_fields->server_id]);
+        } else {
+            $pterodactyl_server = $this->apiRequest(
+                'Servers',
+                'getByExternalID',
+                [!empty($service_fields->external_id) ? $service_fields->external_id : null]
+            );
+        }
+
+        return $pterodactyl_server;
     }
 
     /**
@@ -696,7 +761,7 @@ class Pterodactyl extends Module
      * @param array $post Any POST parameters
      * @param array $files Any FILES parameters
      */
-    private function actionsTab($package, $service,$client = false, array $get = null, array $post = null)
+    private function actionsTab($package, $service, $client = false, array $get = null, array $post = null)
     {
         $this->view->base_uri = $this->base_uri;
         // Load the helpers required for this view
@@ -706,7 +771,7 @@ class Pterodactyl extends Module
         $service_fields = $this->serviceFieldsToObject($service->fields);
 
         // Get server information from the application API
-        $server = $this->apiRequest('Servers', 'get', [$service_fields->server_id]);
+        $server = $this->getServer($service);
         $server_id = isset($server->attributes->identifier) ? $server->attributes->identifier : null;
 
         // Get the service fields

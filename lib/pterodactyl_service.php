@@ -81,6 +81,7 @@ class PterodactylService
     {
         // Gather server data
         return [
+            'external_id' => $vars['client_id'] . '-' . uniqid(),
             'name' => $vars['server_name'],
             'description' => $vars['server_description'],
             'user' => $pterodactylUser->attributes->id,
@@ -125,6 +126,7 @@ class PterodactylService
     {
         // Gather server data
         return [
+            'external_id' => $vars['client_id'] . '-' . (isset($vars['service_id']) ? $vars['service_id'] : uniqid()),
             'name' => $vars['server_name'],
             'description' => $vars['server_description'],
             'user' => $pterodactylUser->attributes->id,
