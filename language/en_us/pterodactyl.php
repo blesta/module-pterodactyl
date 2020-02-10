@@ -1,5 +1,6 @@
 <?php
 $lang['Pterodactyl.name'] = 'Pterodactyl';
+$lang['Pterodactyl.description'] = 'Provisions and manages game servers via the Pterodactyl panel.';
 $lang['Pterodactyl.module_row'] = 'Server';
 $lang['Pterodactyl.module_row_plural'] = 'Servers';
 $lang['Pterodactyl.module_group'] = 'Server Group';

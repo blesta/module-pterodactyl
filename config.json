@@ -1,7 +1,7 @@
 {
-    "version": "1.3.1",
+    "version": "1.4.0",
     "name": "Pterodactyl.name",
-    "description": "Provisions and manages game servers via the Pterodactyl panel.",
+    "description": "Pterodactyl.description",
     "authors": [
         {
             "name": "Phillips Data, Inc.",
@@ -16,5 +16,10 @@
         "rows": "Pterodactyl.module_row_plural",
         "row_key": "server_name",
         "group": "Pterodactyl.module_group"
+    },
+    "email_tags": {
+        "module": ["server_name", "host_name"],
+        "package": ["location_id", "nest_id", "egg_id", "image"],
+        "service": ["server_name", "server_ip", "server_port"]
     }
 }

@@ -1084,30 +1084,6 @@ class Pterodactyl extends Module
     }
 
     /**
-     * Returns an array of key values for fields stored for a module, package,
-     * and service under this module, used to substitute those keys with their
-     * actual module, package, or service meta values in related emails.
-     *
-     * @return array A multi-dimensional array of key/value pairs where each key is
-     *  one of 'module', 'package', or 'service' and each value is a numerically
-     *  indexed array of key values that match meta fields under that category.
-     * @see Modules::addModuleRow()
-     * @see Modules::editModuleRow()
-     * @see Modules::addPackage()
-     * @see Modules::editPackage()
-     * @see Modules::addService()
-     * @see Modules::editService()
-     */
-    public function getEmailTags()
-    {
-        return [
-            'module' => ['server_name', 'host_name'],
-            'package' => ['location_id', 'nest_id', 'egg_id', 'image'],
-            'service' => ['server_name', 'server_ip', 'server_port']
-        ];
-    }
-
-    /**
      * Returns all fields to display to an admin attempting to add a service with the module
      *
      * @param stdClass $package A stdClass object representing the selected package
