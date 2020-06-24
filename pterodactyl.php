@@ -245,6 +245,9 @@ class Pterodactyl extends Module
         if ($vars['use_module'] == 'true') {
             // Load/create user account
             $pterodactyl_user = $this->apiRequest('Users', 'getByExternalID', ['bl-' . $vars['client_id']]);
+
+            $module = $this->getModule();
+
             if ($this->Input->errors()) {
                 $this->Input->setErrors([]);
                 $addParameters = $service_helper->addUserParameters($vars);
@@ -254,7 +257,6 @@ class Pterodactyl extends Module
                 }
 
                 // Keep track of the username and password used for this client
-                $module = $this->getModule();
                 $this->ModuleClientMeta->set(
                     $vars['client_id'],
                     $module->id,
@@ -265,6 +267,21 @@ class Pterodactyl extends Module
                     ]
                 );
             }
+
+            // Get Pterodactyl credentials
+            $server_username = $this->ModuleClientMeta->get(
+                $vars['client_id'],
+                'pterodactyl_username',
+                $module->id
+            );
+            $server_password = $this->ModuleClientMeta->get(
+                $vars['client_id'],
+                'pterodactyl_password',
+                $module->id
+            );
+
+            $vars['server_username'] = isset($server_username->value) ? $server_username->value : null;
+            $vars['server_password'] = isset($server_password->value) ? $server_password->value : null;
 
             // Create server
             $pterodactyl_server = $this->apiRequest(
@@ -327,6 +344,16 @@ class Pterodactyl extends Module
                 'key' => 'server_description',
                 'value' => isset($vars['server_description']) ? $vars['server_description'] : '',
                 'encrypted' => 0
+            ],
+            [
+                'key' => 'server_username',
+                'value' => isset($vars['server_username']) ? $vars['server_username'] : '',
+                'encrypted' => 0
+            ],
+            [
+                'key' => 'server_password',
+                'value' => isset($vars['server_password']) ? $vars['server_password'] : '',
+                'encrypted' => 1
             ],
         ];
 
@@ -472,6 +499,16 @@ class Pterodactyl extends Module
                     ? $vars['server_description']
                     : $service_fields->server_description,
                 'encrypted' => 0
+            ],
+            [
+                'key' => 'server_username',
+                'value' => isset($vars['server_username']) ? $vars['server_username'] : $service_fields->server_username,
+                'encrypted' => 0
+            ],
+            [
+                'key' => 'server_password',
+                'value' => isset($vars['server_password']) ? $vars['server_password'] : $service_fields->server_password,
+                'encrypted' => 1
             ],
         ];
 
