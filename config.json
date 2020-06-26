@@ -1,5 +1,5 @@
 {
-    "version": "1.4.0",
+    "version": "1.4.1",
     "name": "Pterodactyl.name",
     "description": "Pterodactyl.description",
     "authors": [
@@ -20,6 +20,6 @@
     "email_tags": {
         "module": ["server_name", "host_name"],
         "package": ["location_id", "nest_id", "egg_id", "image"],
-        "service": ["server_name", "server_ip", "server_port"]
+        "service": ["server_name", "server_ip", "server_port", "server_username", "server_password"]
     }
 }
