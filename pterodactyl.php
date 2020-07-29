@@ -406,19 +406,22 @@ class Pterodactyl extends Module
         $this->loadLib('pterodactyl_service');
         $service_helper = new PterodactylService();
 
+        // Load egg
+        $pterodactyl_egg = $this->apiRequest(
+            'Nests',
+            'eggsGet',
+            ['nest_id' => $package->meta->nest_id, 'egg_id' => $package->meta->egg_id]
+        );
+        if ($this->Input->errors()) {
+            return;
+        }
+
         if ($vars['use_module'] == 'true') {
             // Load user account
             $pterodactyl_user = $this->apiRequest('Users', 'getByExternalID', ['bl-' . $service->client_id]);
 
             // Load the server
             $pterodactyl_server = $this->getServer($service);
-
-            // Load egg
-            $pterodactyl_egg = $this->apiRequest(
-                'Nests',
-                'eggsGet',
-                ['nest_id' => $package->meta->nest_id, 'egg_id' => $package->meta->egg_id]
-            );
             if ($this->Input->errors()) {
                 return;
             }
@@ -463,7 +466,6 @@ class Pterodactyl extends Module
                 return;
             }
         }
-
 
         $return = [
             [
