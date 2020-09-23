@@ -2,7 +2,7 @@
         <table class="table table-curved table-striped">
             <thead>
                 <tr>
-                    <th><i class="fa fa-share fa-flip-vertical"></i></th>
+                    <th><i class="fas fa-share fa-flip-vertical"></i></th>
                     <th><?php $this->_('Pterodactyl.service_info.username');?></th>
                     <th><?php $this->_('Pterodactyl.service_info.password');?></th>
                     <th><?php $this->_('Pterodactyl.service_info.login');?></th>
