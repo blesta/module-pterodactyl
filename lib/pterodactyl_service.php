@@ -104,6 +104,7 @@ class PterodactylService
             'feature_limits' => [
                 'databases' => $package->meta->databases ? $package->meta->databases : null,
                 'allocations' => $package->meta->allocations ? $package->meta->allocations : null,
+                'backups' => null,
             ],
             'deploy' => [
                 'locations' => [$package->meta->location_id],
