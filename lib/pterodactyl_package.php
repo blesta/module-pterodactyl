@@ -55,6 +55,7 @@ class PterodactylPackage
      *  - image The custom docker image to assign created servers (optional)
      *  - databases The database limit to assign created servers (optional)
      *  - allocations The allocations limit to assign created servers (optional)
+     *  - backups The backups limit to assign created servers (optional)
      *  - * Egg variables should also be submitted
      * @return array A numerically indexed array of meta fields to be stored for this package containing:
      *
@@ -142,6 +143,7 @@ class PterodactylPackage
      *  - image The custom docker image to assign created servers (optional)
      *  - databases The database limit to assign created servers (optional)
      *  - allocations The allocations limit to assign created servers (optional)
+     *  - backups The backups limit to assign created servers (optional)
      *  - * Egg variables should also be submitted
      * @return ModuleFields A ModuleFields object, containing the fields
      *  to render as well as any additional HTML markup to include
@@ -215,7 +217,7 @@ class PterodactylPackage
         // Set text fields
         $textFields = [
             'port_range', 'pack_id', 'memory', 'swap', 'cpu', 'disk',
-            'io', 'startup', 'image', 'databases', 'allocations'
+            'io', 'startup', 'image', 'databases', 'allocations', 'backups'
         ];
         foreach ($textFields as $textField) {
             // Create the text field label
@@ -322,6 +324,7 @@ class PterodactylPackage
      *  - image The custom docker image to assign created servers (optional)
      *  - databases The database limit to assign created servers (optional)
      *  - allocations The allocations limit to assign created servers (optional)
+     *  - backups The backups limit to assign created servers (optional)
      *  - * Egg variables should also be submitted
      * @return array An array of Input rules suitable for Input::setRules()
      */
@@ -446,6 +449,14 @@ class PterodactylPackage
                         return empty($allocationLimit) || preg_match('/^[0-9]+$/', $allocationLimit);
                     },
                     'message' => Language::_('PterodactylPackage.!error.meta[allocations].format', true)
+                ]
+            ],
+            'meta[backups]' => [
+                'format' => [
+                    'rule' => function ($backupLimit) {
+                        return empty($backupLimit) || preg_match('/^[0-9]+$/', $backupLimit);
+                    },
+                    'message' => Language::_('PterodactylPackage.!error.meta[backups].format', true)
                 ]
             ],
         ];

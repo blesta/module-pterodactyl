@@ -17,6 +17,7 @@ $lang['PterodactylPackage.!error.meta[io].format'] = 'The IO weight must be nume
 $lang['PterodactylPackage.!error.meta[image].length'] = 'The image path must be a most 255 characters.';
 $lang['PterodactylPackage.!error.meta[databases].format'] = 'The number of databases must be numeric.';
 $lang['PterodactylPackage.!error.meta[allocations].format'] = 'The number of allocations must be numeric.';
+$lang['PterodactylPackage.!error.meta[backups].format'] = 'The number of backups must be numeric.';
 
 
 // Package fields
@@ -65,6 +66,9 @@ $lang['PterodactylPackage.package_fields.tooltip.databases'] = 'The total number
 
 $lang['PterodactylPackage.package_fields.allocations'] = 'Allocation Limit (optional)';
 $lang['PterodactylPackage.package_fields.tooltip.allocations'] = 'The total number of allocations a user is allowed to created servers. Leave blank to allow unlimited.';
+
+$lang['PterodactylPackage.package_fields.backups'] = 'Backup Limit (optional)';
+$lang['PterodactylPackage.package_fields.tooltip.backups'] = 'The total number of backups a user is allowed for the created servers. Leave blank to allow unlimited.';
 
 $lang['PterodactylPackage.package_fields.optional'] = '%1$s (Optional)'; // %1$s is the name of the field
 $lang['PterodactylPackage.package_fields.tooltip.display'] = 'Check to allow clients to modify this value during service add/edit. Leave unchecked if you plan to use a configurable option for this field.';
