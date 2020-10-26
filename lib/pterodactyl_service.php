@@ -102,9 +102,9 @@ class PterodactylService
                 'disk' => $package->meta->disk,
             ],
             'feature_limits' => [
-                'databases' => $package->meta->databases ? $package->meta->databases : null,
-                'allocations' => $package->meta->allocations ? $package->meta->allocations : null,
-                'backups' => null,
+                'databases' => !empty($package->meta->databases) ? $package->meta->databases : null,
+                'allocations' => !empty($package->meta->allocations) ? $package->meta->allocations : null,
+                'backups' => !empty($package->meta->backups) ? $package->meta->backups : null,
             ],
             'deploy' => [
                 'locations' => [$package->meta->location_id],
@@ -154,6 +154,7 @@ class PterodactylService
             'feature_limits' => [
                 'databases' => $package->meta->databases ? $package->meta->databases : null,
                 'allocations' => $package->meta->allocations ? $package->meta->allocations : null,
+                'backups' => $package->meta->backups ? $package->meta->backups : null,
             ]
         ];
     }
