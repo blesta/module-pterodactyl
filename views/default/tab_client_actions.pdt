@@ -12,24 +12,24 @@
     }
     ?>
     <div id="pterodactyl_actions">
-        <span class="label label-<?php $this->Html->_($status_class);?>">
+        <span class="badge badge-<?php $this->Html->_($status_class);?>">
             <i class="fas fa-lightbulb"></i> <?php $this->_('Pterodactyl.tab_client_actions.status_' . $this->Html->ifSet($server->attributes->state));?>
         </span>
 
         <h4><?php $this->_('Pterodactyl.tab_client_actions.heading_actions');?></h4>
         <div class="row options">
             <div class="col-md-4">
-                <a<?php echo $this->Html->ifSet($server->attributes->state, 'on') != 'off' ? ' disabled="disabled"' : '';?> class="btn btn-default btn-block" href="<?php echo $this->Html->safe($this->base_uri . 'services/manage/' . $this->Html->ifSet($service_id) . '/tabClientActions/start/');?>">
+                <a<?php echo $this->Html->ifSet($server->attributes->state, 'on') != 'off' ? ' disabled="disabled"' : '';?> class="btn btn-light btn-block" href="<?php echo $this->Html->safe($this->base_uri . 'services/manage/' . $this->Html->ifSet($service_id) . '/tabClientActions/start/');?>">
                     <i class="fas fa-power-off"></i> <?php $this->_('Pterodactyl.!actions.start');?>
                 </a>
             </div>
             <div class="col-md-4">
-                <a<?php echo $this->Html->ifSet($server->attributes->state, 'on') != 'on' ? ' disabled="disabled"' : '';?> class="btn btn-default btn-block btn-danger" href="<?php echo $this->Html->safe($this->base_uri . 'services/manage/' . $this->Html->ifSet($service_id) . '/tabClientActions/stop/');?>">
+                <a<?php echo $this->Html->ifSet($server->attributes->state, 'on') != 'on' ? ' disabled="disabled"' : '';?> class="btn btn-danger btn-block" href="<?php echo $this->Html->safe($this->base_uri . 'services/manage/' . $this->Html->ifSet($service_id) . '/tabClientActions/stop/');?>">
                     <i class="fas fa-power-off"></i> <?php $this->_('Pterodactyl.!actions.stop');?>
                 </a>
             </div>
             <div class="col-md-4">
-                <a<?php echo $this->Html->ifSet($server->attributes->state, 'on') != 'on' ? ' disabled="disabled"' : '';?> class="restart btn btn-default btn-block" href="<?php echo $this->Html->safe($this->base_uri . 'services/manage/' . $this->Html->ifSet($service_id) . '/tabClientActions/restart/');?>">
+                <a<?php echo $this->Html->ifSet($server->attributes->state, 'on') != 'on' ? ' disabled="disabled"' : '';?> class="restart btn btn-light btn-block" href="<?php echo $this->Html->safe($this->base_uri . 'services/manage/' . $this->Html->ifSet($service_id) . '/tabClientActions/restart/');?>">
                     <i class="fas fa-sync-alt"></i> <?php $this->_('Pterodactyl.!actions.restart');?>
                 </a>
             </div>
