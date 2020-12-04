@@ -45,7 +45,7 @@
 
             <div class="button_row">
                 <?php
-                $this->Form->fieldSubmit('save', $this->_('Pterodactyl.edit_row.add_btn', true), ['class' => 'btn btn-primary pull-right']);
+                $this->Form->fieldSubmit('save', $this->_('Pterodactyl.edit_row.add_btn', true), ['class' => 'btn btn-primary float-right']);
                 ?>
             </div>
             <?php
