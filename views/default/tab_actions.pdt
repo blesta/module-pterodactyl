@@ -5,12 +5,12 @@
     <div class="pad">
         <div class="options" id="pterodactyl_actions">
             <p>
-                <?php $this->_('Pterodactyl.tab_actions.server_status');?> <span class="buff <?php $this->Html->_($server->attributes->current_state);?>"><?php $this->_('Pterodactyl.tab_actions.status_' . $this->Html->ifSet($server->attributes->current_state));?></span>
+                <?php $this->_('Pterodactyl.tab_actions.server_status');?> <span class="buff <?php $this->Html->_($server->attributes->current_state);?>"><?php $this->_('Pterodactyl.tab_actions.status_' . (isset($server->attributes->current_state) ? $server->attributes->current_state : null));?></span>
             </p>
 
-            <a href="<?php echo $this->Html->safe($this->base_uri . 'clients/servicetab/' . $this->Html->ifSet($client_id) . '/' . $this->Html->ifSet($service_id) . '/tabActions/start/');?>" class="start btn btn-success<?php echo $this->Html->ifSet($server->attributes->current_state) != 'offline' ? ' disabled' : '';?>"><i class="fas fa-power-off"></i> <?php $this->_('Pterodactyl.!actions.start');?></a>
-            <a href="<?php echo $this->Html->safe($this->base_uri . 'clients/servicetab/' . $this->Html->ifSet($client_id) . '/' . $this->Html->ifSet($service_id) . '/tabActions/stop/');?>"  class="stop btn btn-danger<?php echo $this->Html->ifSet($server->attributes->current_state) != 'online' ? ' disabled' : '';?>"><i class="fas fa-power-off"></i> <?php $this->_('Pterodactyl.!actions.stop');?></a>
-            <a href="<?php echo $this->Html->safe($this->base_uri . 'clients/servicetab/' . $this->Html->ifSet($client_id) . '/' . $this->Html->ifSet($service_id) . '/tabActions/restart/');?>" class="btn btn-default<?php echo $this->Html->ifSet($server->attributes->current_state) != 'online' ? ' disabled' : '';?>"><i class="fas fa-sync-alt"></i> <?php $this->_('Pterodactyl.!actions.restart');?></a>
+            <a href="<?php echo $this->Html->safe($this->base_uri . 'clients/servicetab/' . (isset($client_id) ? $client_id : null) . '/' . (isset($service_id) ? $service_id : null) . '/tabActions/start/');?>" class="start btn btn-success<?php echo (isset($server->attributes->current_state) ? $server->attributes->current_state : null) != 'offline' ? ' disabled' : '';?>"><i class="fas fa-power-off"></i> <?php $this->_('Pterodactyl.!actions.start');?></a>
+            <a href="<?php echo $this->Html->safe($this->base_uri . 'clients/servicetab/' . (isset($client_id) ? $client_id : null) . '/' . (isset($service_id) ? $service_id : null) . '/tabActions/stop/');?>"  class="stop btn btn-danger<?php echo (isset($server->attributes->current_state) ? $server->attributes->current_state : null) != 'online' ? ' disabled' : '';?>"><i class="fas fa-power-off"></i> <?php $this->_('Pterodactyl.!actions.stop');?></a>
+            <a href="<?php echo $this->Html->safe($this->base_uri . 'clients/servicetab/' . (isset($client_id) ? $client_id : null) . '/' . (isset($service_id) ? $service_id : null) . '/tabActions/restart/');?>" class="btn btn-default<?php echo (isset($server->attributes->current_state) ? $server->attributes->current_state : null) != 'online' ? ' disabled' : '';?>"><i class="fas fa-sync-alt"></i> <?php $this->_('Pterodactyl.!actions.restart');?></a>
         </div>
     </div>
 
@@ -24,7 +24,7 @@ $(document).ready(function() {
         var interval = '';
         interval = setInterval(function() {
             $(this).blestaRequest("GET",
-                '<?php echo $this->base_uri . 'clients/servicetab/' . $this->Html->ifSet($client_id) . '/' . $this->Html->ifSet($service_id) . '/tabActions/';?>',
+                '<?php echo $this->base_uri . 'clients/servicetab/' . (isset($client_id) ? $client_id : null) . '/' . (isset($service_id) ? $service_id : null) . '/tabActions/';?>',
                 null,
                 // Success response
                 function(data) {
