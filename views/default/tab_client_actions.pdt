@@ -1,10 +1,10 @@
     <h4><?php $this->_('Pterodactyl.tab_client_actions.server_status');?></h4>
     <?php
-    switch ($this->Html->ifSet($server->attributes->state, 'on')) {
-        case 'on':
+    switch ($this->Html->ifSet($server->attributes->current_state, 'online')) {
+        case 'online':
             $status_class = 'success';
             break;
-        case 'off':
+        case 'offline':
             $status_class = 'danger';
             break;
         default:
@@ -13,23 +13,23 @@
     ?>
     <div id="pterodactyl_actions">
         <span class="badge badge-<?php $this->Html->_($status_class);?> mb-3">
-            <i class="fas fa-lightbulb"></i> <?php $this->_('Pterodactyl.tab_client_actions.status_' . $this->Html->ifSet($server->attributes->state));?>
+            <i class="fas fa-lightbulb"></i> <?php $this->_('Pterodactyl.tab_client_actions.status_' . $this->Html->ifSet($server->attributes->current_state));?>
         </span>
 
         <h4><?php $this->_('Pterodactyl.tab_client_actions.heading_actions');?></h4>
         <div class="row options">
             <div class="col-md-4">
-                <a<?php echo $this->Html->ifSet($server->attributes->state, 'on') != 'off' ? ' disabled="disabled"' : '';?> class="btn btn-success btn-block" href="<?php echo $this->Html->safe($this->base_uri . 'services/manage/' . $this->Html->ifSet($service_id) . '/tabClientActions/start/');?>">
+                <a class="btn btn-success btn-block<?php echo $this->Html->ifSet($server->attributes->current_state, 'online') != 'offline' ? ' disabled' : '';?>" href="<?php echo $this->Html->safe($this->base_uri . 'services/manage/' . $this->Html->ifSet($service_id) . '/tabClientActions/start/');?>">
                     <i class="fas fa-power-off"></i> <?php $this->_('Pterodactyl.!actions.start');?>
                 </a>
             </div>
             <div class="col-md-4">
-                <a<?php echo $this->Html->ifSet($server->attributes->state, 'on') != 'on' ? ' disabled="disabled"' : '';?> class="btn btn-danger btn-block" href="<?php echo $this->Html->safe($this->base_uri . 'services/manage/' . $this->Html->ifSet($service_id) . '/tabClientActions/stop/');?>">
+                <a class="btn btn-danger btn-block<?php echo $this->Html->ifSet($server->attributes->current_state, 'online') != 'online' ? ' disabled' : '';?>" href="<?php echo $this->Html->safe($this->base_uri . 'services/manage/' . $this->Html->ifSet($service_id) . '/tabClientActions/stop/');?>">
                     <i class="fas fa-power-off"></i> <?php $this->_('Pterodactyl.!actions.stop');?>
                 </a>
             </div>
             <div class="col-md-4">
-                <a<?php echo $this->Html->ifSet($server->attributes->state, 'on') != 'on' ? ' disabled="disabled"' : '';?> class="restart btn btn-light btn-block" href="<?php echo $this->Html->safe($this->base_uri . 'services/manage/' . $this->Html->ifSet($service_id) . '/tabClientActions/restart/');?>">
+                <a class="restart btn btn-light btn-block<?php echo $this->Html->ifSet($server->attributes->current_state, 'online') != 'online' ? ' disabled' : '';?>" href="<?php echo $this->Html->safe($this->base_uri . 'services/manage/' . $this->Html->ifSet($service_id) . '/tabClientActions/restart/');?>">
                     <i class="fas fa-sync-alt"></i> <?php $this->_('Pterodactyl.!actions.restart');?>
                 </a>
             </div>
