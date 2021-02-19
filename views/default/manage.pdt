@@ -7,7 +7,7 @@
         $this->Widget->clear();
         $this->Widget->setLinkButtons($link_buttons);
 
-        $this->Widget->create($this->_('AdminCompanyModules.manage.boxtitle_manage', true, $this->Html->_($module->name, true)), ['id' => 'manage_pterodactyl']);
+        $this->Widget->create($this->_('AdminCompanyModules.manage.boxtitle_manage', true, (isset($module->name) ? $this->Html->safe($module->name) : null)), ['id' => 'manage_pterodactyl']);
         ?>
 
         <div class="title_row first">
@@ -27,8 +27,8 @@
             for ($i = 0; $i < $num_rows; $i++) {
             ?>
             <tr<?php echo ($i % 2 == 1) ? ' class="odd_row"' : '';?>>
-                <td><?php $this->Html->_($module->rows[$i]->meta->server_name);?></td>
-                <td><?php $this->Html->_($module->rows[$i]->meta->host_name);?></td>
+                <td><?php (echo isset($module->rows[$i]->meta->server_name) ? $this->Html->safe($module->rows[$i]->meta->server_name) : null);?></td>
+                <td><?php (echo isset($module->rows[$i]->meta->host_name) ? $this->Html->safe($module->rows[$i]->meta->host_name) : null);?></td>
                 <td>
                     <a href="<?php echo $this->Html->safe($this->base_uri . 'settings/company/modules/editrow/' . (isset($module->id) ? $module->id : null) . '/' . (isset($module->rows[$i]->id) ? $module->rows[$i]->id : null) . '/');?>"><?php $this->_('Pterodactyl.manage.module_rows.edit');?></a>
                     <?php
@@ -75,7 +75,7 @@
             for ($i = 0; $i < $num_rows; $i++) {
             ?>
             <tr<?php echo ($i % 2 == 1) ? ' class="odd_row"' : '';?>>
-                <td><?php $this->Html->_($module->groups[$i]->name);?></td>
+                <td><?php (echo isset($module->groups[$i]->name) ? $this->Html->safe($module->groups[$i]->name) : null);?></td>
                 <td><?php echo count((isset($module->groups[$i]->rows) ? $module->groups[$i]->rows : []));?></td>
                 <td>
                     <a href="<?php echo $this->Html->safe($this->base_uri . 'settings/company/modules/editgroup/' . (isset($module->id) ? $module->id : null) . '/' . (isset($module->groups[$i]->id) ? $module->groups[$i]->id : null) . '/');?>"><?php $this->_('Pterodactyl.manage.module_groups.edit');?></a>

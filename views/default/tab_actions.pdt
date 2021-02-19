@@ -5,7 +5,7 @@
     <div class="pad">
         <div class="options" id="pterodactyl_actions">
             <p>
-                <?php $this->_('Pterodactyl.tab_actions.server_status');?> <span class="buff <?php $this->Html->_($server->attributes->current_state);?>"><?php $this->_('Pterodactyl.tab_actions.status_' . (isset($server->attributes->current_state) ? $server->attributes->current_state : null));?></span>
+                <?php $this->_('Pterodactyl.tab_actions.server_status');?> <span class="buff <?php (echo isset($server->attributes->current_state) ? $this->Html->safe($server->attributes->current_state) : null);?>"><?php $this->_('Pterodactyl.tab_actions.status_' . (isset($server->attributes->current_state) ? $server->attributes->current_state : null));?></span>
             </p>
 
             <a href="<?php echo $this->Html->safe($this->base_uri . 'clients/servicetab/' . (isset($client_id) ? $client_id : null) . '/' . (isset($service_id) ? $service_id : null) . '/tabActions/start/');?>" class="start btn btn-success<?php echo (isset($server->attributes->current_state) ? $server->attributes->current_state : null) != 'offline' ? ' disabled' : '';?>"><i class="fas fa-power-off"></i> <?php $this->_('Pterodactyl.!actions.start');?></a>
