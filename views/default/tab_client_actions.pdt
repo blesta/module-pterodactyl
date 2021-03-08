@@ -12,7 +12,7 @@
     }
     ?>
     <div id="pterodactyl_actions">
-        <span class="badge badge-<?php (echo isset($status_class) ? $this->Html->safe($status_class) : null);?> mb-3">
+        <span class="badge badge-<?php echo (isset($status_class) ? $this->Html->safe($status_class) : null);?> mb-3">
             <i class="fas fa-lightbulb"></i> <?php $this->_('Pterodactyl.tab_client_actions.status_' . (isset($server->attributes->current_state) ? $server->attributes->current_state : null));?>
         </span>
 

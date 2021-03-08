@@ -311,11 +311,11 @@ class PterodactylService
                 $field->attach(
                     $fields->fieldText(
                         $key,
-                        $this->Html->ifSet(
-                            $vars->{$key},
-                            $this->Html->ifSet(
-                                $package->meta->{$key},
-                                $envVariable->attributes->default_value
+                        (isset($vars->{$key})
+                            ? $vars->{$key}
+                            : (isset($package->meta->{$key})
+                                ? $package->meta->{$key}
+                                : $envVariable->attributes->default_value
                             )
                         ),
                         ['id' => $key]

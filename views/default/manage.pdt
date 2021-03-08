@@ -27,8 +27,8 @@
             for ($i = 0; $i < $num_rows; $i++) {
             ?>
             <tr<?php echo ($i % 2 == 1) ? ' class="odd_row"' : '';?>>
-                <td><?php (echo isset($module->rows[$i]->meta->server_name) ? $this->Html->safe($module->rows[$i]->meta->server_name) : null);?></td>
-                <td><?php (echo isset($module->rows[$i]->meta->host_name) ? $this->Html->safe($module->rows[$i]->meta->host_name) : null);?></td>
+                <td><?php echo (isset($module->rows[$i]->meta->server_name) ? $this->Html->safe($module->rows[$i]->meta->server_name) : null);?></td>
+                <td><?php echo (isset($module->rows[$i]->meta->host_name) ? $this->Html->safe($module->rows[$i]->meta->host_name) : null);?></td>
                 <td>
                     <a href="<?php echo $this->Html->safe($this->base_uri . 'settings/company/modules/editrow/' . (isset($module->id) ? $module->id : null) . '/' . (isset($module->rows[$i]->id) ? $module->rows[$i]->id : null) . '/');?>"><?php $this->_('Pterodactyl.manage.module_rows.edit');?></a>
                     <?php
@@ -75,7 +75,7 @@
             for ($i = 0; $i < $num_rows; $i++) {
             ?>
             <tr<?php echo ($i % 2 == 1) ? ' class="odd_row"' : '';?>>
-                <td><?php (echo isset($module->groups[$i]->name) ? $this->Html->safe($module->groups[$i]->name) : null);?></td>
+                <td><?php echo (isset($module->groups[$i]->name) ? $this->Html->safe($module->groups[$i]->name) : null);?></td>
                 <td><?php echo count((isset($module->groups[$i]->rows) ? $module->groups[$i]->rows : []));?></td>
                 <td>
                     <a href="<?php echo $this->Html->safe($this->base_uri . 'settings/company/modules/editgroup/' . (isset($module->id) ? $module->id : null) . '/' . (isset($module->groups[$i]->id) ? $module->groups[$i]->id : null) . '/');?>"><?php $this->_('Pterodactyl.manage.module_groups.edit');?></a>
