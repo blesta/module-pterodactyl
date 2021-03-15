@@ -1,6 +1,6 @@
     <h4><?php $this->_('Pterodactyl.tab_client_actions.server_status');?></h4>
     <?php
-    switch ($this->Html->ifSet($server->attributes->current_state, 'online')) {
+    switch ((isset($server->attributes->current_state) ? $server->attributes->current_state : 'online')) {
         case 'online':
             $status_class = 'success';
             break;
@@ -12,24 +12,24 @@
     }
     ?>
     <div id="pterodactyl_actions">
-        <span class="badge badge-<?php $this->Html->_($status_class);?> mb-3">
-            <i class="fas fa-lightbulb"></i> <?php $this->_('Pterodactyl.tab_client_actions.status_' . $this->Html->ifSet($server->attributes->current_state));?>
+        <span class="badge badge-<?php echo (isset($status_class) ? $this->Html->safe($status_class) : null);?> mb-3">
+            <i class="fas fa-lightbulb"></i> <?php $this->_('Pterodactyl.tab_client_actions.status_' . (isset($server->attributes->current_state) ? $server->attributes->current_state : null));?>
         </span>
 
         <h4><?php $this->_('Pterodactyl.tab_client_actions.heading_actions');?></h4>
         <div class="row options">
             <div class="col-md-4">
-                <a class="btn btn-success btn-block<?php echo $this->Html->ifSet($server->attributes->current_state, 'online') != 'offline' ? ' disabled' : '';?>" href="<?php echo $this->Html->safe($this->base_uri . 'services/manage/' . $this->Html->ifSet($service_id) . '/tabClientActions/start/');?>">
+                <a class="btn btn-success btn-block<?php echo (isset($server->attributes->current_state) ? $server->attributes->current_state : 'online') != 'offline' ? ' disabled' : '';?>" href="<?php echo $this->Html->safe($this->base_uri . 'services/manage/' . (isset($service_id) ? $service_id : null) . '/tabClientActions/start/');?>">
                     <i class="fas fa-power-off"></i> <?php $this->_('Pterodactyl.!actions.start');?>
                 </a>
             </div>
             <div class="col-md-4">
-                <a class="btn btn-danger btn-block<?php echo $this->Html->ifSet($server->attributes->current_state, 'online') != 'online' ? ' disabled' : '';?>" href="<?php echo $this->Html->safe($this->base_uri . 'services/manage/' . $this->Html->ifSet($service_id) . '/tabClientActions/stop/');?>">
+                <a class="btn btn-danger btn-block<?php echo (isset($server->attributes->current_state) ? $server->attributes->current_state : 'online') != 'online' ? ' disabled' : '';?>" href="<?php echo $this->Html->safe($this->base_uri . 'services/manage/' . (isset($service_id) ? $service_id : null) . '/tabClientActions/stop/');?>">
                     <i class="fas fa-power-off"></i> <?php $this->_('Pterodactyl.!actions.stop');?>
                 </a>
             </div>
             <div class="col-md-4">
-                <a class="restart btn btn-light btn-block<?php echo $this->Html->ifSet($server->attributes->current_state, 'online') != 'online' ? ' disabled' : '';?>" href="<?php echo $this->Html->safe($this->base_uri . 'services/manage/' . $this->Html->ifSet($service_id) . '/tabClientActions/restart/');?>">
+                <a class="restart btn btn-light btn-block<?php echo (isset($server->attributes->current_state) ? $server->attributes->current_state : 'online') != 'online' ? ' disabled' : '';?>" href="<?php echo $this->Html->safe($this->base_uri . 'services/manage/' . (isset($service_id) ? $service_id : null) . '/tabClientActions/restart/');?>">
                     <i class="fas fa-sync-alt"></i> <?php $this->_('Pterodactyl.!actions.restart');?>
                 </a>
             </div>
@@ -44,7 +44,7 @@ $(document).ready(function() {
         var interval = '';
         interval = setInterval(function() {
             $(this).blestaRequest("GET",
-                '<?php echo $this->base_uri . 'services/manage/' . $this->Html->ifSet($service_id) . '/tabClientActions/';?>',
+                '<?php echo $this->base_uri . 'services/manage/' . (isset($service_id) ? $service_id : null) . '/tabClientActions/';?>',
                 null,
                 // Success response
                 function(data) {

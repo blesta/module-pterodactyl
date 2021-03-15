@@ -186,7 +186,7 @@ class PterodactylPackage
                 $fields->fieldSelect(
                     'meta[' . $selectField . ']',
                     $list,
-                    $this->Html->ifSet($vars->meta[$selectField]),
+                    (isset($vars->meta[$selectField]) ? $vars->meta[$selectField] : null),
                     ['id' => 'Pterodactyl_' . $selectField]
                 )
             );
@@ -206,7 +206,7 @@ class PterodactylPackage
             $fields->fieldCheckbox(
                 'meta[dedicated_ip]',
                 '1',
-                $this->Html->ifSet($vars->meta['dedicated_ip']) == 1,
+                (isset($vars->meta['dedicated_ip']) ? $vars->meta['dedicated_ip'] : null) == 1,
                 ['id' => 'Pterodactyl_dedicated_ip', 'class' => 'inline']
             )
         );
@@ -229,7 +229,7 @@ class PterodactylPackage
             $field->attach(
                 $fields->fieldText(
                     'meta[' . $textField . ']',
-                    $this->Html->ifSet($vars->meta[$textField]),
+                    (isset($vars->meta[$textField]) ? $vars->meta[$textField] : null),
                     ['id' => 'Pterodactyl_' . $textField]
                 )
             );
@@ -240,8 +240,8 @@ class PterodactylPackage
         }
 
         // Return standard package fields and attach any applicable egg fields
-        return isset($packageLists['eggs'][$this->Html->ifSet($vars->meta['egg_id'])])
-            ? $this->attachEggFields($packageLists['eggs'][$this->Html->ifSet($vars->meta['egg_id'])], $fields, $vars)
+        return isset($packageLists['eggs'][(isset($vars->meta['egg_id']) ? $vars->meta['egg_id'] : null)])
+            ? $this->attachEggFields($packageLists['eggs'][(isset($vars->meta['egg_id']) ? $vars->meta['egg_id'] : null)], $fields, $vars)
             : $fields;
     }
 
@@ -271,7 +271,7 @@ class PterodactylPackage
             $field->attach(
                 $fields->fieldText(
                     'meta[' . $key . ']',
-                    $this->Html->ifSet($vars->meta[$key], $env_variable->attributes->default_value),
+                    (isset($vars->meta[$key]) ? $vars->meta[$key] : $env_variable->attributes->default_value),
                     ['id' => $key]
                 )
             );
@@ -288,7 +288,7 @@ class PterodactylPackage
                 $fields->fieldCheckbox(
                     'meta[' . $checkboxKey . ']',
                     '1',
-                    $this->Html->ifSet($vars->meta[$checkboxKey], '0') == '1',
+                    (isset($vars->meta[$checkboxKey]) ? $vars->meta[$checkboxKey] : '0') == '1',
                     ['id' => $checkboxKey, 'class' => 'inline']
                 )
             );
