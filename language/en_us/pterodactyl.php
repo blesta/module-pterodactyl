@@ -89,7 +89,7 @@ $lang['Pterodactyl.tab_client_actions'] = 'Server Actions';
 $lang['Pterodactyl.tab_actions.heading_actions'] = 'Actions';
 $lang['Pterodactyl.tab_actions.server_status'] = 'Server Status';
 
-$lang['Pterodactyl.tab_actions.status_online'] = 'Online';
+$lang['Pterodactyl.tab_actions.status_running'] = 'Online';
 $lang['Pterodactyl.tab_actions.status_offline'] = 'Offline';
 $lang['Pterodactyl.tab_actions.status_starting'] = 'Starting';
 $lang['Pterodactyl.tab_actions.status_stopping'] = 'Stopping';
@@ -100,7 +100,7 @@ $lang['Pterodactyl.tab_actions.status_stopping'] = 'Stopping';
 $lang['Pterodactyl.tab_client_actions.heading_actions'] = 'Actions';
 $lang['Pterodactyl.tab_client_actions.server_status'] = 'Server Status';
 
-$lang['Pterodactyl.tab_client_actions.status_online'] = 'Online';
+$lang['Pterodactyl.tab_client_actions.status_running'] = 'Online';
 $lang['Pterodactyl.tab_client_actions.status_offline'] = 'Offline';
 $lang['Pterodactyl.tab_client_actions.status_starting'] = 'Starting';
 $lang['Pterodactyl.tab_client_actions.status_stopping'] = 'Stopping';

@@ -1,6 +1,6 @@
 
 .options {margin-top:15px;}
-.options span.online { background-color:#8dc248; color:#fff;}
+.options span.running { background-color:#8dc248; color:#fff;}
 .options span.offline { background-color:#ca3334; color:#fff;}
 .options span.starting, .options span.stopping { background-color:#dad400; color:#fff;}
 
