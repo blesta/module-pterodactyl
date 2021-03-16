@@ -15,27 +15,27 @@
                     <li>
                         <?php
                         $this->Form->label($this->_('Pterodactyl.row_meta.server_name', true), 'server_name');
-                        $this->Form->fieldText('server_name', $this->Html->ifSet($vars->server_name), ['id' => 'server_name']);
+                        $this->Form->fieldText('server_name', (isset($vars->server_name) ? $vars->server_name : null), ['id' => 'server_name']);
                         ?>
                     </li>
                     <li>
                         <?php $this->Form->label($this->_('Pterodactyl.row_meta.host_name', true), 'host_name', ['class' => 'inline']);?>
                         <span class="tooltip block"><?php $this->_('AppController.tooltip.text');?><div><?php $this->_('Pterodactyl.!tooltip.host_name');?></div></span>
-                        <?php $this->Form->fieldText('host_name', $this->Html->ifSet($vars->host_name), ['id' => 'host_name', 'class' => 'block']);?>
+                        <?php $this->Form->fieldText('host_name', (isset($vars->host_name) ? $vars->host_name : null), ['id' => 'host_name', 'class' => 'block']);?>
                     </li>
                     <li>
                         <?php $this->Form->label($this->_('Pterodactyl.row_meta.account_api_key', true), 'account_api_key', ['class' => 'inline']);?>
                         <span class="tooltip block"><?php $this->_('AppController.tooltip.text');?><div><?php $this->_('Pterodactyl.!tooltip.account_api_key');?></div></span>
-                        <?php $this->Form->fieldText('account_api_key', $this->Html->ifSet($vars->account_api_key), ['id' => 'account_api_key', 'class' => 'block']);?>
+                        <?php $this->Form->fieldText('account_api_key', (isset($vars->account_api_key) ? $vars->account_api_key : null), ['id' => 'account_api_key', 'class' => 'block']);?>
                     </li>
                     <li>
                         <?php $this->Form->label($this->_('Pterodactyl.row_meta.application_api_key', true), 'application_api_key', ['class' => 'inline']);?>
                         <span class="tooltip block"><?php $this->_('AppController.tooltip.text');?><div><?php $this->_('Pterodactyl.!tooltip.application_api_key');?></div></span>
-                        <?php $this->Form->fieldText('application_api_key', $this->Html->ifSet($vars->application_api_key), ['id' => 'application_api_key', 'class' => 'block']);?>
+                        <?php $this->Form->fieldText('application_api_key', (isset($vars->application_api_key) ? $vars->application_api_key : null), ['id' => 'application_api_key', 'class' => 'block']);?>
                     </li>
                     <li>
                         <?php
-                        $this->Form->fieldCheckbox('use_ssl', 'true', $this->Html->ifSet($vars->use_ssl, 'true') == 'true', ['id'=>'use_ssl']);
+                        $this->Form->fieldCheckbox('use_ssl', 'true', (isset($vars->use_ssl) ? $vars->use_ssl : 'true') == 'true', ['id'=>'use_ssl']);
                         $this->Form->label($this->_('Pterodactyl.row_meta.use_ssl', true), 'use_ssl', ['class' => 'inline']);
                         ?>
                     </li>

@@ -11,10 +11,10 @@
             <tbody>
                 <tr>
                     <td></td>
-                    <td><?php $this->Html->_($username);?></td>
-                    <td><?php $this->Html->_($password);?></td>
+                    <td><?php echo (isset($username) ? $this->Html->safe($username) : null);?></td>
+                    <td><?php echo (isset($password) ? $this->Html->safe($password) : null);?></td>
                     <td>
-                        <a href="<?php echo $module_row->meta->use_ssl ? 'https://' : 'http://';?><?php $this->Html->_($module_row->meta->host_name);?>/auth/login" target="_blank"><?php $this->Html->_($module_row->meta->host_name);?>/auth/login</a>
+                        <a href="<?php echo $module_row->meta->use_ssl ? 'https://' : 'http://';?><?php echo (isset($module_row->meta->host_name) ? $this->Html->safe($module_row->meta->host_name) : null);?>/auth/login" target="_blank"><?php echo (isset($module_row->meta->host_name) ? $this->Html->safe($module_row->meta->host_name) : null);?>/auth/login</a>
                     </td>
                 </tr>
             </tbody>
