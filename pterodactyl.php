@@ -856,7 +856,7 @@ class Pterodactyl extends Module
      *
      * @param array $vars An array of key/value input pairs
      * @param stdClass $package A stdClass object representing the package for the service
-     * @return array An array of key/value pairs representing service fields
+     * @return stdClass The modified package object
      */
     private function getConfigurableOptions(array $vars, $package)
     {
