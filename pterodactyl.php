@@ -27,7 +27,6 @@ class Pterodactyl extends Module
         Language::loadLang('pterodactyl_service', null, dirname(__FILE__) . DS . 'language' . DS);
         Language::loadLang('pterodactyl_rule', null, dirname(__FILE__) . DS . 'language' . DS);
 
-
         // Load configuration required by this module
         $this->loadConfig(dirname(__FILE__) . DS . 'config.json');
 
@@ -238,6 +237,9 @@ class Pterodactyl extends Module
         if ($this->Input->errors()) {
             return;
         }
+
+        // Set configurable options
+        $package = $this->getConfigurableOptions($vars, $package);
 
         // Get the service helper
         $this->loadLib('pterodactyl_service');
@@ -847,6 +849,31 @@ class Pterodactyl extends Module
         $this->view->setDefaultView('components' . DS . 'modules' . DS . 'pterodactyl' . DS);
 
         return $this->view->fetch();
+    }
+
+    /**
+     * Returns an array of package fields, overriding the configurable options
+     *
+     * @param array $vars An array of key/value input pairs
+     * @param stdClass $package A stdClass object representing the package for the service
+     * @return array An array of key/value pairs representing service fields
+     */
+    private function getConfigurableOptions(array $vars, $package)
+    {
+        $fields = [
+            'location_id', 'egg_id', 'memory', 'cpu', 'disk', 'io'
+        ];
+
+        // Override package fields, if an equivalent configurable option exists
+        if (!empty($vars['configoptions'])) {
+            foreach ($vars['configoptions'] as $field => $value) {
+                if (in_array($field, $fields)) {
+                    $package->meta->{$field} = $value;
+                }
+            }
+        }
+
+        return $package;
     }
 
     /**
