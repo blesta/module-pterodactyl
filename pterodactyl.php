@@ -418,6 +418,9 @@ class Pterodactyl extends Module
             return;
         }
 
+        // Set configurable options
+        $package = $this->getConfigurableOptions($vars, $package);
+
         if ($vars['use_module'] == 'true') {
             // Load user account
             $pterodactyl_user = $this->apiRequest('Users', 'getByExternalID', ['bl-' . $service->client_id]);
@@ -861,7 +864,9 @@ class Pterodactyl extends Module
     private function getConfigurableOptions(array $vars, $package)
     {
         $fields = [
-            'location_id', 'egg_id', 'memory', 'cpu', 'disk', 'io'
+            'location_id', 'egg_id', 'nest_id', 'port_range',
+            'pack_id', 'memory', 'swap', 'cpu', 'disk', 'io',
+            'startup', 'image', 'databases', 'allocations', 'backups'
         ];
 
         // Override package fields, if an equivalent configurable option exists
