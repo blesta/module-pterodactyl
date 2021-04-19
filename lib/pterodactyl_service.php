@@ -329,6 +329,21 @@ class PterodactylService
             }
         }
 
+        // Set js to refetch options when the nest or egg is changed
+        $fields->setHtml("
+			<script type=\"text/javascript\">
+				$(document).ready(function() {
+					// Re-fetch module options to pull in eggs and egg variables
+                    // when a nest or egg respectively is selected
+					$('.package_options').on('focusout', '[name^=\"configoptions\"]', function() {
+                        var form = $(this).closest('form');
+						$(form).append('<input type=\"hidden\" name=\"refresh_fields\" value=\"true\">');
+						$(form).submit();
+					});
+				});
+			</script>
+		");
+
         return $fields;
     }
 
