@@ -427,6 +427,7 @@ class Pterodactyl extends Module
 
             // Load the server
             $pterodactyl_server = $this->getServer($service);
+
             if ($this->Input->errors()) {
                 return;
             }
@@ -455,8 +456,13 @@ class Pterodactyl extends Module
                 $vars['server_port'] = isset($allocation->attributes->port) ? $allocation->attributes->port : null;
             }
 
-            // It is also possible to edit build details, but that is affeced purely by package
-            // fields so we opted not to modify those when we edit the service
+            // Set package fields
+            $vars['allocation'] = $pterodactyl_server->attributes->allocation;
+            $this->apiRequest(
+                'Servers',
+                'editBuild',
+                [$pterodactyl_server->attributes->id, $service_helper->editServerBuildParameters($vars, $package)]
+            );
 
             // Edit startup parameters
             $this->apiRequest(

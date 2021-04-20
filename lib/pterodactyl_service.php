@@ -108,7 +108,7 @@ class PterodactylService
             ],
             'deploy' => [
                 'locations' => [$package->meta->location_id],
-                'dedicated_ip' => $package->meta->dedicated_ip,
+                'dedicated_ip' => !empty($package->meta->dedicated_ip) ? $package->meta->dedicated_ip : false,
                 'port_range' => explode(',', $package->meta->port_range),
             ],
             'environment' =>  $this->getEnvironmentVariables($vars, $package, $pterodactylEgg),
@@ -137,24 +137,24 @@ class PterodactylService
     /**
      * Gets a list of parameters to submit to Pterodactyl for editing the server build parameters
      *
+     * @param array $vars An array of post fields
      * @param stdClass $package The package to pull server info from
      * @return array The list of parameters
      */
-    public function editServerBuildParameters($package)
+    public function editServerBuildParameters(array $vars, $package)
     {
         // Gather server data
         return [
-            'limits' => [
-                'memory' => $package->meta->memory,
-                'swap' => $package->meta->swap,
-                'io' => $package->meta->io,
-                'cpu' => $package->meta->cpu,
-                'disk' => $package->meta->disk,
-            ],
+            'allocation' => !empty($vars['allocation']) ? $vars['allocation'] : 1,
+            'memory' => $package->meta->memory,
+            'swap' => $package->meta->swap,
+            'io' => $package->meta->io,
+            'cpu' => $package->meta->cpu,
+            'disk' => $package->meta->disk,
             'feature_limits' => [
-                'databases' => $package->meta->databases ? $package->meta->databases : null,
-                'allocations' => $package->meta->allocations ? $package->meta->allocations : null,
-                'backups' => $package->meta->backups ? $package->meta->backups : null,
+                'databases' => !empty($package->meta->databases) ? $package->meta->databases : null,
+                'allocations' => !empty($package->meta->allocations) ? $package->meta->allocations : null,
+                'backups' => !empty($package->meta->backups) ? $package->meta->backups : null,
             ]
         ];
     }
