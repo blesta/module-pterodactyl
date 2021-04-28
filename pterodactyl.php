@@ -1223,7 +1223,7 @@ class Pterodactyl extends Module
      * Returns all fields to display to an admin attempting to add a service with the module
      *
      * @param stdClass $package A stdClass object representing the selected package
-     * @param $vars stdClass A stdClass object representing a set of post fields (optional)
+     * @param stdClass $vars A stdClass object representing a set of post fields (optional)
      * @return ModuleFields A ModuleFields object, containing the fields to render
      *  as well as any additional HTML markup to include
      */
@@ -1240,11 +1240,35 @@ class Pterodactyl extends Module
         $this->loadLib('pterodactyl_service');
         $service_helper = new PterodactylService();
 
+        // Get configurable options
+        if (!isset($this->Record)) {
+            Loader::loadComponents($this, ['Record']);
+        }
+        if (!isset($this->Form)) {
+            Loader::loadHelpers($this, ['Form']);
+        }
+
+        $configurable_options = $this->Form->collapseObjectArray(
+            $this->Record->select(['package_options.id', 'package_options.name'])
+                ->from('package_options')
+                ->where('package_options.company_id', '=', Configure::get('Blesta.company_id'))
+                ->fetchAll(),
+            'id',
+            'name'
+        );
+
         // Load egg
+        $nest_id = isset($configurable_options['nest_id'], $vars->configoptions[$configurable_options['nest_id']])
+            ? $vars->configoptions[$configurable_options['nest_id']]
+            : $package->meta->nest_id;
+        $egg_id = isset($configurable_options['egg_id'], $vars->configoptions[$configurable_options['egg_id']])
+            ? $vars->configoptions[$configurable_options['egg_id']]
+            : $package->meta->egg_id;
+
         $pterodactyl_egg = $this->apiRequest(
             'Nests',
             'eggsGet',
-            ['nest_id' => $package->meta->nest_id, 'egg_id' => $package->meta->egg_id]
+            ['nest_id' => $nest_id, 'egg_id' => $egg_id]
         );
 
         // Fetch the service fields
@@ -1272,11 +1296,35 @@ class Pterodactyl extends Module
         $this->loadLib('pterodactyl_service');
         $service_helper = new PterodactylService();
 
+        // Get configurable options
+        if (!isset($this->Record)) {
+            Loader::loadComponents($this, ['Record']);
+        }
+        if (!isset($this->Form)) {
+            Loader::loadHelpers($this, ['Form']);
+        }
+
+        $configurable_options = $this->Form->collapseObjectArray(
+            $this->Record->select(['package_options.id', 'package_options.name'])
+                ->from('package_options')
+                ->where('package_options.company_id', '=', Configure::get('Blesta.company_id'))
+                ->fetchAll(),
+            'id',
+            'name'
+        );
+
         // Load egg
+        $nest_id = isset($configurable_options['nest_id'], $vars->configoptions[$configurable_options['nest_id']])
+            ? $vars->configoptions[$configurable_options['nest_id']]
+            : $package->meta->nest_id;
+        $egg_id = isset($configurable_options['egg_id'], $vars->configoptions[$configurable_options['egg_id']])
+            ? $vars->configoptions[$configurable_options['egg_id']]
+            : $package->meta->egg_id;
+
         $pterodactyl_egg = $this->apiRequest(
             'Nests',
             'eggsGet',
-            ['nest_id' => $package->meta->nest_id, 'egg_id' => $package->meta->egg_id]
+            ['nest_id' => $nest_id, 'egg_id' => $egg_id]
         );
 
         // Fetch the service fields

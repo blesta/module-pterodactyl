@@ -339,7 +339,7 @@ class PterodactylService
                         var form = $(this).closest('form');
                         $(form).append('<input type=\"hidden\" name=\"refresh_fields\" value=\"true\">');
                         $(form).submit();
-                    );
+                    });
                 });
             </script>
         ");
