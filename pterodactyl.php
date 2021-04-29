@@ -1252,6 +1252,7 @@ class Pterodactyl extends Module
             $this->Record->select(['package_options.id', 'package_options.name'])
                 ->from('package_options')
                 ->where('package_options.company_id', '=', Configure::get('Blesta.company_id'))
+                ->where('package_options.id', 'IN', array_keys($vars->configoptions))
                 ->fetchAll(),
             'id',
             'name'
@@ -1308,6 +1309,7 @@ class Pterodactyl extends Module
             $this->Record->select(['package_options.id', 'package_options.name'])
                 ->from('package_options')
                 ->where('package_options.company_id', '=', Configure::get('Blesta.company_id'))
+                ->where('package_options.id', 'IN', array_keys($vars->configoptions))
                 ->fetchAll(),
             'id',
             'name'
