@@ -1323,23 +1323,41 @@ class Pterodactyl extends Module
             Loader::loadHelpers($this, ['Form']);
         }
 
-        $configurable_options = $this->Form->collapseObjectArray(
+        $nest_id = $package->meta->nest_id;
+        $egg_id = $package->meta->egg_id;
+
+        $option_groups = [];
+        foreach ($package->option_groups as $option_group) {
+            $option_groups[] = $option_group->id;
+        }
+
+        $package->configurable_options = $this->Form->collapseObjectArray(
             $this->Record->select(['package_options.id', 'package_options.name'])
                 ->from('package_options')
+                ->innerJoin(
+                    'package_option_group',
+                    'package_option_group.option_id',
+                    '=',
+                    'package_options.id',
+                    false
+                )
                 ->where('package_options.company_id', '=', Configure::get('Blesta.company_id'))
-                ->where('package_options.id', 'IN', array_keys($vars->configoptions))
+                ->where('package_option_group.option_group_id', 'IN', $option_groups)
                 ->fetchAll(),
             'id',
             'name'
         );
 
-        // Load egg
-        $nest_id = isset($configurable_options['nest_id'], $vars->configoptions[$configurable_options['nest_id']])
-            ? $vars->configoptions[$configurable_options['nest_id']]
-            : $package->meta->nest_id;
-        $egg_id = isset($configurable_options['egg_id'], $vars->configoptions[$configurable_options['egg_id']])
-            ? $vars->configoptions[$configurable_options['egg_id']]
-            : $package->meta->egg_id;
+        // Load nest/egg from config option if submitted
+        if (isset($vars->configoptions)) {
+            if (isset($configurable_options['nest_id'], $vars->configoptions[$configurable_options['nest_id']])) {
+                $nest_id = $vars->configoptions[$configurable_options['nest_id']];
+            }
+
+            if (isset($configurable_options['egg_id'], $vars->configoptions[$configurable_options['egg_id']])) {
+                $egg_id = $vars->configoptions[$configurable_options['egg_id']];
+            }
+        }
 
         $pterodactyl_egg = $this->apiRequest(
             'Nests',
