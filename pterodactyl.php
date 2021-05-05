@@ -1275,12 +1275,13 @@ class Pterodactyl extends Module
 
         // Load nest/egg from config option if submitted
         if (isset($vars->configoptions)) {
-            if (isset($configurable_options['nest_id'], $vars->configoptions[$configurable_options['nest_id']])) {
-                $nest_id = $vars->configoptions[$configurable_options['nest_id']];
+            $config_options = $package->configurable_options;
+            if (isset($config_options['nest_id'], $vars->configoptions[$config_options['nest_id']])) {
+                $nest_id = $vars->configoptions[$config_options['nest_id']];
             }
 
-            if (isset($configurable_options['egg_id'], $vars->configoptions[$configurable_options['egg_id']])) {
-                $egg_id = $vars->configoptions[$configurable_options['egg_id']];
+            if (isset($config_options['egg_id'], $vars->configoptions[$config_options['egg_id']])) {
+                $egg_id = $vars->configoptions[$config_options['egg_id']];
             }
         }
 
@@ -1350,12 +1351,13 @@ class Pterodactyl extends Module
 
         // Load nest/egg from config option if submitted
         if (isset($vars->configoptions)) {
-            if (isset($configurable_options['nest_id'], $vars->configoptions[$configurable_options['nest_id']])) {
-                $nest_id = $vars->configoptions[$configurable_options['nest_id']];
+            $config_options = $package->configurable_options;
+            if (isset($config_options['nest_id'], $vars->configoptions[$config_options['nest_id']])) {
+                $nest_id = $vars->configoptions[$config_options['nest_id']];
             }
 
-            if (isset($configurable_options['egg_id'], $vars->configoptions[$configurable_options['egg_id']])) {
-                $egg_id = $vars->configoptions[$configurable_options['egg_id']];
+            if (isset($config_options['egg_id'], $vars->configoptions[$config_options['egg_id']])) {
+                $egg_id = $vars->configoptions[$config_options['egg_id']];
             }
         }
 
