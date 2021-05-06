@@ -1262,32 +1262,34 @@ class Pterodactyl extends Module
             $option_groups[] = $option_group->id;
         }
 
-        $package->configurable_options = $this->Form->collapseObjectArray(
-            $this->Record->select(['package_options.id', 'package_options.name'])
-                ->from('package_options')
-                ->innerJoin(
-                    'package_option_group',
-                    'package_option_group.option_id',
-                    '=',
-                    'package_options.id',
-                    false
-                )
-                ->where('package_options.company_id', '=', Configure::get('Blesta.company_id'))
-                ->where('package_option_group.option_group_id', 'IN', $option_groups)
-                ->fetchAll(),
-            'id',
-            'name'
-        );
+        if (!empty($option_groups)) {
+            $package->configurable_options = $this->Form->collapseObjectArray(
+                $this->Record->select(['package_options.id', 'package_options.name'])
+                    ->from('package_options')
+                    ->innerJoin(
+                        'package_option_group',
+                        'package_option_group.option_id',
+                        '=',
+                        'package_options.id',
+                        false
+                    )
+                    ->where('package_options.company_id', '=', Configure::get('Blesta.company_id'))
+                    ->where('package_option_group.option_group_id', 'IN', $option_groups)
+                    ->fetchAll(),
+                'id',
+                'name'
+            );
 
-        // Load nest/egg from config option if submitted
-        if (isset($vars->configoptions)) {
-            $config_options = $package->configurable_options;
-            if (isset($config_options['nest_id'], $vars->configoptions[$config_options['nest_id']])) {
-                $nest_id = $vars->configoptions[$config_options['nest_id']];
-            }
+            // Load nest/egg from config option if submitted
+            if (isset($vars->configoptions)) {
+                $config_options = $package->configurable_options;
+                if (isset($config_options['nest_id'], $vars->configoptions[$config_options['nest_id']])) {
+                    $nest_id = $vars->configoptions[$config_options['nest_id']];
+                }
 
-            if (isset($config_options['egg_id'], $vars->configoptions[$config_options['egg_id']])) {
-                $egg_id = $vars->configoptions[$config_options['egg_id']];
+                if (isset($config_options['egg_id'], $vars->configoptions[$config_options['egg_id']])) {
+                    $egg_id = $vars->configoptions[$config_options['egg_id']];
+                }
             }
         }
 
@@ -1338,32 +1340,34 @@ class Pterodactyl extends Module
             $option_groups[] = $option_group->id;
         }
 
-        $package->configurable_options = $this->Form->collapseObjectArray(
-            $this->Record->select(['package_options.id', 'package_options.name'])
-                ->from('package_options')
-                ->innerJoin(
-                    'package_option_group',
-                    'package_option_group.option_id',
-                    '=',
-                    'package_options.id',
-                    false
-                )
-                ->where('package_options.company_id', '=', Configure::get('Blesta.company_id'))
-                ->where('package_option_group.option_group_id', 'IN', $option_groups)
-                ->fetchAll(),
-            'id',
-            'name'
-        );
+        if (!empty($option_groups)) {
+            $package->configurable_options = $this->Form->collapseObjectArray(
+                $this->Record->select(['package_options.id', 'package_options.name'])
+                    ->from('package_options')
+                    ->innerJoin(
+                        'package_option_group',
+                        'package_option_group.option_id',
+                        '=',
+                        'package_options.id',
+                        false
+                    )
+                    ->where('package_options.company_id', '=', Configure::get('Blesta.company_id'))
+                    ->where('package_option_group.option_group_id', 'IN', $option_groups)
+                    ->fetchAll(),
+                'id',
+                'name'
+            );
 
-        // Load nest/egg from config option if submitted
-        if (isset($vars->configoptions)) {
-            $config_options = $package->configurable_options;
-            if (isset($config_options['nest_id'], $vars->configoptions[$config_options['nest_id']])) {
-                $nest_id = $vars->configoptions[$config_options['nest_id']];
-            }
+            // Load nest/egg from config option if submitted
+            if (isset($vars->configoptions)) {
+                $config_options = $package->configurable_options;
+                if (isset($config_options['nest_id'], $vars->configoptions[$config_options['nest_id']])) {
+                    $nest_id = $vars->configoptions[$config_options['nest_id']];
+                }
 
-            if (isset($config_options['egg_id'], $vars->configoptions[$config_options['egg_id']])) {
-                $egg_id = $vars->configoptions[$config_options['egg_id']];
+                if (isset($config_options['egg_id'], $vars->configoptions[$config_options['egg_id']])) {
+                    $egg_id = $vars->configoptions[$config_options['egg_id']];
+                }
             }
         }
 
