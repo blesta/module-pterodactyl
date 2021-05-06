@@ -27,7 +27,6 @@ class Pterodactyl extends Module
         Language::loadLang('pterodactyl_service', null, dirname(__FILE__) . DS . 'language' . DS);
         Language::loadLang('pterodactyl_rule', null, dirname(__FILE__) . DS . 'language' . DS);
 
-
         // Load configuration required by this module
         $this->loadConfig(dirname(__FILE__) . DS . 'config.json');
 
@@ -239,6 +238,9 @@ class Pterodactyl extends Module
             return;
         }
 
+        // Set configurable options
+        $package = $this->getConfigurableOptions($vars, $package);
+
         // Get the service helper
         $this->loadLib('pterodactyl_service');
         $service_helper = new PterodactylService();
@@ -415,6 +417,9 @@ class Pterodactyl extends Module
         if ($this->Input->errors()) {
             return;
         }
+
+        // Set configurable options
+        $package = $this->getConfigurableOptions($vars, $package);
 
         if ($vars['use_module'] == 'true') {
             // Load user account
@@ -850,6 +855,33 @@ class Pterodactyl extends Module
     }
 
     /**
+     * Returns an array of package fields, overriding the configurable options
+     *
+     * @param array $vars An array of key/value input pairs
+     * @param stdClass $package A stdClass object representing the package for the service
+     * @return stdClass The modified package object
+     */
+    private function getConfigurableOptions(array $vars, $package)
+    {
+        $fields = [
+            'location_id', 'egg_id', 'nest_id', 'port_range',
+            'pack_id', 'memory', 'swap', 'cpu', 'disk', 'io',
+            'startup', 'image', 'databases', 'allocations', 'backups'
+        ];
+
+        // Override package fields, if an equivalent configurable option exists
+        if (!empty($vars['configoptions'])) {
+            foreach ($vars['configoptions'] as $field => $value) {
+                if (in_array($field, $fields)) {
+                    $package->meta->{$field} = $value;
+                }
+            }
+        }
+
+        return $package;
+    }
+
+    /**
      * Runs a particaluar API requestor method, logs, and reports errors
      *
      * @param string $requestor The name of the requestor class to use
@@ -1191,7 +1223,7 @@ class Pterodactyl extends Module
      * Returns all fields to display to an admin attempting to add a service with the module
      *
      * @param stdClass $package A stdClass object representing the selected package
-     * @param $vars stdClass A stdClass object representing a set of post fields (optional)
+     * @param stdClass $vars A stdClass object representing a set of post fields (optional)
      * @return ModuleFields A ModuleFields object, containing the fields to render
      *  as well as any additional HTML markup to include
      */
@@ -1208,11 +1240,55 @@ class Pterodactyl extends Module
         $this->loadLib('pterodactyl_service');
         $service_helper = new PterodactylService();
 
-        // Load egg
+        // Get configurable options
+        if (!isset($this->Record)) {
+            Loader::loadComponents($this, ['Record']);
+        }
+        if (!isset($this->Form)) {
+            Loader::loadHelpers($this, ['Form']);
+        }
+
+        $nest_id = $package->meta->nest_id;
+        $egg_id = $package->meta->egg_id;
+
+        $option_groups = [];
+        foreach ($package->option_groups as $option_group) {
+            $option_groups[] = $option_group->id;
+        }
+
+        $package->configurable_options = $this->Form->collapseObjectArray(
+            $this->Record->select(['package_options.id', 'package_options.name'])
+                ->from('package_options')
+                ->innerJoin(
+                    'package_option_group',
+                    'package_option_group.option_id',
+                    '=',
+                    'package_options.id',
+                    false
+                )
+                ->where('package_options.company_id', '=', Configure::get('Blesta.company_id'))
+                ->where('package_option_group.option_group_id', 'IN', $option_groups)
+                ->fetchAll(),
+            'id',
+            'name'
+        );
+
+        // Load nest/egg from config option if submitted
+        if (isset($vars->configoptions)) {
+            $config_options = $package->configurable_options;
+            if (isset($config_options['nest_id'], $vars->configoptions[$config_options['nest_id']])) {
+                $nest_id = $vars->configoptions[$config_options['nest_id']];
+            }
+
+            if (isset($config_options['egg_id'], $vars->configoptions[$config_options['egg_id']])) {
+                $egg_id = $vars->configoptions[$config_options['egg_id']];
+            }
+        }
+
         $pterodactyl_egg = $this->apiRequest(
             'Nests',
             'eggsGet',
-            ['nest_id' => $package->meta->nest_id, 'egg_id' => $package->meta->egg_id]
+            ['nest_id' => $nest_id, 'egg_id' => $egg_id]
         );
 
         // Fetch the service fields
@@ -1240,11 +1316,55 @@ class Pterodactyl extends Module
         $this->loadLib('pterodactyl_service');
         $service_helper = new PterodactylService();
 
-        // Load egg
+        // Get configurable options
+        if (!isset($this->Record)) {
+            Loader::loadComponents($this, ['Record']);
+        }
+        if (!isset($this->Form)) {
+            Loader::loadHelpers($this, ['Form']);
+        }
+
+        $nest_id = $package->meta->nest_id;
+        $egg_id = $package->meta->egg_id;
+
+        $option_groups = [];
+        foreach ($package->option_groups as $option_group) {
+            $option_groups[] = $option_group->id;
+        }
+
+        $package->configurable_options = $this->Form->collapseObjectArray(
+            $this->Record->select(['package_options.id', 'package_options.name'])
+                ->from('package_options')
+                ->innerJoin(
+                    'package_option_group',
+                    'package_option_group.option_id',
+                    '=',
+                    'package_options.id',
+                    false
+                )
+                ->where('package_options.company_id', '=', Configure::get('Blesta.company_id'))
+                ->where('package_option_group.option_group_id', 'IN', $option_groups)
+                ->fetchAll(),
+            'id',
+            'name'
+        );
+
+        // Load nest/egg from config option if submitted
+        if (isset($vars->configoptions)) {
+            $config_options = $package->configurable_options;
+            if (isset($config_options['nest_id'], $vars->configoptions[$config_options['nest_id']])) {
+                $nest_id = $vars->configoptions[$config_options['nest_id']];
+            }
+
+            if (isset($config_options['egg_id'], $vars->configoptions[$config_options['egg_id']])) {
+                $egg_id = $vars->configoptions[$config_options['egg_id']];
+            }
+        }
+
         $pterodactyl_egg = $this->apiRequest(
             'Nests',
             'eggsGet',
-            ['nest_id' => $package->meta->nest_id, 'egg_id' => $package->meta->egg_id]
+            ['nest_id' => $nest_id, 'egg_id' => $egg_id]
         );
 
         // Fetch the service fields

@@ -4,3 +4,4 @@
 # Ignore composer lock
 /composer.lock
 /nbproject/
+/.idea/
