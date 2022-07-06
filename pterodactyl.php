@@ -223,6 +223,10 @@ class Pterodactyl extends Module
         Loader::loadModels($this, ['ModuleClientMeta', 'Clients']);
 
         $meta = [];
+
+        // Set configurable options
+        $package = $this->getConfigurableOptions($vars, $package);
+
         // Load egg
         $pterodactyl_egg = $this->apiRequest(
             'Nests',
@@ -237,9 +241,6 @@ class Pterodactyl extends Module
         if ($this->Input->errors()) {
             return;
         }
-
-        // Set configurable options
-        $package = $this->getConfigurableOptions($vars, $package);
 
         // Get the service helper
         $this->loadLib('pterodactyl_service');
@@ -427,6 +428,9 @@ class Pterodactyl extends Module
         $this->loadLib('pterodactyl_service');
         $service_helper = new PterodactylService();
 
+        // Set configurable options
+        $package = $this->getConfigurableOptions($vars, $package);
+
         // Load egg
         $pterodactyl_egg = $this->apiRequest(
             'Nests',
@@ -436,9 +440,6 @@ class Pterodactyl extends Module
         if ($this->Input->errors()) {
             return;
         }
-
-        // Set configurable options
-        $package = $this->getConfigurableOptions($vars, $package);
 
         if ($vars['use_module'] == 'true') {
             // Load user account
