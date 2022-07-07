@@ -220,7 +220,7 @@ class Pterodactyl extends Module
         $parent_service = null,
         $status = 'pending'
     ) {
-        Loader::loadModels($this, ['ModuleClientMeta']);
+        Loader::loadModels($this, ['ModuleClientMeta', 'Clients']);
 
         $meta = [];
         // Load egg
@@ -245,15 +245,34 @@ class Pterodactyl extends Module
         $this->loadLib('pterodactyl_service');
         $service_helper = new PterodactylService();
         if ($vars['use_module'] == 'true') {
-            // Load/create user account
-            $pterodactyl_user = $this->apiRequest('Users', 'getByExternalID', ['bl-' . $vars['client_id']]);
-
+            // Load module
             $module = $this->getModule();
+
+            // Fetch client
+            $client = $this->Clients->get($vars['client_id'] ?? null);
+
+            // Check if a user already exists with the client's email
+            $pterodactyl_user = $this->apiRequest('Users', 'getByEmail', [$client->email]);
+            $pterodactyl_user = !empty($pterodactyl_user->data) ? reset($pterodactyl_user->data) : null;
 
             if ($this->Input->errors()) {
                 $this->Input->setErrors([]);
+            }
+
+            // Check if a user already exists with the current external id
+            if (empty($pterodactyl_user)) {
+                $pterodactyl_user = $this->apiRequest('Users', 'getByExternalID', ['bl-' . $vars['client_id']]);
+            }
+
+            if ($this->Input->errors()) {
+                $this->Input->setErrors([]);
+            }
+
+            // If an account does not exists, create a new one and keep track of the credentials
+            if (empty($pterodactyl_user)) {
                 $addParameters = $service_helper->addUserParameters($vars);
                 $pterodactyl_user = $this->apiRequest('Users', 'add', [$addParameters]);
+
                 if ($this->Input->errors()) {
                     return;
                 }
