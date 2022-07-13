@@ -342,7 +342,7 @@ class PterodactylService
                     // when a nest or egg respectively is selected
                     $('.package_options').on(
                         'focusout',
-                        '#configoption_$egg_id, #configoption_$nest_id, #configoption_$location_id',
+                        '*[name=\"configoptions[$egg_id]\"], *[name=\"configoptions[$nest_id]\"], *[name=\"configoptions[$location_id]\"]',
                         function() {
                             var form = $(this).closest('form');
                             $(form).append('<input type=\"hidden\" name=\"refresh_fields\" value=\"true\">');
