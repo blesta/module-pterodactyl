@@ -407,7 +407,7 @@ class PterodactylPackage
             ],
             'meta[swap]' => [
                 'format' => [
-                    'rule' => ['matches', '/^[0-9]+$/'],
+                    'rule' => ['matches', '/^(?:\-1|[0-9]+)$/'],
                     'message' => Language::_('PterodactylPackage.!error.meta[swap].format', true)
                 ]
             ],
