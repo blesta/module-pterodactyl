@@ -1464,7 +1464,9 @@ class Pterodactyl extends Module
                 'valid' => [
                     'rule' => function ($host_name) {
                         $validator = new Server();
-                        return $validator->isDomain($host_name) || $validator->isIp($host_name);
+                        $parts = explode(':', $host_name, 2);
+                        return ($validator->isDomain($parts[0]) || $validator->isIp($parts[0]))
+                            && (!isset($parts[1]) || is_numeric($parts[1]));
                     },
                     'message' => Language::_('Pterodactyl.!error.host_name.valid', true)
                 ]
