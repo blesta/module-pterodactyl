@@ -934,7 +934,13 @@ class Pterodactyl extends Module
         );
 
         // Perform the request
-        $response = call_user_func_array([$api->{$requestor}, $action], $data);
+        try {
+            $response = call_user_func_array([$api->{$requestor}, $action], $data);
+        } catch (Throwable $e) {
+            // Try executing the request again, without array keys
+            $response = call_user_func_array([$api->{$requestor}, $action], array_values($data));
+        }
+
         $errors = $response->errors();
         $this->log($requestor . '.' . $action, json_encode($data), 'input', true);
         $this->log($requestor . '.' . $action, $response->raw(), 'output', empty($errors));
