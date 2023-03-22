@@ -19,16 +19,24 @@ class PterodactylRule
      */
     public function parseEggVariable($eggVariable)
     {
+        // Get the name of the field being validated
+        $fieldName = $eggVariable->attributes->name;
+
         // Parse rule string for regexes and remove them to simplify parsing
         $ruleString = $eggVariable->attributes->rules;
+
+        // Match the regex strings and store them in an array
         $regexRuleStrings = [];
-        preg_match('/regex:(\/.*\/)/', $ruleString, $regexRuleStrings);
-        $regexFilteredRuleString = str_replace($regexRuleStrings, '{{{regex}}}', $ruleString);
+        preg_match_all("/regex\\:(\\/.*?\\/)/i", $ruleString, $regexRuleStrings);
+
+        // Remove the regex stings and replace them with {{{regex}}}
+        $regexFilteredRuleString = str_replace($regexRuleStrings[1] ?? [], '{{{regex}}}', $ruleString);
+
+        // Get a the list of OR separated validation rules
         $ruleStrings = explode('|', $regexFilteredRuleString);
 
         // Parse rules from the string
         $rules = [];
-        $fieldName = $eggVariable->attributes->name;
         foreach ($ruleStrings as $ruleString) {
             $ruleParts = explode(':', $ruleString);
             $ruleName = str_replace('_', '', lcfirst(ucwords($ruleParts[0], '_')));
@@ -39,9 +47,9 @@ class PterodactylRule
             }
 
             // Re-add filtered regexes
-            if (!empty($regexRuleStrings)) {
+            if (!empty($regexRuleStrings[1])) {
                 foreach ($ruleParameters as &$ruleParameter) {
-                    $ruleParameter = str_replace('{{{regex}}}', $regexRuleStrings, $ruleParameter);
+                    $ruleParameter = str_replace('{{{regex}}}', array_shift($regexRuleStrings[1]), $ruleParameter);
                 }
             }
 
