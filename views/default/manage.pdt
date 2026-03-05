@@ -67,9 +67,7 @@
         }
         ?>
 
-<div class="title_row">
-    <h6 class="form-section-header mt-4"><?php $this->_('Pterodactyl.manage.module_groups_title');?></h6>
-</div>
+<h6 class="form-section-header mt-4"><?php $this->_('Pterodactyl.manage.module_groups_title');?></h6>
                 <?php
         $num_rows = count((isset($module->groups) ? $module->groups : []));
         if ($num_rows > 0) {
