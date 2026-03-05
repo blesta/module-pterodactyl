@@ -1,6 +1,9 @@
 <?php
 // Errors
 $lang['PterodactylPackage.!error.meta[location_id].format'] = 'The location ID must be numeric.';
+
+$lang['Pterodactyl.back_to_manage'] = 'Back';
+
 $lang['PterodactylPackage.!error.meta[location_id].valid'] = 'The location ID does not match any in Pterodactyl.';
 $lang['PterodactylPackage.!error.meta[dedicated_ip].format'] = 'Whether to use a dedicated IP must be set to 1 or 0.';
 $lang['PterodactylPackage.!error.meta[port_range].format'] = 'The port range most be in the format 25565-25570,25580-25590.';

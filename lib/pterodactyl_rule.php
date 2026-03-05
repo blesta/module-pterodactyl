@@ -1,5 +1,7 @@
 <?php
+
 use Blesta\Core\Util\Validate\Server;
+
 /**
  * Pterodactyl Rule helper
  *
@@ -27,7 +29,7 @@ class PterodactylRule
 
         // Match the regex strings and store them in an array
         $regexRuleStrings = [];
-        preg_match_all("/regex\\:(\\/.*?\\/)/i", $ruleString, $regexRuleStrings);
+        preg_match_all('/regex\\:(\\/.*?\\/)/i', $ruleString, $regexRuleStrings);
 
         // Remove the regex stings and replace them with {{{regex}}}
         $regexFilteredRuleString = str_replace($regexRuleStrings[1] ?? [], '{{{regex}}}', $ruleString);
@@ -169,7 +171,7 @@ class PterodactylRule
     private function alphaDash($fieldName)
     {
         return [
-            'rule' => function($value) {
+            'rule' => function ($value) {
                 return ctype_alnum(preg_replace('/-|_/', '', $value));
             },
             'message' => Language::_('PterodactylRule.!error.alphaDash', true, $fieldName)
@@ -185,7 +187,7 @@ class PterodactylRule
     private function url($fieldName)
     {
         return [
-            'rule' => function($value) {
+            'rule' => function ($value) {
                 $validator = new Server();
                 return $validator->isUrl($value);
             },

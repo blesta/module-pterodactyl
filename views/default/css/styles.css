@@ -4,4 +4,4 @@
 .options span.offline { background-color:#ca3334; color:#fff;}
 .options span.starting, .options span.stopping { background-color:#dad400; color:#fff;}
 
-.options .actions {float:left; margin-right:10px; background-color:#f9f9f9; padding:8px; border-radius:4px; -moz-border-radius:4px; -webkit-border-radius:4px;}
+.options .actions {float:left; margin-right:10px; background-color:var(--bs-tertiary-bg, #f9f9f9); padding:8px; border-radius:4px; -moz-border-radius:4px; -webkit-border-radius:4px;}

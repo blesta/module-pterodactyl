@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Pterodactyl Service helper
  *
@@ -127,7 +128,7 @@ class PterodactylService
     {
         // Gather server data
         return [
-            'external_id' => $vars['client_id'] . '-' . (isset($vars['service_id']) ? $vars['service_id'] : uniqid()),
+            'external_id' => $vars['client_id'] . '-' . ($vars['service_id'] ?? uniqid()),
             'name' => $vars['server_name'],
             'description' => $vars['server_description'],
             'user' => $pterodactylUser->attributes->id,
@@ -261,7 +262,7 @@ class PterodactylService
             $serverId->attach(
                 $fields->fieldText(
                     'server_id',
-                    (isset($vars->server_id) ? $vars->server_id : null),
+                    ($vars->server_id ?? null),
                     ['id' => 'server_id']
                 )
             );
@@ -279,7 +280,7 @@ class PterodactylService
             $serverName->attach(
                 $fields->fieldText(
                     'server_name',
-                    (isset($vars->server_name) ? $vars->server_name : null),
+                    ($vars->server_name ?? null),
                     ['id' => 'server_name']
                 )
             );
@@ -297,7 +298,7 @@ class PterodactylService
             $serverDescription->attach(
                 $fields->fieldText(
                     'server_description',
-                    (isset($vars->server_description) ? $vars->server_description : null),
+                    ($vars->server_description ?? null),
                     ['id' => 'server_description']
                 )
             );
@@ -311,7 +312,8 @@ class PterodactylService
             foreach ($pterodactylEgg->attributes->relationships->variables->data as $envVariable) {
                 // Hide the field from clients unless it is marked for display on the package
                 $key = strtolower($envVariable->attributes->env_variable);
-                if (!$admin
+                if (
+                    !$admin
                     && (!isset($package->meta->{$key . '_display'}) || $package->meta->{$key . '_display'} != '1')
                 ) {
                     continue;
@@ -326,11 +328,7 @@ class PterodactylService
                 $field->attach(
                     $fields->fieldText(
                         $key,
-                        (isset($vars->{$key})
-                            ? $vars->{$key}
-                            : (isset($package->meta->{$key})
-                                ? $package->meta->{$key}
-                                : $envVariable->attributes->default_value
+                        ($vars->{$key} ?? ($package->meta->{$key} ?? $envVariable->attributes->default_value
                             )
                         ),
                         ['id' => $key]
@@ -344,11 +342,9 @@ class PterodactylService
             }
         }
 
-        $egg_id = isset($package->configurable_options['egg_id']) ? $package->configurable_options['egg_id'] : 0;
-        $nest_id = isset($package->configurable_options['nest_id']) ? $package->configurable_options['nest_id'] : 0;
-        $location_id = isset($package->configurable_options['location_id'])
-            ? $package->configurable_options['location_id']
-            : 0;
+        $egg_id = $package->configurable_options['egg_id'] ?? 0;
+        $nest_id = $package->configurable_options['nest_id'] ?? 0;
+        $location_id = $package->configurable_options['location_id'] ?? 0;
         // Set js to refetch options when the nest or egg is changed
         $fields->setHtml("
             <script type=\"text/javascript\">
@@ -394,7 +390,7 @@ class PterodactylService
         ];
 
         // Get the rule helper
-        Loader::load(dirname(__FILE__). DS . 'pterodactyl_rule.php');
+        Loader::load(dirname(__FILE__) . DS . 'pterodactyl_rule.php');
         $rule_helper = new PterodactylRule();
 
         // Get egg variable rules
@@ -404,7 +400,8 @@ class PterodactylService
                 $rules[$fieldName] = $rule_helper->parseEggVariable($envVariable);
 
                 foreach ($rules[$fieldName] as $rule) {
-                    if (array_key_exists('if_set', $rule)
+                    if (
+                        array_key_exists('if_set', $rule)
                         && $rule['if_set'] == true
                         && empty($vars[$fieldName])
                     ) {

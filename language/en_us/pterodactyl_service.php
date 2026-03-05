@@ -2,6 +2,8 @@
 // Errors
 $lang['PterodactylService.!error.server_name.empty'] = 'Please set a name for the server.';
 
+$lang['Pterodactyl.back_to_manage'] = 'Back';
+
 
 // Service fields
 $lang['PterodactylService.service_fields.server_name'] = 'Server Name';
