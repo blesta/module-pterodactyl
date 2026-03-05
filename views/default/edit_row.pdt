@@ -4,7 +4,11 @@
 $this->Widget->clear();
 
 $this->Widget->setLinkButtons([
-    ['name' => $this->_('Pterodactyl.back_to_manage', true), 'icon' => 'bi bi-arrow-left me-1', 'attributes' => ['href' => $this->base_uri . 'settings/company/modules/manage/' . $module->id]]
+    [
+        'name' => $this->_('Pterodactyl.back_to_manage', true),
+        'icon' => 'bi bi-arrow-left me-1',
+        'attributes' => ['href' => $this->base_uri . 'settings/company/modules/manage/' . $module->id],
+    ],
 ]);
 
 $this->Widget->create($this->_('Pterodactyl.edit_row.box_title', true));
@@ -12,60 +16,79 @@ $this->Widget->create($this->_('Pterodactyl.edit_row.box_title', true));
 $this->Form->create(null, ['class' => 'disable-on-submit']);
 ?>
 
-<h6 class="form-section-header"><?php $this->_('Pterodactyl.edit_row.basic_title');?></h6>
+<h6 class="form-section-header"><?php $this->_('Pterodactyl.edit_row.basic_title'); ?></h6>
 
 <div class="mb-3">
     <label for="server_name" class="form-label">
-        <?php $this->_('Pterodactyl.row_meta.server_name');?>
+        <?php $this->_('Pterodactyl.row_meta.server_name'); ?>
     </label>
-    <?php
-    $this->Form->fieldText('server_name', ($vars->server_name ?? null), ['id' => 'server_name', 'class' => 'form-control']);
-    ?>
+    <?php $this->Form->fieldText('server_name', $vars->server_name ?? null, [
+        'id' => 'server_name',
+        'class' => 'form-control',
+    ]); ?>
 </div>
 
 <div class="mb-3">
     <label for="host_name" class="form-label">
-        <?php $this->_('Pterodactyl.row_meta.host_name');?>
-        <span class="tooltip"><?php $this->_('AppController.tooltip.text');?><div><?php $this->_('Pterodactyl.!tooltip.host_name');?></div></span>
+        <?php $this->_('Pterodactyl.row_meta.host_name'); ?>
+        <span class="tooltip"><?php $this->_('AppController.tooltip.text'); ?><div><?php $this->_(
+    'Pterodactyl.!tooltip.host_name',
+); ?></div></span>
     </label>
-    <?php $this->Form->fieldText('host_name', ($vars->host_name ?? null), ['id' => 'host_name', 'class' => 'form-control']);?>
+    <?php $this->Form->fieldText('host_name', $vars->host_name ?? null, [
+        'id' => 'host_name',
+        'class' => 'form-control',
+    ]); ?>
 </div>
 
 <div class="mb-3">
     <label for="account_api_key" class="form-label">
-        <?php $this->_('Pterodactyl.row_meta.account_api_key');?>
-        <span class="tooltip"><?php $this->_('AppController.tooltip.text');?><div><?php $this->_('Pterodactyl.!tooltip.account_api_key');?></div></span>
+        <?php $this->_('Pterodactyl.row_meta.account_api_key'); ?>
+        <span class="tooltip"><?php $this->_('AppController.tooltip.text'); ?><div><?php $this->_(
+    'Pterodactyl.!tooltip.account_api_key',
+); ?></div></span>
     </label>
-    <?php $this->Form->fieldText('account_api_key', ($vars->account_api_key ?? null), ['id' => 'account_api_key', 'class' => 'form-control']);?>
+    <?php $this->Form->fieldText('account_api_key', $vars->account_api_key ?? null, [
+        'id' => 'account_api_key',
+        'class' => 'form-control',
+    ]); ?>
 </div>
 
 <div class="mb-3">
     <label for="application_api_key" class="form-label">
-        <?php $this->_('Pterodactyl.row_meta.application_api_key');?>
-        <span class="tooltip"><?php $this->_('AppController.tooltip.text');?><div><?php $this->_('Pterodactyl.!tooltip.application_api_key');?></div></span>
+        <?php $this->_('Pterodactyl.row_meta.application_api_key'); ?>
+        <span class="tooltip"><?php $this->_('AppController.tooltip.text'); ?><div><?php $this->_(
+    'Pterodactyl.!tooltip.application_api_key',
+); ?></div></span>
     </label>
-    <?php $this->Form->fieldText('application_api_key', ($vars->application_api_key ?? null), ['id' => 'application_api_key', 'class' => 'form-control']);?>
+    <?php $this->Form->fieldText('application_api_key', $vars->application_api_key ?? null, [
+        'id' => 'application_api_key',
+        'class' => 'form-control',
+    ]); ?>
 </div>
 
 <div class="mb-3">
     <div class="form-check">
-        <?php
-        $this->Form->fieldCheckbox('use_ssl', 'true', ($vars->use_ssl ?? 'true') == 'true', ['id' => 'use_ssl', 'class' => 'form-check-input']);
-        ?>
+        <?php $this->Form->fieldCheckbox('use_ssl', 'true', ($vars->use_ssl ?? 'true') == 'true', [
+            'id' => 'use_ssl',
+            'class' => 'form-check-input',
+        ]); ?>
         <label for="use_ssl" class="form-check-label">
-            <?php $this->_('Pterodactyl.row_meta.use_ssl');?>
+            <?php $this->_('Pterodactyl.row_meta.use_ssl'); ?>
         </label>
     </div>
 </div>
 
 <?php $this->Widget->footer(); ?>
 <div class="d-flex justify-content-end">
-    <?php
-    $this->Form->fieldSubmit('save', $this->_('Pterodactyl.edit_row.add_btn', true), ['class' => 'btn btn-primary']);
-    ?>
+    <?php $this->Form->fieldSubmit('save', $this->_('Pterodactyl.edit_row.add_btn', true), [
+        'class' => 'btn btn-primary',
+    ]); ?>
 </div>
 
 <?php
 $this->Form->end();
 $this->Widget->end();
+
+
 ?>
