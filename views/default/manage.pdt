@@ -25,7 +25,7 @@ $this->Widget->create(
 );
 ?>
 
-<h6 class="form-section-header first"><?php $this->_('Pterodactyl.manage.module_rows_title'); ?></h6>
+<h6 class="form-section-header"><?php $this->_('Pterodactyl.manage.module_rows_title'); ?></h6>
         <?php
         $num_rows = count(isset($module->rows) ? $module->rows : []);
         if ($num_rows > 0) { ?>

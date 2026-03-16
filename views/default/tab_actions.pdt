@@ -1,57 +1,36 @@
-<?php
-/** @var View $this **/
-?>
+<?php /** @var View $this **/ ?>
 
-<h6 class="form-section-header first"><?php $this->_('Pterodactyl.tab_actions.heading_actions'); ?></h6>
-<div class="pad">
+<h6 class="form-section-header"><?php $this->_('Pterodactyl.tab_actions.heading_actions'); ?></h6>
+<div class="mb-3">
     <div class="options" id="pterodactyl_actions">
         <p>
-            <?php $this->_('Pterodactyl.tab_actions.server_status'); ?> <span class="buff <?php echo isset(
-     $server->attributes->current_state,
- )
-     ? $this->Html->safe($server->attributes->current_state)
-     : null; ?>"><?php $this->_(
-    'Pterodactyl.tab_actions.status_' .
-        (isset($server->attributes->current_state) ? $server->attributes->current_state : null),
-); ?></span>
+            <?php $this->_('Pterodactyl.tab_actions.server_status'); ?> <span class="buff <?php echo isset($server->attributes->current_state) ? $this->Html->safe($server->attributes->current_state) : null; ?>"><?php $this->_('Pterodactyl.tab_actions.status_' . ($server->attributes->current_state ?? null)); ?></span>
         </p>
 
         <a href="<?php echo $this->Html->safe(
             $this->base_uri .
                 'clients/servicetab/' .
-                (isset($client_id) ? $client_id : null) .
+                ($client_id ?? null) .
                 '/' .
-                (isset($service_id) ? $service_id : null) .
-                '/tabActions/start/',
-        ); ?>" class="start btn btn-success<?php echo (isset($server->attributes->current_state)
-    ? $server->attributes->current_state
-    : null) != 'offline'
-    ? ' disabled'
-    : ''; ?>"><i class="bi bi-power"></i> <?php $this->_('Pterodactyl.!actions.start'); ?></a>
+                ($service_id ?? null) .
+                '/tabActions/start/'
+        ); ?>" class="start btn btn-success<?php echo ($server->attributes->current_state ?? null) != 'offline' ? ' disabled' : ''; ?>"><i class="bi bi-power"></i> <?php $this->_('Pterodactyl.!actions.start'); ?></a>
         <a href="<?php echo $this->Html->safe(
             $this->base_uri .
                 'clients/servicetab/' .
-                (isset($client_id) ? $client_id : null) .
+                ($client_id ?? null) .
                 '/' .
-                (isset($service_id) ? $service_id : null) .
-                '/tabActions/stop/',
-        ); ?>" class="stop btn btn-danger<?php echo (isset($server->attributes->current_state)
-    ? $server->attributes->current_state
-    : null) != 'running'
-    ? ' disabled'
-    : ''; ?>"><i class="bi bi-power"></i> <?php $this->_('Pterodactyl.!actions.stop'); ?></a>
+                ($service_id ?? null) .
+                '/tabActions/stop/'
+        ); ?>" class="stop btn btn-danger<?php echo ($server->attributes->current_state ?? null) != 'running' ? ' disabled' : ''; ?>"><i class="bi bi-power"></i> <?php $this->_('Pterodactyl.!actions.stop'); ?></a>
         <a href="<?php echo $this->Html->safe(
             $this->base_uri .
                 'clients/servicetab/' .
-                (isset($client_id) ? $client_id : null) .
+                ($client_id ?? null) .
                 '/' .
-                (isset($service_id) ? $service_id : null) .
-                '/tabActions/restart/',
-        ); ?>" class="btn btn-outline-secondary<?php echo (isset($server->attributes->current_state)
-    ? $server->attributes->current_state
-    : null) != 'running'
-    ? ' disabled'
-    : ''; ?>"><i class="bi bi-arrow-clockwise"></i> <?php $this->_('Pterodactyl.!actions.restart'); ?></a>
+                ($service_id ?? null) .
+                '/tabActions/restart/'
+        ); ?>" class="btn btn-outline-secondary<?php echo ($server->attributes->current_state ?? null) != 'running' ? ' disabled' : ''; ?>"><i class="bi bi-arrow-clockwise"></i> <?php $this->_('Pterodactyl.!actions.restart'); ?></a>
     </div>
 </div>
 
@@ -59,7 +38,7 @@
 <script type="text/javascript">
     document.addEventListener('DOMContentLoaded', function() {
         setPterodactylInterval('<?php echo Configure::get("Pterodactyl.page_refresh_rate_fast"); ?>', '');
-        $(this).blestaSetHeadTag("link", {
+        blestaSetHeadTag("link", {
             media: "screen",
             type: "text/css",
             rel: "stylesheet",
@@ -69,8 +48,8 @@
         function setPterodactylInterval(pterodactyl_refresh_rate, pterodactyl_old_action_data) {
             var interval = '';
             interval = setInterval(function() {
-                $(this).blestaRequest("GET",
-                    '<?php echo $this->base_uri . 'clients/servicetab/' . (isset($client_id) ? $client_id : null) . '/' . (isset($service_id) ? $service_id : null) . '/tabActions/'; ?>',
+                blestaRequest("GET",
+                    '<?php echo $this->base_uri . 'clients/servicetab/' . ($client_id ?? null) . '/' . ($service_id ?? null) . '/tabActions/'; ?>',
                     null,
                     // Success response
                     function(data) {
