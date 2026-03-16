@@ -1,4 +1,6 @@
-<?php /** @var View $this **/ ?>
+<?php
+/** @var View $this **/
+?>
 
 <h6 class="form-section-header first"><?php $this->_('Pterodactyl.tab_actions.heading_actions'); ?></h6>
 <div class="pad">
@@ -56,8 +58,7 @@
 
 <script type="text/javascript">
     document.addEventListener('DOMContentLoaded', function() {
-        setPterodactylInterval('<?php echo Configure::get('
-            Pterodactyl.page_refresh_rate_fast '); ?>', '');
+        setPterodactylInterval('<?php echo Configure::get("Pterodactyl.page_refresh_rate_fast"); ?>', '');
         $(this).blestaSetHeadTag("link", {
             media: "screen",
             type: "text/css",
@@ -69,13 +70,7 @@
             var interval = '';
             interval = setInterval(function() {
                 $(this).blestaRequest("GET",
-                    '<?php echo $this->base_uri .
-                        '
-                    clients / servicetab / ' .
-                        (isset($client_id) ? $client_id : null) .
-                        ' / ' .
-                        (isset($service_id) ? $service_id : null) .
-                        ' / tabActions / '; ?>',
+                    '<?php echo $this->base_uri . 'clients/servicetab/' . (isset($client_id) ? $client_id : null) . '/' . (isset($service_id) ? $service_id : null) . '/tabActions/'; ?>',
                     null,
                     // Success response
                     function(data) {
@@ -84,9 +79,7 @@
                             temp.innerHTML = data.content;
                             var html = temp.querySelector('#pterodactyl_actions').innerHTML;
                             document.getElementById('pterodactyl_actions').innerHTML = html;
-                            pterodactyl_refresh_rate = (html == pterodactyl_old_action_data) ? '<?php echo Configure::get('
-                            Pterodactyl.page_refresh_rate '); ?>': '<?php echo Configure::get('
-                            Pterodactyl.page_refresh_rate_fast '); ?>';
+                            pterodactyl_refresh_rate = (html == pterodactyl_old_action_data) ? '<?php echo Configure::get("Pterodactyl.page_refresh_rate"); ?>': '<?php echo Configure::get("Pterodactyl.page_refresh_rate_fast"); ?>';
 
                             clearInterval(interval);
                             setPterodactylInterval(pterodactyl_refresh_rate, html);
