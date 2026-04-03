@@ -1,115 +1,174 @@
-        <?php
-        $link_buttons = [
-            ['name'=>$this->_('Pterodactyl.add_module_row', true), 'attributes' => ['href'=>$this->base_uri . 'settings/company/modules/addrow/' . $module->id]],
-            ['name'=>$this->_('Pterodactyl.add_module_group', true), 'attributes' => ['href'=>$this->base_uri . 'settings/company/modules/addgroup/' . $module->id]]
-        ];
+<?php /** @var View $this **/ ?>
 
-        $this->Widget->clear();
-        $this->Widget->setLinkButtons($link_buttons);
+<?php
+$link_buttons = [
+    [
+        'name' => $this->_('Pterodactyl.add_module_row', true),
+        'attributes' => ['href' => $this->base_uri . 'settings/company/modules/addrow/' . $module->id],
+    ],
+    [
+        'name' => $this->_('Pterodactyl.add_module_group', true),
+        'attributes' => ['href' => $this->base_uri . 'settings/company/modules/addgroup/' . $module->id],
+    ],
+];
 
-        $this->Widget->create($this->_('AdminCompanyModules.manage.boxtitle_manage', true, (isset($module->name) ? $this->Html->safe($module->name) : null)), ['id' => 'manage_pterodactyl']);
-        ?>
+$tabs = [
+    [
+        'name' => $this->_('Pterodactyl.manage.tab_rows', true),
+        'current' => true,
+        'attributes' => [
+            'class' => 'rows',
+            'href' => '#tab_rows',
+            'id' => 'rows_tab',
+            'data-bs-toggle' => 'tab',
+            'role' => 'tab'
+        ]
+    ],
+    [
+        'name' => $this->_('Pterodactyl.manage.tab_groups', true),
+        'current' => false,
+        'attributes' => [
+            'class' => 'groups',
+            'href' => '#tab_groups',
+            'id' => 'groups_tab',
+            'data-bs-toggle' => 'tab',
+            'role' => 'tab'
+        ]
+    ]
+];
 
-        <div class="title_row first">
-            <h3><?php $this->_('Pterodactyl.manage.module_rows_title');?></h3>
-        </div>
-        <?php
-        $num_rows = count((isset($module->rows) ? $module->rows : []));
-        if ($num_rows > 0) {
-        ?>
-        <table class="table">
-            <tr class="heading_row">
-                <td><span><?php $this->_('Pterodactyl.manage.module_rows_heading.name');?></span></td>
-                <td><span><?php $this->_('Pterodactyl.manage.module_rows_heading.host_name');?></span></td>
-                <td class="last"><span><?php $this->_('Pterodactyl.manage.module_rows_heading.options');?></span></td>
-            </tr>
-            <?php
-            for ($i = 0; $i < $num_rows; $i++) {
-            ?>
-            <tr<?php echo ($i % 2 == 1) ? ' class="odd_row"' : '';?>>
-                <td><?php echo (isset($module->rows[$i]->meta->server_name) ? $this->Html->safe($module->rows[$i]->meta->server_name) : null);?></td>
-                <td><?php echo (isset($module->rows[$i]->meta->host_name) ? $this->Html->safe($module->rows[$i]->meta->host_name) : null);?></td>
-                <td>
-                    <a href="<?php echo $this->Html->safe($this->base_uri . 'settings/company/modules/editrow/' . (isset($module->id) ? $module->id : null) . '/' . (isset($module->rows[$i]->id) ? $module->rows[$i]->id : null) . '/');?>"><?php $this->_('Pterodactyl.manage.module_rows.edit');?></a>
-                    <?php
-                    $this->Form->create($this->base_uri . 'settings/company/modules/deleterow/');
-                    $this->Form->fieldHidden('id', (isset($module->id) ? $module->id : null));
-                    $this->Form->fieldHidden('row_id', (isset($module->rows[$i]->id) ? $module->rows[$i]->id : null));
-                    ?>
-                    <a href="<?php echo $this->Html->safe($this->base_uri . 'settings/company/modules/deleterow/' . (isset($module->id) ? $module->id : null) . '/' . (isset($module->rows[$i]->id) ? $module->rows[$i]->id : null) . '/');?>" class="manage" rel="<?php echo $this->Html->safe($this->_('Pterodactyl.manage.module_rows.confirm_delete', true));?>"><?php $this->_('Pterodactyl.manage.module_rows.delete');?></a>
-                    <?php
-                    $this->Form->end();
-                    ?>
-                </td>
-            </tr>
-            <?php
-            }
-            ?>
-        </table>
-        <?php
-        } else {
-        ?>
-        <div class="empty_section">
-            <div class="empty_box">
-                <?php $this->_('Pterodactyl.manage.module_rows_no_results');?>
-            </div>
-        </div>
-        <?php
-        }
-        ?>
+$this->Widget->clear();
+$this->Widget->setLinkButtons($link_buttons);
+$this->Widget->setTabs($tabs);
+$this->Widget->setBodyWrapper(false);
 
-        <div class="title_row">
-            <h3><?php $this->_('Pterodactyl.manage.module_groups_title');?></h3>
-        </div>
+$this->Widget->create(
+    $this->_(
+        'AdminCompanyModules.manage.boxtitle_manage',
+        true,
+        isset($module->name) ? $this->Html->safe($module->name) : null,
+    ),
+    ['id' => 'manage_pterodactyl'],
+);
+?>
+<div class="tab-content">
+    <div class="tab-pane fade show active" id="tab_rows" role="tabpanel">
         <?php
-        $num_rows = count((isset($module->groups) ? $module->groups : []));
-        if ($num_rows > 0) {
+        $num_rows = count(isset($module->rows) ? $module->rows : []);
+        if ($num_rows > 0) { ?>
+<table class="table">
+    <thead>
+        <tr>
+            <th><span><?php $this->_('Pterodactyl.manage.module_rows_heading.name'); ?></span></th>
+            <th><span><?php $this->_('Pterodactyl.manage.module_rows_heading.host_name'); ?></span></th>
+            <th><span><?php $this->_('Pterodactyl.manage.module_rows_heading.options'); ?></span></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php for ($i = 0; $i < $num_rows; $i++) { ?>
+        <tr>
+            <td><?php echo isset($module->rows[$i]->meta->server_name)
+                ? $this->Html->safe($module->rows[$i]->meta->server_name)
+                : null; ?></td>
+            <td><?php echo isset($module->rows[$i]->meta->host_name)
+                ? $this->Html->safe($module->rows[$i]->meta->host_name)
+                : null; ?></td>
+            <td>
+                <a href="<?php echo $this->Html->safe(
+                    $this->base_uri .
+                        'settings/company/modules/editrow/' .
+                        (isset($module->id) ? $module->id : null) .
+                        '/' .
+                        (isset($module->rows[$i]->id) ? $module->rows[$i]->id : null) .
+                        '/',
+                ); ?>" class="btn btn-sm btn-outline-secondary" title="<?php $this->_(
+    'Pterodactyl.manage.module_rows.edit',
+); ?>">
+                    <i class="bi bi-pencil"></i>
+                </a>
+                <?php
+                $this->Form->create($this->base_uri . 'settings/company/modules/deleterow/', ['class' => 'd-inline']);
+                $this->Form->fieldHidden('id', isset($module->id) ? $module->id : null);
+                $this->Form->fieldHidden('row_id', isset($module->rows[$i]->id) ? $module->rows[$i]->id : null);
+                ?>
+                <button type="button" class="btn btn-sm btn-outline-danger modal-confirm-delete"
+                    data-confirm-message="<?php echo $this->Html->safe(
+                        $this->_('Pterodactyl.manage.module_rows.confirm_delete', true),
+                    ); ?>"
+                    title="<?php $this->_('Pterodactyl.manage.module_rows.delete'); ?>">
+                    <i class="bi bi-trash"></i>
+                </button>
+                <?php $this->Form->end(); ?>
+            </td>
+        </tr>
+                <?php } ?>
+    </tbody>
+</table>
+                <?php } else { ?>
+<div class="card-body text-center text-muted py-5">
+    <i class="bi bi-server" style="font-size: 3rem; opacity: 0.3;"></i>
+    <p class="mt-3 mb-0"><?php $this->_('Pterodactyl.manage.module_rows_no_results'); ?></p>
+</div>
+                <?php }
         ?>
-        <table class="table">
-            <tr class="heading_row">
-                <td><span><?php $this->_('Pterodactyl.manage.module_groups_heading.name');?></span></td>
-                <td><span><?php $this->_('Pterodactyl.manage.module_groups_heading.servers');?></span></td>
-                <td class="last"><span><?php $this->_('Pterodactyl.manage.module_groups_heading.options');?></span></td>
-            </tr>
-            <?php
-            for ($i = 0; $i < $num_rows; $i++) {
-            ?>
-            <tr<?php echo ($i % 2 == 1) ? ' class="odd_row"' : '';?>>
-                <td><?php echo (isset($module->groups[$i]->name) ? $this->Html->safe($module->groups[$i]->name) : null);?></td>
-                <td><?php echo count((isset($module->groups[$i]->rows) ? $module->groups[$i]->rows : []));?></td>
-                <td>
-                    <a href="<?php echo $this->Html->safe($this->base_uri . 'settings/company/modules/editgroup/' . (isset($module->id) ? $module->id : null) . '/' . (isset($module->groups[$i]->id) ? $module->groups[$i]->id : null) . '/');?>"><?php $this->_('Pterodactyl.manage.module_groups.edit');?></a>
-                    <?php
-                    $this->Form->create($this->base_uri . 'settings/company/modules/deletegroup/');
-                    $this->Form->fieldHidden('id', (isset($module->id) ? $module->id : null));
-                    $this->Form->fieldHidden('group_id', (isset($module->groups[$i]->id) ? $module->groups[$i]->id : null));
-                    ?>
-                    <a href="<?php echo $this->Html->safe($this->base_uri . 'settings/company/modules/deletegroup/' . (isset($module->id) ? $module->id : null) . '/' . (isset($module->groups[$i]->id) ? $module->groups[$i]->id : null) . '/');?>" class="manage" rel="<?php echo $this->Html->safe($this->_('Pterodactyl.manage.module_groups.confirm_delete', true));?>"><?php $this->_('Pterodactyl.manage.module_groups.delete');?></a>
-                    <?php
-                    $this->Form->end();
-                    ?>
-                </td>
-            </tr>
-            <?php
-            }
-            ?>
-        </table>
-        <?php
-        } else {
+    </div>
+    <div class="tab-pane fade" id="tab_groups" role="tabpanel">
+                <?php
+                $num_rows = count(isset($module->groups) ? $module->groups : []);
+                if ($num_rows > 0) { ?>
+<table class="table">
+    <thead>
+        <tr>
+            <th><span><?php $this->_('Pterodactyl.manage.module_groups_heading.name'); ?></span></th>
+            <th><span><?php $this->_('Pterodactyl.manage.module_groups_heading.servers'); ?></span></th>
+            <th><span><?php $this->_('Pterodactyl.manage.module_groups_heading.options'); ?></span></th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php for ($i = 0; $i < $num_rows; $i++) { ?>
+        <tr>
+            <td><?php echo isset($module->groups[$i]->name)
+                ? $this->Html->safe($module->groups[$i]->name)
+                : null; ?></td>
+            <td><?php echo count(isset($module->groups[$i]->rows) ? $module->groups[$i]->rows : []); ?></td>
+            <td>
+                <a href="<?php echo $this->Html->safe(
+                    $this->base_uri .
+                        'settings/company/modules/editgroup/' .
+                        (isset($module->id) ? $module->id : null) .
+                        '/' .
+                        (isset($module->groups[$i]->id) ? $module->groups[$i]->id : null) .
+                        '/',
+                ); ?>" class="btn btn-sm btn-outline-secondary" title="<?php $this->_(
+    'Pterodactyl.manage.module_groups.edit',
+); ?>">
+                    <i class="bi bi-pencil"></i>
+                </a>
+                <?php
+                $this->Form->create($this->base_uri . 'settings/company/modules/deletegroup/', ['class' => 'd-inline']);
+                $this->Form->fieldHidden('id', isset($module->id) ? $module->id : null);
+                $this->Form->fieldHidden('group_id', isset($module->groups[$i]->id) ? $module->groups[$i]->id : null);
+                ?>
+                <button type="button" class="btn btn-sm btn-outline-danger modal-confirm-delete"
+                    data-confirm-message="<?php echo $this->Html->safe(
+                        $this->_('Pterodactyl.manage.module_groups.confirm_delete', true),
+                    ); ?>"
+                    title="<?php $this->_('Pterodactyl.manage.module_groups.delete'); ?>">
+                    <i class="bi bi-trash"></i>
+                </button>
+                <?php $this->Form->end(); ?>
+            </td>
+        </tr>
+                <?php } ?>
+    </tbody>
+</table>
+                <?php } else { ?>
+<div class="card-body text-center text-muted py-5">
+    <i class="bi bi-collection" style="font-size: 3rem; opacity: 0.3;"></i>
+    <p class="mt-3 mb-0"><?php $this->_('Pterodactyl.manage.module_groups_no_results'); ?></p>
+</div>
+                <?php }
         ?>
-        <div class="empty_section">
-            <div class="empty_box">
-                <?php $this->_('Pterodactyl.manage.module_groups_no_results');?>
-            </div>
-        </div>
-        <?php
-        }
-
-        $this->Widget->end();
-        ?>
-
-<script type="text/javascript">
-    $(document).ready(function() {
-        $('#manage_pterodactyl a.manage[rel]').blestaModalConfirm({base_url: '<?php echo $this->base_uri;?>', close: '<?php $this->_('AppController.modal.text_close');?>', submit: true});
-    });
-</script>
+    </div>
+</div>
+<?php $this->Widget->end(); ?>

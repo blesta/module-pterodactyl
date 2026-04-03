@@ -1,5 +1,8 @@
 <?php
 $lang['Pterodactyl.name'] = 'Pterodactyl';
+
+$lang['Pterodactyl.back_to_manage'] = 'Back';
+
 $lang['Pterodactyl.description'] = 'Provisions and manages game servers via the Pterodactyl panel.';
 $lang['Pterodactyl.module_row'] = 'Server';
 $lang['Pterodactyl.module_row_plural'] = 'Servers';
@@ -56,6 +59,8 @@ $lang['Pterodactyl.add_module_row'] = 'Add Server';
 $lang['Pterodactyl.add_module_group'] = 'Add Server Group';
 $lang['Pterodactyl.manage.module_rows_title'] = 'Servers';
 $lang['Pterodactyl.manage.module_groups_title'] = 'Server Groups';
+$lang['Pterodactyl.manage.tab_rows'] = 'Servers';
+$lang['Pterodactyl.manage.tab_groups'] = 'Server Groups';
 $lang['Pterodactyl.manage.module_rows_heading.name'] = 'Server Label';
 $lang['Pterodactyl.manage.module_rows_heading.host_name'] = 'Hostname';
 $lang['Pterodactyl.manage.module_rows_heading.options'] = 'Options';

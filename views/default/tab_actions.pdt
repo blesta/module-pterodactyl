@@ -1,46 +1,74 @@
+<?php /** @var View $this **/ ?>
 
-    <div class="title_row first">
-        <h3><?php $this->_('Pterodactyl.tab_actions.heading_actions');?></h3>
-    </div>
-    <div class="pad">
-        <div class="options" id="pterodactyl_actions">
-            <p>
-                <?php $this->_('Pterodactyl.tab_actions.server_status');?> <span class="buff <?php echo (isset($server->attributes->current_state) ? $this->Html->safe($server->attributes->current_state) : null);?>"><?php $this->_('Pterodactyl.tab_actions.status_' . (isset($server->attributes->current_state) ? $server->attributes->current_state : null));?></span>
-            </p>
+<h6 class="form-section-header"><?php $this->_('Pterodactyl.tab_actions.heading_actions'); ?></h6>
+<div class="mb-3">
+    <div class="options" id="pterodactyl_actions">
+        <p>
+            <?php $this->_('Pterodactyl.tab_actions.server_status'); ?> <span class="buff <?php echo isset($server->attributes->current_state) ? $this->Html->safe($server->attributes->current_state) : null; ?>"><?php $this->_('Pterodactyl.tab_actions.status_' . ($server->attributes->current_state ?? null)); ?></span>
+        </p>
 
-            <a href="<?php echo $this->Html->safe($this->base_uri . 'clients/servicetab/' . (isset($client_id) ? $client_id : null) . '/' . (isset($service_id) ? $service_id : null) . '/tabActions/start/');?>" class="start btn btn-success<?php echo (isset($server->attributes->current_state) ? $server->attributes->current_state : null) != 'offline' ? ' disabled' : '';?>"><i class="fas fa-power-off"></i> <?php $this->_('Pterodactyl.!actions.start');?></a>
-            <a href="<?php echo $this->Html->safe($this->base_uri . 'clients/servicetab/' . (isset($client_id) ? $client_id : null) . '/' . (isset($service_id) ? $service_id : null) . '/tabActions/stop/');?>"  class="stop btn btn-danger<?php echo (isset($server->attributes->current_state) ? $server->attributes->current_state : null) != 'running' ? ' disabled' : '';?>"><i class="fas fa-power-off"></i> <?php $this->_('Pterodactyl.!actions.stop');?></a>
-            <a href="<?php echo $this->Html->safe($this->base_uri . 'clients/servicetab/' . (isset($client_id) ? $client_id : null) . '/' . (isset($service_id) ? $service_id : null) . '/tabActions/restart/');?>" class="btn btn-default<?php echo (isset($server->attributes->current_state) ? $server->attributes->current_state : null) != 'running' ? ' disabled' : '';?>"><i class="fas fa-sync-alt"></i> <?php $this->_('Pterodactyl.!actions.restart');?></a>
-        </div>
+        <a href="<?php echo $this->Html->safe(
+            $this->base_uri .
+                'clients/servicetab/' .
+                ($client_id ?? null) .
+                '/' .
+                ($service_id ?? null) .
+                '/tabActions/start/'
+        ); ?>" class="start btn btn-success<?php echo ($server->attributes->current_state ?? null) != 'offline' ? ' disabled' : ''; ?>"><i class="bi bi-power"></i> <?php $this->_('Pterodactyl.!actions.start'); ?></a>
+        <a href="<?php echo $this->Html->safe(
+            $this->base_uri .
+                'clients/servicetab/' .
+                ($client_id ?? null) .
+                '/' .
+                ($service_id ?? null) .
+                '/tabActions/stop/'
+        ); ?>" class="stop btn btn-danger<?php echo ($server->attributes->current_state ?? null) != 'running' ? ' disabled' : ''; ?>"><i class="bi bi-power"></i> <?php $this->_('Pterodactyl.!actions.stop'); ?></a>
+        <a href="<?php echo $this->Html->safe(
+            $this->base_uri .
+                'clients/servicetab/' .
+                ($client_id ?? null) .
+                '/' .
+                ($service_id ?? null) .
+                '/tabActions/restart/'
+        ); ?>" class="btn btn-outline-secondary<?php echo ($server->attributes->current_state ?? null) != 'running' ? ' disabled' : ''; ?>"><i class="bi bi-arrow-clockwise"></i> <?php $this->_('Pterodactyl.!actions.restart'); ?></a>
     </div>
+</div>
 
 
 <script type="text/javascript">
-$(document).ready(function() {
-    setPterodactylInterval('<?php echo Configure::get('Pterodactyl.page_refresh_rate_fast');?>', '');
-    $(this).blestaSetHeadTag("link", {media:"screen", type:"text/css", rel:"stylesheet", href: "<?php echo $this->Html->safe($this->view_dir . 'css/styles.css');?>"});
+    document.addEventListener('DOMContentLoaded', function() {
+        setPterodactylInterval('<?php echo Configure::get("Pterodactyl.page_refresh_rate_fast"); ?>', '');
+        blestaSetHeadTag("link", {
+            media: "screen",
+            type: "text/css",
+            rel: "stylesheet",
+            href: "<?php echo $this->Html->safe($this->view_dir . 'css/styles.css'); ?>"
+        });
 
-    function setPterodactylInterval(pterodactyl_refresh_rate, pterodactyl_old_action_data) {
-        var interval = '';
-        interval = setInterval(function() {
-            $(this).blestaRequest("GET",
-                '<?php echo $this->base_uri . 'clients/servicetab/' . (isset($client_id) ? $client_id : null) . '/' . (isset($service_id) ? $service_id : null) . '/tabActions/';?>',
-                null,
-                // Success response
-                function(data) {
-                    if (data.replacer && data.content) {
-                        var html = $('div', data.content).filter('#pterodactyl_actions').html();
-                        $('#pterodactyl_actions').html(html);
-                        pterodactyl_refresh_rate = (html == pterodactyl_old_action_data) ? '<?php echo Configure::get('Pterodactyl.page_refresh_rate');?>' : '<?php echo Configure::get('Pterodactyl.page_refresh_rate_fast');?>';
+        function setPterodactylInterval(pterodactyl_refresh_rate, pterodactyl_old_action_data) {
+            var interval = '';
+            interval = setInterval(function() {
+                blestaRequest("GET",
+                    '<?php echo $this->base_uri . 'clients/servicetab/' . ($client_id ?? null) . '/' . ($service_id ?? null) . '/tabActions/'; ?>',
+                    null,
+                    // Success response
+                    function(data) {
+                        if (data.replacer && data.content) {
+                            var temp = document.createElement('div');
+                            temp.innerHTML = data.content;
+                            var html = temp.querySelector('#pterodactyl_actions').innerHTML;
+                            document.getElementById('pterodactyl_actions').innerHTML = html;
+                            pterodactyl_refresh_rate = (html == pterodactyl_old_action_data) ? '<?php echo Configure::get("Pterodactyl.page_refresh_rate"); ?>': '<?php echo Configure::get("Pterodactyl.page_refresh_rate_fast"); ?>';
 
-                        clearInterval(interval);
-                        setPterodactylInterval(pterodactyl_refresh_rate, html);
+                            clearInterval(interval);
+                            setPterodactylInterval(pterodactyl_refresh_rate, html);
+                        }
+                    },
+                    null, {
+                        dataType: 'json'
                     }
-                },
-                null,
-                {dataType: 'json'}
-            );
-        }, pterodactyl_refresh_rate);
-    }
-});
+                );
+            }, pterodactyl_refresh_rate);
+        }
+    });
 </script>
