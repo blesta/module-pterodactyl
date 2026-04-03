@@ -2,6 +2,7 @@
 
 use Blesta\PterodactylSDK\PterodactylApi;
 use Blesta\Core\Util\Validate\Server;
+use Blesta\Core\Util\Common\Traits\Container;
 
 /**
  * Pterodactyl Module
@@ -14,6 +15,13 @@ use Blesta\Core\Util\Validate\Server;
  */
 class Pterodactyl extends Module
 {
+    // Load traits
+    use Container;
+    /**
+     * @var Blesta\Core\ServiceProviders\Logger Container logger
+     */
+    private $logger;
+
     /**
      * Initializes the module
      */
@@ -33,6 +41,9 @@ class Pterodactyl extends Module
 
         // Load additional config values
         Configure::load('pterodactyl', dirname(__FILE__) . DS . 'config' . DS);
+
+        // Initialize logger
+        $this->logger = $this->getFromContainer('logger');
     }
 
     /**
@@ -1518,10 +1529,13 @@ class Pterodactyl extends Module
                                 $api_key,
                                 ($vars['use_ssl'] ?? 'true') == 'true'
                             );
+                            $this->log('Client.getServers', json_encode([]), 'input', true);
                             $servers_response = $api->Client->getServers();
+                            $this->log('Client.getServers', $servers_response->raw(), 'output', $servers_response->status() == 200);
 
                             return $servers_response->status() == 200;
                         } catch (\Throwable $e) {
+                            $this->logger->error($e->getMessage());
                             return false;
                         }
                     },
@@ -1542,10 +1556,13 @@ class Pterodactyl extends Module
                                 $api_key,
                                 ($vars['use_ssl'] ?? 'true') == 'true'
                             );
+                            $this->log('Locations.getAll', json_encode([]), 'input', true);
                             $locations_response = $api->Locations->getAll();
+                            $this->log('Locations.getAll', $locations_response->raw(), 'output', $locations_response->status() == 200);
 
                             return $locations_response->status() == 200;
                         } catch (\Throwable $e) {
+                            $this->logger->error($e->getMessage());
                             return false;
                         }
                     },
