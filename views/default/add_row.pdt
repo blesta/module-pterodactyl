@@ -11,9 +11,8 @@ $this->Widget->setLinkButtons([
     ],
 ]);
 
-$this->Widget->create($this->_('Pterodactyl.add_row.box_title', true));
-
 $this->Form->create(null, ['class' => 'disable-on-submit']);
+$this->Widget->create($this->_('Pterodactyl.add_row.box_title', true));
 ?>
 
 <h6 class="form-section-header"><?php $this->_('Pterodactyl.add_row.basic_title'); ?></h6>
@@ -87,8 +86,8 @@ $this->Form->create(null, ['class' => 'disable-on-submit']);
 </div>
 
 <?php
-$this->Form->end();
 $this->Widget->end();
+$this->Form->end();
 
 
 ?>
