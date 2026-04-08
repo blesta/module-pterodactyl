@@ -159,12 +159,11 @@ class PterodactylPackage
         // Set js to refetch options when the nest or egg is changed
         $fields->setHtml("
 			<script type=\"text/javascript\">
-				$(document).ready(function() {
-					// Re-fetch module options to pull in eggs and egg variables
-                    // when a nest or egg respectively is selected
-					$('#Pterodactyl_nest_id, #Pterodactyl_egg_id').change(function() {
-						fetchModuleOptions();
-					});
+				// Re-fetch module options to pull in eggs and egg variables
+				// when a nest or egg respectively is selected.
+				// Use namespaced delegation so duplicate handlers aren't added on each AJAX reload.
+				$(document).off('change.pterodactyl').on('change.pterodactyl', '#Pterodactyl_nest_id, #Pterodactyl_egg_id', function() {
+					fetchModuleOptions();
 				});
 			</script>
 		");
@@ -335,6 +334,7 @@ class PterodactylPackage
         $rules = [
             'meta[location_id]' => [
                 'format' => [
+                    'pre_format' => 'strval',
                     'rule' => ['matches', '/^[0-9]+$/'],
                     'message' => Language::_('PterodactylPackage.!error.meta[location_id].format', true)
                 ],
@@ -369,6 +369,7 @@ class PterodactylPackage
             ],
             'meta[nest_id]' => [
                 'format' => [
+                    'pre_format' => 'strval',
                     'rule' => ['matches', '/^[0-9]+$/'],
                     'message' => Language::_('PterodactylPackage.!error.meta[nest_id].format', true)
                 ],
@@ -382,6 +383,7 @@ class PterodactylPackage
             ],
             'meta[egg_id]' => [
                 'format' => [
+                    'pre_format' => 'strval',
                     'rule' => ['matches', '/^[0-9]+$/'],
                     'message' => Language::_('PterodactylPackage.!error.meta[egg_id].format', true)
                 ],
@@ -403,30 +405,35 @@ class PterodactylPackage
             ],
             'meta[memory]' => [
                 'format' => [
+                    'pre_format' => 'strval',
                     'rule' => ['matches', '/^[0-9]+$/'],
                     'message' => Language::_('PterodactylPackage.!error.meta[memory].format', true)
                 ]
             ],
             'meta[swap]' => [
                 'format' => [
+                    'pre_format' => 'strval',
                     'rule' => ['matches', '/^(?:\-1|[0-9]+)$/'],
                     'message' => Language::_('PterodactylPackage.!error.meta[swap].format', true)
                 ]
             ],
             'meta[cpu]' => [
                 'format' => [
+                    'pre_format' => 'strval',
                     'rule' => ['matches', '/^[0-9]+$/'],
                     'message' => Language::_('PterodactylPackage.!error.meta[cpu].format', true)
                 ]
             ],
             'meta[disk]' => [
                 'format' => [
+                    'pre_format' => 'strval',
                     'rule' => ['matches', '/^[0-9]+$/'],
                     'message' => Language::_('PterodactylPackage.!error.meta[disk].format', true)
                 ]
             ],
             'meta[io]' => [
                 'format' => [
+                    'pre_format' => 'strval',
                     'rule' => ['matches', '/^[0-9]+$/'],
                     'message' => Language::_('PterodactylPackage.!error.meta[io].format', true)
                 ]
