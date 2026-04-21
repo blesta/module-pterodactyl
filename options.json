@@ -220,7 +220,7 @@
                 {
                     "id": 6,
                     "name": "Memory (MB)",
-                    "value": "",
+                    "value": null,
                     "default": 0,
                     "status": "active",
                     "order": 0,
@@ -260,7 +260,7 @@
                 {
                     "id": 7,
                     "name": "Swap (MB)",
-                    "value": "",
+                    "value": null,
                     "default": 0,
                     "status": "active",
                     "order": 0,
@@ -300,7 +300,7 @@
                 {
                     "id": 8,
                     "name": "CPU (%)",
-                    "value": "",
+                    "value": null,
                     "default": 0,
                     "status": "active",
                     "order": 0,
@@ -340,7 +340,7 @@
                 {
                     "id": 9,
                     "name": "Disk (MB)",
-                    "value": "",
+                    "value": null,
                     "default": 0,
                     "status": "active",
                     "order": 0,
@@ -380,7 +380,7 @@
                 {
                     "id": 10,
                     "name": "IO",
-                    "value": "",
+                    "value": null,
                     "default": 0,
                     "status": "active",
                     "order": 0,
@@ -500,7 +500,7 @@
                 {
                     "id": 13,
                     "name": "Databases",
-                    "value": "",
+                    "value": null,
                     "default": 0,
                     "status": "active",
                     "order": 0,
@@ -540,7 +540,7 @@
                 {
                     "id": 14,
                     "name": "Allocations",
-                    "value": "",
+                    "value": null,
                     "default": 0,
                     "status": "active",
                     "order": 0,
@@ -580,7 +580,7 @@
                 {
                     "id": 15,
                     "name": "Backups",
-                    "value": "",
+                    "value": null,
                     "default": 0,
                     "status": "active",
                     "order": 0,
