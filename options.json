@@ -219,7 +219,7 @@
             "values": [
                 {
                     "id": 6,
-                    "name": "",
+                    "name": "Memory (MB)",
                     "value": "",
                     "default": 0,
                     "status": "active",
@@ -259,7 +259,7 @@
             "values": [
                 {
                     "id": 7,
-                    "name": "",
+                    "name": "Swap (MB)",
                     "value": "",
                     "default": 0,
                     "status": "active",
@@ -299,7 +299,7 @@
             "values": [
                 {
                     "id": 8,
-                    "name": "",
+                    "name": "CPU (%)",
                     "value": "",
                     "default": 0,
                     "status": "active",
@@ -339,7 +339,7 @@
             "values": [
                 {
                     "id": 9,
-                    "name": "",
+                    "name": "Disk (MB)",
                     "value": "",
                     "default": 0,
                     "status": "active",
@@ -379,7 +379,7 @@
             "values": [
                 {
                     "id": 10,
-                    "name": "",
+                    "name": "IO",
                     "value": "",
                     "default": 0,
                     "status": "active",
@@ -499,7 +499,7 @@
             "values": [
                 {
                     "id": 13,
-                    "name": "",
+                    "name": "Databases",
                     "value": "",
                     "default": 0,
                     "status": "active",
@@ -539,7 +539,7 @@
             "values": [
                 {
                     "id": 14,
-                    "name": "",
+                    "name": "Allocations",
                     "value": "",
                     "default": 0,
                     "status": "active",
@@ -579,7 +579,7 @@
             "values": [
                 {
                     "id": 15,
-                    "name": "",
+                    "name": "Backups",
                     "value": "",
                     "default": 0,
                     "status": "active",
