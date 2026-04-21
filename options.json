@@ -1,0 +1,610 @@
+{
+    "id": 1,
+    "name": "Pterodactyl Configurable Options",
+    "description": "Configurable options for Pterodactyl game server provisioning",
+    "hidden": 0,
+    "hide_options": 0,
+    "options": [
+        {
+            "id": 1,
+            "label": "Location",
+            "name": "location_id",
+            "description": "The Pterodactyl node location to deploy the server to",
+            "type": "text",
+            "addable": 1,
+            "editable": 1,
+            "hidden": 0,
+            "disable_pricing": 1,
+            "hide_on_invoice": 1,
+            "values": [
+                {
+                    "id": 1,
+                    "name": "",
+                    "value": "",
+                    "default": 0,
+                    "status": "active",
+                    "order": 0,
+                    "min": null,
+                    "max": null,
+                    "step": null,
+                    "image": null,
+                    "pricing": [
+                        {
+                            "id": 1,
+                            "term": 1,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD",
+                            "precision": 2
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "label": "Nest",
+            "name": "nest_id",
+            "description": "The Pterodactyl nest ID to use for the server",
+            "type": "text",
+            "addable": 1,
+            "editable": 1,
+            "hidden": 0,
+            "disable_pricing": 1,
+            "hide_on_invoice": 1,
+            "values": [
+                {
+                    "id": 2,
+                    "name": "",
+                    "value": "",
+                    "default": 0,
+                    "status": "active",
+                    "order": 0,
+                    "min": null,
+                    "max": null,
+                    "step": null,
+                    "image": null,
+                    "pricing": [
+                        {
+                            "id": 2,
+                            "term": 1,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD",
+                            "precision": 2
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "label": "Egg",
+            "name": "egg_id",
+            "description": "The Pterodactyl egg ID to use for the server",
+            "type": "text",
+            "addable": 1,
+            "editable": 1,
+            "hidden": 0,
+            "disable_pricing": 1,
+            "hide_on_invoice": 1,
+            "values": [
+                {
+                    "id": 3,
+                    "name": "",
+                    "value": "",
+                    "default": 0,
+                    "status": "active",
+                    "order": 0,
+                    "min": null,
+                    "max": null,
+                    "step": null,
+                    "image": null,
+                    "pricing": [
+                        {
+                            "id": 3,
+                            "term": 1,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD",
+                            "precision": 2
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 4,
+            "label": "Port Range",
+            "name": "port_range",
+            "description": "Comma-separated port ranges in format NNNN-NNNN (e.g. 25565-25570,25580-25590)",
+            "type": "text",
+            "addable": 1,
+            "editable": 1,
+            "hidden": 0,
+            "disable_pricing": 1,
+            "hide_on_invoice": 1,
+            "values": [
+                {
+                    "id": 4,
+                    "name": "",
+                    "value": "",
+                    "default": 0,
+                    "status": "active",
+                    "order": 0,
+                    "min": null,
+                    "max": null,
+                    "step": null,
+                    "image": null,
+                    "pricing": [
+                        {
+                            "id": 4,
+                            "term": 1,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD",
+                            "precision": 2
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 5,
+            "label": "Pack",
+            "name": "pack_id",
+            "description": "The Pterodactyl pack ID to use for the server",
+            "type": "text",
+            "addable": 1,
+            "editable": 1,
+            "hidden": 0,
+            "disable_pricing": 1,
+            "hide_on_invoice": 1,
+            "values": [
+                {
+                    "id": 5,
+                    "name": "",
+                    "value": "",
+                    "default": 0,
+                    "status": "active",
+                    "order": 0,
+                    "min": null,
+                    "max": null,
+                    "step": null,
+                    "image": null,
+                    "pricing": [
+                        {
+                            "id": 5,
+                            "term": 1,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD",
+                            "precision": 2
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 6,
+            "label": "Memory (MB)",
+            "name": "memory",
+            "description": "The amount of memory in MB allocated to the server",
+            "type": "quantity",
+            "addable": 1,
+            "editable": 1,
+            "hidden": 0,
+            "disable_pricing": 1,
+            "hide_on_invoice": 1,
+            "values": [
+                {
+                    "id": 6,
+                    "name": "",
+                    "value": "",
+                    "default": 0,
+                    "status": "active",
+                    "order": 0,
+                    "min": 0,
+                    "max": null,
+                    "step": 1,
+                    "image": null,
+                    "pricing": [
+                        {
+                            "id": 6,
+                            "term": 1,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD",
+                            "precision": 2
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 7,
+            "label": "Swap (MB)",
+            "name": "swap",
+            "description": "The amount of swap memory in MB allocated to the server. Use -1 for unlimited",
+            "type": "quantity",
+            "addable": 1,
+            "editable": 1,
+            "hidden": 0,
+            "disable_pricing": 1,
+            "hide_on_invoice": 1,
+            "values": [
+                {
+                    "id": 7,
+                    "name": "",
+                    "value": "",
+                    "default": 0,
+                    "status": "active",
+                    "order": 0,
+                    "min": -1,
+                    "max": null,
+                    "step": 1,
+                    "image": null,
+                    "pricing": [
+                        {
+                            "id": 7,
+                            "term": 1,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD",
+                            "precision": 2
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 8,
+            "label": "CPU (%)",
+            "name": "cpu",
+            "description": "CPU limit as a percentage (e.g. 200 = 2 cores)",
+            "type": "quantity",
+            "addable": 1,
+            "editable": 1,
+            "hidden": 0,
+            "disable_pricing": 1,
+            "hide_on_invoice": 1,
+            "values": [
+                {
+                    "id": 8,
+                    "name": "",
+                    "value": "",
+                    "default": 0,
+                    "status": "active",
+                    "order": 0,
+                    "min": 0,
+                    "max": null,
+                    "step": 1,
+                    "image": null,
+                    "pricing": [
+                        {
+                            "id": 8,
+                            "term": 1,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD",
+                            "precision": 2
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 9,
+            "label": "Disk (MB)",
+            "name": "disk",
+            "description": "The amount of disk space in MB allocated to the server",
+            "type": "quantity",
+            "addable": 1,
+            "editable": 1,
+            "hidden": 0,
+            "disable_pricing": 1,
+            "hide_on_invoice": 1,
+            "values": [
+                {
+                    "id": 9,
+                    "name": "",
+                    "value": "",
+                    "default": 0,
+                    "status": "active",
+                    "order": 0,
+                    "min": 0,
+                    "max": null,
+                    "step": 1,
+                    "image": null,
+                    "pricing": [
+                        {
+                            "id": 9,
+                            "term": 1,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD",
+                            "precision": 2
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 10,
+            "label": "IO",
+            "name": "io",
+            "description": "Block IO adjustment number (higher = more I/O priority, typically 10-1000)",
+            "type": "quantity",
+            "addable": 1,
+            "editable": 1,
+            "hidden": 0,
+            "disable_pricing": 1,
+            "hide_on_invoice": 1,
+            "values": [
+                {
+                    "id": 10,
+                    "name": "",
+                    "value": "",
+                    "default": 0,
+                    "status": "active",
+                    "order": 0,
+                    "min": 0,
+                    "max": null,
+                    "step": 1,
+                    "image": null,
+                    "pricing": [
+                        {
+                            "id": 10,
+                            "term": 1,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD",
+                            "precision": 2
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 11,
+            "label": "Startup Command",
+            "name": "startup",
+            "description": "Custom startup command override for the server (leave empty to use egg default)",
+            "type": "text",
+            "addable": 1,
+            "editable": 1,
+            "hidden": 0,
+            "disable_pricing": 1,
+            "hide_on_invoice": 1,
+            "values": [
+                {
+                    "id": 11,
+                    "name": "",
+                    "value": "",
+                    "default": 0,
+                    "status": "active",
+                    "order": 0,
+                    "min": null,
+                    "max": null,
+                    "step": null,
+                    "image": null,
+                    "pricing": [
+                        {
+                            "id": 11,
+                            "term": 1,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD",
+                            "precision": 2
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 12,
+            "label": "Docker Image",
+            "name": "image",
+            "description": "Custom Docker image override for the server (leave empty to use egg default)",
+            "type": "text",
+            "addable": 1,
+            "editable": 1,
+            "hidden": 0,
+            "disable_pricing": 1,
+            "hide_on_invoice": 1,
+            "values": [
+                {
+                    "id": 12,
+                    "name": "",
+                    "value": "",
+                    "default": 0,
+                    "status": "active",
+                    "order": 0,
+                    "min": null,
+                    "max": null,
+                    "step": null,
+                    "image": null,
+                    "pricing": [
+                        {
+                            "id": 12,
+                            "term": 1,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD",
+                            "precision": 2
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 13,
+            "label": "Databases",
+            "name": "databases",
+            "description": "Number of allowed database allocations (leave empty for unlimited)",
+            "type": "quantity",
+            "addable": 1,
+            "editable": 1,
+            "hidden": 0,
+            "disable_pricing": 1,
+            "hide_on_invoice": 1,
+            "values": [
+                {
+                    "id": 13,
+                    "name": "",
+                    "value": "",
+                    "default": 0,
+                    "status": "active",
+                    "order": 0,
+                    "min": 0,
+                    "max": null,
+                    "step": 1,
+                    "image": null,
+                    "pricing": [
+                        {
+                            "id": 13,
+                            "term": 1,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD",
+                            "precision": 2
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 14,
+            "label": "Allocations",
+            "name": "allocations",
+            "description": "Number of additional port allocations (leave empty for unlimited)",
+            "type": "quantity",
+            "addable": 1,
+            "editable": 1,
+            "hidden": 0,
+            "disable_pricing": 1,
+            "hide_on_invoice": 1,
+            "values": [
+                {
+                    "id": 14,
+                    "name": "",
+                    "value": "",
+                    "default": 0,
+                    "status": "active",
+                    "order": 0,
+                    "min": 0,
+                    "max": null,
+                    "step": 1,
+                    "image": null,
+                    "pricing": [
+                        {
+                            "id": 14,
+                            "term": 1,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD",
+                            "precision": 2
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 15,
+            "label": "Backups",
+            "name": "backups",
+            "description": "Number of allowed backups (leave empty for unlimited)",
+            "type": "quantity",
+            "addable": 1,
+            "editable": 1,
+            "hidden": 0,
+            "disable_pricing": 1,
+            "hide_on_invoice": 1,
+            "values": [
+                {
+                    "id": 15,
+                    "name": "",
+                    "value": "",
+                    "default": 0,
+                    "status": "active",
+                    "order": 0,
+                    "min": 0,
+                    "max": null,
+                    "step": 1,
+                    "image": null,
+                    "pricing": [
+                        {
+                            "id": 15,
+                            "term": 1,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD",
+                            "precision": 2
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "condition_sets": []
+}
