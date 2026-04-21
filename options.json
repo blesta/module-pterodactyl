@@ -264,7 +264,7 @@
                     "default": 0,
                     "status": "active",
                     "order": 0,
-                    "min": -1,
+                    "min": 0,
                     "max": null,
                     "step": 1,
                     "image": null,
