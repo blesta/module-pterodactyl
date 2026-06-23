@@ -36,5 +36,8 @@
             "server_password"
         ]
     },
-    "icon": "bi-joystick"
+    "logo": {
+        "light": "views/default/images/logo.png",
+        "dark": "views/default/images/logo-dark.png"
+    }
 }
