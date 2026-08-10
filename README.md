@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/blesta/module-pterodactyl.svg?branch=master)](https://travis-ci.org/blesta/module-pterodactyl) [![Coverage Status](https://coveralls.io/repos/github/blesta/module-pterodactyl/badge.svg?branch=master)](https://coveralls.io/github/blesta/module-pterodactyl?branch=master)
 
-This is a module for Blesta that integrates with [Pterodactyl](https://pterodactyl.com/).
+This is a module for Blesta that integrates with [Pterodactyl](https://pterodactyl.io/).
 
 ## Install the Module
 
