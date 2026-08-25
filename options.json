@@ -11,9 +11,9 @@
             "name": "location_id",
             "description": "The Pterodactyl node location to deploy the server to",
             "type": "text",
-            "addable": 1,
-            "editable": 1,
-            "hidden": 0,
+            "addable": 0,
+            "editable": 0,
+            "hidden": 1,
             "disable_pricing": 1,
             "hide_on_invoice": 1,
             "values": [
@@ -38,8 +38,84 @@
                             "price_transfer": null,
                             "setup_fee": "0.0000",
                             "cancel_fee": "0.0000",
-                            "currency": "USD",
-                            "precision": 2
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 2,
+                            "term": 2,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 3,
+                            "term": 3,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 4,
+                            "term": 6,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 5,
+                            "term": 12,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 6,
+                            "term": 1,
+                            "period": "year",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 7,
+                            "term": 2,
+                            "period": "year",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 8,
+                            "term": 3,
+                            "period": "year",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
                         }
                     ]
                 }
@@ -51,9 +127,9 @@
             "name": "nest_id",
             "description": "The Pterodactyl nest ID to use for the server",
             "type": "text",
-            "addable": 1,
-            "editable": 1,
-            "hidden": 0,
+            "addable": 0,
+            "editable": 0,
+            "hidden": 1,
             "disable_pricing": 1,
             "hide_on_invoice": 1,
             "values": [
@@ -70,7 +146,7 @@
                     "image": null,
                     "pricing": [
                         {
-                            "id": 2,
+                            "id": 9,
                             "term": 1,
                             "period": "month",
                             "price": "0.0000",
@@ -78,8 +154,84 @@
                             "price_transfer": null,
                             "setup_fee": "0.0000",
                             "cancel_fee": "0.0000",
-                            "currency": "USD",
-                            "precision": 2
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 10,
+                            "term": 2,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 11,
+                            "term": 3,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 12,
+                            "term": 6,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 13,
+                            "term": 12,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 14,
+                            "term": 1,
+                            "period": "year",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 15,
+                            "term": 2,
+                            "period": "year",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 16,
+                            "term": 3,
+                            "period": "year",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
                         }
                     ]
                 }
@@ -91,9 +243,9 @@
             "name": "egg_id",
             "description": "The Pterodactyl egg ID to use for the server",
             "type": "text",
-            "addable": 1,
-            "editable": 1,
-            "hidden": 0,
+            "addable": 0,
+            "editable": 0,
+            "hidden": 1,
             "disable_pricing": 1,
             "hide_on_invoice": 1,
             "values": [
@@ -110,7 +262,7 @@
                     "image": null,
                     "pricing": [
                         {
-                            "id": 3,
+                            "id": 17,
                             "term": 1,
                             "period": "month",
                             "price": "0.0000",
@@ -118,8 +270,84 @@
                             "price_transfer": null,
                             "setup_fee": "0.0000",
                             "cancel_fee": "0.0000",
-                            "currency": "USD",
-                            "precision": 2
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 18,
+                            "term": 2,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 19,
+                            "term": 3,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 20,
+                            "term": 6,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 21,
+                            "term": 12,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 22,
+                            "term": 1,
+                            "period": "year",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 23,
+                            "term": 2,
+                            "period": "year",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 24,
+                            "term": 3,
+                            "period": "year",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
                         }
                     ]
                 }
@@ -150,7 +378,7 @@
                     "image": null,
                     "pricing": [
                         {
-                            "id": 4,
+                            "id": 25,
                             "term": 1,
                             "period": "month",
                             "price": "0.0000",
@@ -158,8 +386,84 @@
                             "price_transfer": null,
                             "setup_fee": "0.0000",
                             "cancel_fee": "0.0000",
-                            "currency": "USD",
-                            "precision": 2
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 26,
+                            "term": 2,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 27,
+                            "term": 3,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 28,
+                            "term": 6,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 29,
+                            "term": 12,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 30,
+                            "term": 1,
+                            "period": "year",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 31,
+                            "term": 2,
+                            "period": "year",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 32,
+                            "term": 3,
+                            "period": "year",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
                         }
                     ]
                 }
@@ -171,9 +475,9 @@
             "name": "pack_id",
             "description": "The Pterodactyl pack ID to use for the server",
             "type": "text",
-            "addable": 1,
-            "editable": 1,
-            "hidden": 0,
+            "addable": 0,
+            "editable": 0,
+            "hidden": 1,
             "disable_pricing": 1,
             "hide_on_invoice": 1,
             "values": [
@@ -190,7 +494,7 @@
                     "image": null,
                     "pricing": [
                         {
-                            "id": 5,
+                            "id": 33,
                             "term": 1,
                             "period": "month",
                             "price": "0.0000",
@@ -198,8 +502,84 @@
                             "price_transfer": null,
                             "setup_fee": "0.0000",
                             "cancel_fee": "0.0000",
-                            "currency": "USD",
-                            "precision": 2
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 34,
+                            "term": 2,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 35,
+                            "term": 3,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 36,
+                            "term": 6,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 37,
+                            "term": 12,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 38,
+                            "term": 1,
+                            "period": "year",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 39,
+                            "term": 2,
+                            "period": "year",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 40,
+                            "term": 3,
+                            "period": "year",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
                         }
                     ]
                 }
@@ -221,16 +601,16 @@
                     "id": 6,
                     "name": "Memory (MB)",
                     "value": null,
-                    "default": 0,
+                    "default": 1024,
                     "status": "active",
                     "order": 0,
-                    "min": 0,
-                    "max": null,
+                    "min": 128,
+                    "max": 32768,
                     "step": 1,
                     "image": null,
                     "pricing": [
                         {
-                            "id": 6,
+                            "id": 41,
                             "term": 1,
                             "period": "month",
                             "price": "0.0000",
@@ -238,8 +618,84 @@
                             "price_transfer": null,
                             "setup_fee": "0.0000",
                             "cancel_fee": "0.0000",
-                            "currency": "USD",
-                            "precision": 2
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 42,
+                            "term": 2,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 43,
+                            "term": 3,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 44,
+                            "term": 6,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 45,
+                            "term": 12,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 46,
+                            "term": 1,
+                            "period": "year",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 47,
+                            "term": 2,
+                            "period": "year",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 48,
+                            "term": 3,
+                            "period": "year",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
                         }
                     ]
                 }
@@ -249,7 +705,7 @@
             "id": 7,
             "label": "Swap (MB)",
             "name": "swap",
-            "description": "The amount of swap memory in MB allocated to the server. Use -1 for unlimited",
+            "description": "The amount of swap memory in MB allocated to the server (0 disables swap)",
             "type": "quantity",
             "addable": 1,
             "editable": 1,
@@ -265,12 +721,12 @@
                     "status": "active",
                     "order": 0,
                     "min": 0,
-                    "max": null,
+                    "max": 8192,
                     "step": 1,
                     "image": null,
                     "pricing": [
                         {
-                            "id": 7,
+                            "id": 49,
                             "term": 1,
                             "period": "month",
                             "price": "0.0000",
@@ -278,8 +734,84 @@
                             "price_transfer": null,
                             "setup_fee": "0.0000",
                             "cancel_fee": "0.0000",
-                            "currency": "USD",
-                            "precision": 2
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 50,
+                            "term": 2,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 51,
+                            "term": 3,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 52,
+                            "term": 6,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 53,
+                            "term": 12,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 54,
+                            "term": 1,
+                            "period": "year",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 55,
+                            "term": 2,
+                            "period": "year",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 56,
+                            "term": 3,
+                            "period": "year",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
                         }
                     ]
                 }
@@ -301,16 +833,16 @@
                     "id": 8,
                     "name": "CPU (%)",
                     "value": null,
-                    "default": 0,
+                    "default": 100,
                     "status": "active",
                     "order": 0,
-                    "min": 0,
-                    "max": null,
+                    "min": 25,
+                    "max": 1600,
                     "step": 1,
                     "image": null,
                     "pricing": [
                         {
-                            "id": 8,
+                            "id": 57,
                             "term": 1,
                             "period": "month",
                             "price": "0.0000",
@@ -318,8 +850,84 @@
                             "price_transfer": null,
                             "setup_fee": "0.0000",
                             "cancel_fee": "0.0000",
-                            "currency": "USD",
-                            "precision": 2
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 58,
+                            "term": 2,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 59,
+                            "term": 3,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 60,
+                            "term": 6,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 61,
+                            "term": 12,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 62,
+                            "term": 1,
+                            "period": "year",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 63,
+                            "term": 2,
+                            "period": "year",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 64,
+                            "term": 3,
+                            "period": "year",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
                         }
                     ]
                 }
@@ -341,16 +949,16 @@
                     "id": 9,
                     "name": "Disk (MB)",
                     "value": null,
-                    "default": 0,
+                    "default": 10240,
                     "status": "active",
                     "order": 0,
-                    "min": 0,
-                    "max": null,
+                    "min": 1024,
+                    "max": 524288,
                     "step": 1,
                     "image": null,
                     "pricing": [
                         {
-                            "id": 9,
+                            "id": 65,
                             "term": 1,
                             "period": "month",
                             "price": "0.0000",
@@ -358,8 +966,84 @@
                             "price_transfer": null,
                             "setup_fee": "0.0000",
                             "cancel_fee": "0.0000",
-                            "currency": "USD",
-                            "precision": 2
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 66,
+                            "term": 2,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 67,
+                            "term": 3,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 68,
+                            "term": 6,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 69,
+                            "term": 12,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 70,
+                            "term": 1,
+                            "period": "year",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 71,
+                            "term": 2,
+                            "period": "year",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 72,
+                            "term": 3,
+                            "period": "year",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
                         }
                     ]
                 }
@@ -381,16 +1065,16 @@
                     "id": 10,
                     "name": "IO",
                     "value": null,
-                    "default": 0,
+                    "default": 500,
                     "status": "active",
                     "order": 0,
-                    "min": 0,
-                    "max": null,
+                    "min": 10,
+                    "max": 1000,
                     "step": 1,
                     "image": null,
                     "pricing": [
                         {
-                            "id": 10,
+                            "id": 73,
                             "term": 1,
                             "period": "month",
                             "price": "0.0000",
@@ -398,8 +1082,84 @@
                             "price_transfer": null,
                             "setup_fee": "0.0000",
                             "cancel_fee": "0.0000",
-                            "currency": "USD",
-                            "precision": 2
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 74,
+                            "term": 2,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 75,
+                            "term": 3,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 76,
+                            "term": 6,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 77,
+                            "term": 12,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 78,
+                            "term": 1,
+                            "period": "year",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 79,
+                            "term": 2,
+                            "period": "year",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 80,
+                            "term": 3,
+                            "period": "year",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
                         }
                     ]
                 }
@@ -411,9 +1171,9 @@
             "name": "startup",
             "description": "Custom startup command override for the server (leave empty to use egg default)",
             "type": "text",
-            "addable": 1,
-            "editable": 1,
-            "hidden": 0,
+            "addable": 0,
+            "editable": 0,
+            "hidden": 1,
             "disable_pricing": 1,
             "hide_on_invoice": 1,
             "values": [
@@ -430,7 +1190,7 @@
                     "image": null,
                     "pricing": [
                         {
-                            "id": 11,
+                            "id": 81,
                             "term": 1,
                             "period": "month",
                             "price": "0.0000",
@@ -438,8 +1198,84 @@
                             "price_transfer": null,
                             "setup_fee": "0.0000",
                             "cancel_fee": "0.0000",
-                            "currency": "USD",
-                            "precision": 2
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 82,
+                            "term": 2,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 83,
+                            "term": 3,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 84,
+                            "term": 6,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 85,
+                            "term": 12,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 86,
+                            "term": 1,
+                            "period": "year",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 87,
+                            "term": 2,
+                            "period": "year",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 88,
+                            "term": 3,
+                            "period": "year",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
                         }
                     ]
                 }
@@ -451,9 +1287,9 @@
             "name": "image",
             "description": "Custom Docker image override for the server (leave empty to use egg default)",
             "type": "text",
-            "addable": 1,
-            "editable": 1,
-            "hidden": 0,
+            "addable": 0,
+            "editable": 0,
+            "hidden": 1,
             "disable_pricing": 1,
             "hide_on_invoice": 1,
             "values": [
@@ -470,7 +1306,7 @@
                     "image": null,
                     "pricing": [
                         {
-                            "id": 12,
+                            "id": 89,
                             "term": 1,
                             "period": "month",
                             "price": "0.0000",
@@ -478,8 +1314,84 @@
                             "price_transfer": null,
                             "setup_fee": "0.0000",
                             "cancel_fee": "0.0000",
-                            "currency": "USD",
-                            "precision": 2
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 90,
+                            "term": 2,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 91,
+                            "term": 3,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 92,
+                            "term": 6,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 93,
+                            "term": 12,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 94,
+                            "term": 1,
+                            "period": "year",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 95,
+                            "term": 2,
+                            "period": "year",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 96,
+                            "term": 3,
+                            "period": "year",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
                         }
                     ]
                 }
@@ -489,7 +1401,7 @@
             "id": 13,
             "label": "Databases",
             "name": "databases",
-            "description": "Number of allowed database allocations (leave empty for unlimited)",
+            "description": "Number of allowed database allocations (0 uses the panel default)",
             "type": "quantity",
             "addable": 1,
             "editable": 1,
@@ -505,12 +1417,12 @@
                     "status": "active",
                     "order": 0,
                     "min": 0,
-                    "max": null,
+                    "max": 10,
                     "step": 1,
                     "image": null,
                     "pricing": [
                         {
-                            "id": 13,
+                            "id": 97,
                             "term": 1,
                             "period": "month",
                             "price": "0.0000",
@@ -518,8 +1430,84 @@
                             "price_transfer": null,
                             "setup_fee": "0.0000",
                             "cancel_fee": "0.0000",
-                            "currency": "USD",
-                            "precision": 2
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 98,
+                            "term": 2,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 99,
+                            "term": 3,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 100,
+                            "term": 6,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 101,
+                            "term": 12,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 102,
+                            "term": 1,
+                            "period": "year",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 103,
+                            "term": 2,
+                            "period": "year",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 104,
+                            "term": 3,
+                            "period": "year",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
                         }
                     ]
                 }
@@ -529,7 +1517,7 @@
             "id": 14,
             "label": "Allocations",
             "name": "allocations",
-            "description": "Number of additional port allocations (leave empty for unlimited)",
+            "description": "Number of additional port allocations (0 uses the panel default)",
             "type": "quantity",
             "addable": 1,
             "editable": 1,
@@ -545,12 +1533,12 @@
                     "status": "active",
                     "order": 0,
                     "min": 0,
-                    "max": null,
+                    "max": 10,
                     "step": 1,
                     "image": null,
                     "pricing": [
                         {
-                            "id": 14,
+                            "id": 105,
                             "term": 1,
                             "period": "month",
                             "price": "0.0000",
@@ -558,8 +1546,84 @@
                             "price_transfer": null,
                             "setup_fee": "0.0000",
                             "cancel_fee": "0.0000",
-                            "currency": "USD",
-                            "precision": 2
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 106,
+                            "term": 2,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 107,
+                            "term": 3,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 108,
+                            "term": 6,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 109,
+                            "term": 12,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 110,
+                            "term": 1,
+                            "period": "year",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 111,
+                            "term": 2,
+                            "period": "year",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 112,
+                            "term": 3,
+                            "period": "year",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
                         }
                     ]
                 }
@@ -569,7 +1633,7 @@
             "id": 15,
             "label": "Backups",
             "name": "backups",
-            "description": "Number of allowed backups (leave empty for unlimited)",
+            "description": "Number of allowed backups (0 uses the panel default)",
             "type": "quantity",
             "addable": 1,
             "editable": 1,
@@ -585,12 +1649,12 @@
                     "status": "active",
                     "order": 0,
                     "min": 0,
-                    "max": null,
+                    "max": 10,
                     "step": 1,
                     "image": null,
                     "pricing": [
                         {
-                            "id": 15,
+                            "id": 113,
                             "term": 1,
                             "period": "month",
                             "price": "0.0000",
@@ -598,8 +1662,84 @@
                             "price_transfer": null,
                             "setup_fee": "0.0000",
                             "cancel_fee": "0.0000",
-                            "currency": "USD",
-                            "precision": 2
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 114,
+                            "term": 2,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 115,
+                            "term": 3,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 116,
+                            "term": 6,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 117,
+                            "term": 12,
+                            "period": "month",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 118,
+                            "term": 1,
+                            "period": "year",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 119,
+                            "term": 2,
+                            "period": "year",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
+                        },
+                        {
+                            "id": 120,
+                            "term": 3,
+                            "period": "year",
+                            "price": "0.0000",
+                            "price_renews": "0.0000",
+                            "price_transfer": null,
+                            "setup_fee": "0.0000",
+                            "cancel_fee": "0.0000",
+                            "currency": "USD"
                         }
                     ]
                 }
