@@ -348,19 +348,33 @@ class PterodactylService
         // Set js to refetch options when the nest or egg is changed
         $fields->setHtml("
             <script type=\"text/javascript\">
-                $(document).ready(function() {
-                    // Re-fetch module options to pull in eggs and egg variables
-                    // when a nest or egg respectively is selected
-                    $('.package_options').on(
-                        'focusout',
-                        '*[name=\"configoptions[$egg_id]\"], *[name=\"configoptions[$nest_id]\"], *[name=\"configoptions[$location_id]\"]',
-                        function() {
-                            var form = $(this).closest('form');
-                            $(form).append('<input type=\"hidden\" name=\"refresh_fields\" value=\"true\">');
-                            $(form).submit();
+                // Re-fetch module options to pull in eggs and egg variables
+                // when a nest or egg respectively is selected.
+                // Track the watched fields globally so a re-render can update them,
+                // and guard against rebinding so duplicate handlers aren't added
+                // when this script re-executes on AJAX reload.
+                window.pterodactyl_option_fields = [
+                    'configoptions[$egg_id]',
+                    'configoptions[$nest_id]',
+                    'configoptions[$location_id]'
+                ];
+                if (!window.pterodactyl_service_events) {
+                    window.pterodactyl_service_events = true;
+                    document.addEventListener('focusout', function (event) {
+                        var name = event.target.name;
+                        if (name && window.pterodactyl_option_fields.indexOf(name) !== -1) {
+                            var form = event.target.closest('form');
+                            if (form) {
+                                var field = document.createElement('input');
+                                field.type = 'hidden';
+                                field.name = 'refresh_fields';
+                                field.value = 'true';
+                                form.appendChild(field);
+                                form.submit();
+                            }
                         }
-                    );
-                });
+                    });
+                }
             </script>
         ");
 
