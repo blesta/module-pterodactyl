@@ -158,15 +158,63 @@ class PterodactylPackage
 
         // Set js to refetch options when the nest or egg is changed
         $fields->setHtml("
-			<script type=\"text/javascript\">
-				// Re-fetch module options to pull in eggs and egg variables
-				// when a nest or egg respectively is selected.
-				// Use namespaced delegation so duplicate handlers aren't added on each AJAX reload.
-				$(document).off('change.pterodactyl').on('change.pterodactyl', '#Pterodactyl_nest_id, #Pterodactyl_egg_id', function() {
-					fetchModuleOptions();
-				});
-			</script>
-		");
+            <script type=\"text/javascript\">
+                // Re-fetch module options to pull in eggs and egg variables
+                // when a nest or egg respectively is selected.
+                // Delegate on document and guard against rebinding so duplicate
+                // handlers aren't added when this script re-executes on AJAX reload.
+                if (!window.pterodactyl_package_events) {
+                    window.pterodactyl_package_events = true;
+
+                    // Fallback for admin themes that don't expose fetchModuleOptions
+                    // globally; re-fetches the module options and renders them in place
+                    var pterodactylFetchOptions = function () {
+                        var moduleId = document.getElementById('module_id');
+                        var form = moduleId ? moduleId.closest('form') : null;
+                        var moduleOptions = document.getElementById('module_options');
+                        var path = window.location.pathname.match(/^(.*\/packages\/)(add|edit)(\/.*)?$/);
+                        if (!form || !moduleOptions || !path) {
+                            return;
+                        }
+
+                        fetch(path[1] + 'moduleoptions/', {
+                            method: 'POST',
+                            headers: {'X-Requested-With': 'XMLHttpRequest'},
+                            body: new URLSearchParams(new FormData(form))
+                        }).then(function (response) {
+                            return response.json();
+                        }).then(function (data) {
+                            if (!data || typeof data.module_options === 'undefined') {
+                                return;
+                            }
+
+                            moduleOptions.innerHTML = data.module_options;
+                            // innerHTML doesn't execute script tags, so re-create them
+                            moduleOptions.querySelectorAll('script').forEach(function (oldScript) {
+                                var newScript = document.createElement('script');
+                                newScript.textContent = oldScript.textContent;
+                                oldScript.parentNode.replaceChild(newScript, oldScript);
+                            });
+                            if (window.bootstrap && bootstrap.Tooltip) {
+                                moduleOptions.querySelectorAll('[data-bs-toggle=\"tooltip\"]').forEach(function (el) {
+                                    new bootstrap.Tooltip(el);
+                                });
+                            }
+                        });
+                    };
+
+                    document.addEventListener('change', function (event) {
+                        if (event.target.matches('#Pterodactyl_nest_id, #Pterodactyl_egg_id')) {
+                            if (typeof fetchModuleOptions === 'function') {
+                                fetchModuleOptions();
+                            } else {
+                                pterodactylFetchOptions();
+                            }
+                        }
+                    });
+                }
+            </script>
+        ");
 
         // Set the select fields
         $selectFields = [
