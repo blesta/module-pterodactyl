@@ -243,8 +243,8 @@ class PterodactylService
         $fields = new ModuleFields();
 
         // Fetch egg enviromental variables
+        $variables = [];
         if ($pterodactylEgg) {
-            $variables = [];
             $environment = $pterodactylEgg->attributes->relationships->variables->data ?? [];
 
             foreach ($environment as $variable) {
