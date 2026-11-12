@@ -199,7 +199,8 @@ class PterodactylService
     {
         // Get environment data from the egg
         $environment = [];
-        foreach ($pterodactylEgg->attributes->relationships->variables->data as $envVariable) {
+        $eggVariables = $pterodactylEgg->attributes->relationships->variables->data ?? [];
+        foreach ($eggVariables as $envVariable) {
             $variableName = $envVariable->attributes->env_variable;
             $blestaVariableName = strtolower($variableName);
             // Set the variable value based on values submitted in the following
